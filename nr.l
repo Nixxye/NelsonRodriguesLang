@@ -2,115 +2,86 @@
     #include <stdio.h>
     #include <string.h> 
     #include "nrUtils.h"
-    // Máquina de estados para o programa
-    enum {
-        DetectandoTitulo = 0,
-        DeclarandoVariaveis = 1,
-        DeclarandoAto = 2,
-        DeclarandoCena = 3
+    enum ESTADOS {
+        TITULO = 0,
+        ATO = 1,
+        CENA = 2,
     };
-    int estado = DetectandoTitulo;
+    int estado = 0;
 %}
 
 %%
-
+#.+\n { // Comentário 
+}
 ^ATO[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?[:].+\. {
-    if (estado == DeclarandoVariaveis) {
-        estado = DeclarandoAto;
+    char romano[16];
+    // Extrai a parte do número romano, usando a regex para segurança
+    sscanf(yytext, "ATO %15[^:]", romano);
 
-        char romano[16];
-        // Extrai a parte do número romano, usando a regex para segurança
-        sscanf(yytext, "ATO %15[^:]", romano);
-
-        int numero = romano_para_inteiro(romano);
-        printf("ATO: %d\n", numero);
-    }
+    int numero = romano_para_inteiro(romano);
+    printf("ATO: %d\n", numero);
 }
 
 ^\tCENA[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?: {
-    if (estado == DeclarandoAto) {
-        estado = DeclarandoCena;
+    char romano[16];
+    sscanf(yytext, "CENA %15[^:]", romano);
 
-        char romano[16];
-        sscanf(yytext, "CENA %15[^:]", romano);
-
-        int numero = romano_para_inteiro(romano);
-        printf("\tCENA: %d\n", numero);
-    }
+    int numero = romano_para_inteiro(romano);
+    printf("\tCENA: %d\n", numero);
+}
+(?i:saem) {
+    printf("SAEM\n");
+}
+(?i:todos) {
+    printf("TODOS\n");
 }
 
-^[^\n:]+:[^\n.!?]+[.!?]   { /* Título do programa */
-    if (estado == DetectandoTitulo) {
-        printf("TITULO: %s\n", yytext);
-        estado = DeclarandoVariaveis; // Apenas para ser mais explícito (estado++)
-    } 
+(?i:mais) {
+    printf("MAIS\n");
 }
 
-[A-Za-z ]+,.+\. { // Variáveis
-    // Pegando apenas o nome da variável
-    char varname[100];
-    int i = 0;
-    while (yytext[i] != ',' && yytext[i] != '\0') {
-        varname[i] = yytext[i];
-        i++;
-    }
-    varname[i] = '\0';
-    if (estado == DeclarandoVariaveis) {
-        printf("VARIAVEL: %s\n", varname);
-    }
+(?i:menos) {
+    printf("MENOS\n");
 }
 
-
-
-"\\[Entra [A-Za-z ]+\\]" {
-    if (estado == DeclarandoCena) {
-        char entrada[256];
-        strncpy(entrada, yytext + 7, yyleng - 8); // Remove "[Entra " e o "]"
-        entrada[yyleng - 8] = '\0';
-
-        // Separar os nomes pela palavra " e "
-        char *token = strtok(entrada, "e");
-        while (token != NULL) {
-            // Limpar espaços
-            while (*token == ' ') token++;
-            char *end = token + strlen(token) - 1;
-            while (end > token && *end == ' ') *end-- = '\0';
-
-            printf("ENTRADA: %s\n", token);
-            token = strtok(NULL, "e");
-        }
-    }
+(?i:razão) {
+    printf("DIVIDIR\n");
 }
 
-"\\[Sai [A-Za-z ]+\\]" {
-    if (estado == DeclarandoCena) {
-        char saida[256];
-        strncpy(saida, yytext + 5, yyleng - 6); // Remove "[Sai " e "]"
-        saida[yyleng - 6] = '\0';
-
-        // Separar nomes pela palavra " e "
-        char *token = strtok(saida, "e");
-        while (token != NULL) {
-            // Limpar espaços extras
-            while (*token == ' ') token++;
-            char *end = token + strlen(token) - 1;
-            while (end > token && *end == ' ') *end-- = '\0';
-
-            printf("SAIDA: %s\n", token);
-            token = strtok(NULL, "e");
-        }
-    }
+(?i:produto) {
+    printf("MULTIPLICAR\n");
 }
 
-
-"\\[Todos saem\\]" {
-    if (estado == DeclarandoCena) {
-        printf("SAIDA: TODOS\n");
-    }
+: {
+    printf("BEGIN\n");
 }
 
+[.!] {
+    printf("END\n");
+}
+"[" {
+    printf("ABRE COLCHETES\n");
+}
+"]" {
+    printf("FECHA COLCHETES\n");
+}
+"(" {
+    printf("ABRE PARENTESES\n");
+}
+")" {
+    printf("FECHA PARENTESIS\n");
+}
+
+[0-9]+\.[0-9]+ {
+    printf("NUMERO: %s\n", yytext);
+}
 
 .|\n                            { /* ignora tudo o resto */ }
+
+[A-Za-z]+ { // Token
+    printf("TOKEN: %s\n", yytext);
+}
+
 
 %%
 
