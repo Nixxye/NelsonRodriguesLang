@@ -39,11 +39,17 @@
 # define YY_YY_NR_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 3 "nr.y"
+
+  #include "table.h"
+
+#line 53 "nr.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -81,11 +87,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 20 "nr.y"
+#line 35 "nr.y"
 
     char* texto;
 
-#line 89 "nr.tab.h"
+#line 95 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

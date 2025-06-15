@@ -9,7 +9,7 @@
     //     CENA = 2,
     // };
     // int estado = 0;
-    int DEBUG_LEX = 1;
+    int DEBUG_LEX = 0;
 %}
 
 %%
@@ -113,8 +113,10 @@
 
 [A-Za-z]+ {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
+    yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
     return TOKEN;
 }
+
 
 .|\n                            { /* ignora tudo o resto */ }
 

@@ -546,7 +546,7 @@ char *yytext;
     //     CENA = 2,
     // };
     // int estado = 0;
-    int DEBUG_LEX = 1;
+    int DEBUG_LEX = 0;
 #line 551 "lex.yy.c"
 #line 552 "lex.yy.c"
 
@@ -989,21 +989,22 @@ YY_RULE_SETUP
 #line 114 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
+    yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
     return TOKEN;
 }
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 119 "nr.l"
+#line 121 "nr.l"
 { /* ignora tudo o resto */ }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 121 "nr.l"
+#line 123 "nr.l"
 ECHO;
 	YY_BREAK
-#line 1007 "lex.yy.c"
+#line 1008 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2011,7 +2012,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 121 "nr.l"
+#line 123 "nr.l"
 
 
 

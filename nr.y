@@ -1,6 +1,13 @@
+%debug
+
+%code requires {
+  #include "table.h"
+}
+
 %{
     #include <stdio.h>
     #include <stdlib.h>
+    #include <string.h>
 
     int yylex(void);
     int yyerror(const char *s);
@@ -15,6 +22,14 @@
     int estado = 0;
 
     int DEBUG_BISON = 1;
+    // Funções auxiliares
+    char* concatena(char* a, char* b) {
+        size_t len = strlen(a) + strlen(b) + 2;
+        char* res = (char *) malloc(len);
+        snprintf(res, len, "%s %s", a, b);
+        free(a);
+        return res;
+    }
 %}
 
 %union {
@@ -27,7 +42,7 @@
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO
 
-%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto
+%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
 
 %%
 
@@ -46,18 +61,25 @@ bloco:
     ;
 
 texto:
-    TOKEN
-    | ADJETIVO_POSITIVO
-    | SOMAR
-    | ENTRAM
-    | SAEM
-    | TODOS
-    | texto SAEM
-    | texto ENTRAM
-    | texto SOMAR
-    | texto ADJETIVO_POSITIVO
-    | texto TOKEN
+    palavra
+    | texto palavra {
+        // if (DEBUG_BISON) {
+        //     printf("Concatenando: %s + %s\n", $1, $2);
+        // }
+        $$ = concatena($1, $2);
+    }
     ;
+
+
+palavra:
+    TOKEN { $$ = strdup($1); }
+    | ADJETIVO_POSITIVO { $$ = strdup($1); }
+    | SOMAR { $$ = strdup($1); }
+    | ENTRAM { $$ = strdup($1); }
+    | SAEM { $$ = strdup($1); }
+    | TODOS { $$ = strdup($1); }
+    ;
+
 
 declaracao:
     declaracaoInicio texto FIM {
@@ -68,7 +90,12 @@ declaracaoInicio:
     texto VIRGULA {
         if (estado == E_DECLARACOES) {
             printf("Início da declaração\n");
+            if (DEBUG_BISON) {
+                printf("Criando variável: %s\n", $1);
+            }
+            add_symbol($1, INT_VAR);
         }
+        $$ = $1;
     }
 
 alteracaoElenco:
@@ -105,6 +132,34 @@ dialogo:
                 yyerror("Estado desconhecido no diálogo\n");
                 break;
         }
+    }
+    // Precisa ser mais importante do que texto com vírgula
+    | inicioDialogo texto VIRGULA texto FIM {
+        switch (estado) {
+            case E_TITULO:
+                printf("Título com vírgula: %s\n", $3);
+                break;
+            case E_DECLARACOES:
+                printf("Declarações com vírgula: %s\n", $3);
+                break;
+            case E_DIALOGO:
+                printf("Diálogo com vírgula: %s\n", $3);
+                if (DEBUG_BISON) {
+                    printf("Alterando variável: %s\n", $3);
+                }
+                set_int_value($3, get_int_value($3) + 1);// alterar para o valor do segundo texto
+                break;
+            case E_CENA:
+                printf("Cena com vírgula: %s\n", $3);
+                break;
+            case E_ATO:
+                printf("Ato com vírgula: %s\n", $3);
+                break;
+            default:
+                yyerror("Estado desconhecido no diálogo com vírgula\n");
+                break;
+        }
+        $$ = $1;
     }
 
 inicioDialogo:   

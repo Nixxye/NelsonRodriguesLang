@@ -1,0 +1,454 @@
+Terminals unused in grammar
+
+    SUBTRAIR
+    DIVIDIR
+    MULTIPLICAR
+    ABRE_PARENTESES
+    FECHA_PARENTESES
+    NUMERO
+
+
+Grammar
+
+    0 $accept: programa $end
+
+    1 programa: ε
+    2         | programa bloco
+
+    3 bloco: ato
+    4      | cena
+    5      | dialogo
+    6      | declaracao
+    7      | alteracaoElenco
+
+    8 texto: palavra
+    9      | texto palavra
+
+   10 palavra: TOKEN
+   11        | ADJETIVO_POSITIVO
+   12        | SOMAR
+   13        | ENTRAM
+   14        | SAEM
+   15        | TODOS
+
+   16 declaracao: declaracaoInicio texto FIM
+
+   17 declaracaoInicio: texto VIRGULA
+
+   18 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES
+
+   19 dialogo: inicioDialogo texto FIM
+   20        | inicioDialogo texto VIRGULA texto FIM
+
+   21 inicioDialogo: texto INICIO
+
+   22 ato: ATO
+
+   23 cena: CENA
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ATO <texto> (258) 22
+    CENA <texto> (259) 23
+    SAEM <texto> (260) 14
+    ENTRAM <texto> (261) 13
+    TODOS <texto> (262) 15
+    SOMAR <texto> (263) 12
+    SUBTRAIR <texto> (264)
+    DIVIDIR <texto> (265)
+    MULTIPLICAR <texto> (266)
+    INICIO <texto> (267) 21
+    FIM <texto> (268) 16 19 20
+    ABRE_COLCHETES <texto> (269) 18
+    FECHA_COLCHETES <texto> (270) 18
+    ABRE_PARENTESES <texto> (271)
+    FECHA_PARENTESES <texto> (272)
+    NUMERO <texto> (273)
+    VIRGULA <texto> (274) 17 20
+    TOKEN <texto> (275) 10
+    ADJETIVO_POSITIVO <texto> (276) 11
+
+
+Nonterminals, with rules where they appear
+
+    $accept (22)
+        on left: 0
+    programa (23)
+        on left: 1 2
+        on right: 0 2
+    bloco <texto> (24)
+        on left: 3 4 5 6 7
+        on right: 2
+    texto <texto> (25)
+        on left: 8 9
+        on right: 9 16 17 18 19 20 21
+    palavra <texto> (26)
+        on left: 10 11 12 13 14 15
+        on right: 8 9
+    declaracao <texto> (27)
+        on left: 16
+        on right: 6
+    declaracaoInicio <texto> (28)
+        on left: 17
+        on right: 16
+    alteracaoElenco (29)
+        on left: 18
+        on right: 7
+    dialogo <texto> (30)
+        on left: 19 20
+        on right: 5
+    inicioDialogo <texto> (31)
+        on left: 21
+        on right: 19 20
+    ato <texto> (32)
+        on left: 22
+        on right: 3
+    cena <texto> (33)
+        on left: 23
+        on right: 4
+
+
+State 0
+
+    0 $accept: • programa $end
+
+    $default  reduce using rule 1 (programa)
+
+    programa  go to state 1
+
+
+State 1
+
+    0 $accept: programa • $end
+    2 programa: programa • bloco
+
+    $end               shift, and go to state 2
+    ATO                shift, and go to state 3
+    CENA               shift, and go to state 4
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    ABRE_COLCHETES     shift, and go to state 9
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    bloco             go to state 12
+    texto             go to state 13
+    palavra           go to state 14
+    declaracao        go to state 15
+    declaracaoInicio  go to state 16
+    alteracaoElenco   go to state 17
+    dialogo           go to state 18
+    inicioDialogo     go to state 19
+    ato               go to state 20
+    cena              go to state 21
+
+
+State 2
+
+    0 $accept: programa $end •
+
+    $default  accept
+
+
+State 3
+
+   22 ato: ATO •
+
+    $default  reduce using rule 22 (ato)
+
+
+State 4
+
+   23 cena: CENA •
+
+    $default  reduce using rule 23 (cena)
+
+
+State 5
+
+   14 palavra: SAEM •
+
+    $default  reduce using rule 14 (palavra)
+
+
+State 6
+
+   13 palavra: ENTRAM •
+
+    $default  reduce using rule 13 (palavra)
+
+
+State 7
+
+   15 palavra: TODOS •
+
+    $default  reduce using rule 15 (palavra)
+
+
+State 8
+
+   12 palavra: SOMAR •
+
+    $default  reduce using rule 12 (palavra)
+
+
+State 9
+
+   18 alteracaoElenco: ABRE_COLCHETES • texto FECHA_COLCHETES
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    texto    go to state 22
+    palavra  go to state 14
+
+
+State 10
+
+   10 palavra: TOKEN •
+
+    $default  reduce using rule 10 (palavra)
+
+
+State 11
+
+   11 palavra: ADJETIVO_POSITIVO •
+
+    $default  reduce using rule 11 (palavra)
+
+
+State 12
+
+    2 programa: programa bloco •
+
+    $default  reduce using rule 2 (programa)
+
+
+State 13
+
+    9 texto: texto • palavra
+   17 declaracaoInicio: texto • VIRGULA
+   21 inicioDialogo: texto • INICIO
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    INICIO             shift, and go to state 23
+    VIRGULA            shift, and go to state 24
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    palavra  go to state 25
+
+
+State 14
+
+    8 texto: palavra •
+
+    $default  reduce using rule 8 (texto)
+
+
+State 15
+
+    6 bloco: declaracao •
+
+    $default  reduce using rule 6 (bloco)
+
+
+State 16
+
+   16 declaracao: declaracaoInicio • texto FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    texto    go to state 26
+    palavra  go to state 14
+
+
+State 17
+
+    7 bloco: alteracaoElenco •
+
+    $default  reduce using rule 7 (bloco)
+
+
+State 18
+
+    5 bloco: dialogo •
+
+    $default  reduce using rule 5 (bloco)
+
+
+State 19
+
+   19 dialogo: inicioDialogo • texto FIM
+   20        | inicioDialogo • texto VIRGULA texto FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    texto    go to state 27
+    palavra  go to state 14
+
+
+State 20
+
+    3 bloco: ato •
+
+    $default  reduce using rule 3 (bloco)
+
+
+State 21
+
+    4 bloco: cena •
+
+    $default  reduce using rule 4 (bloco)
+
+
+State 22
+
+    9 texto: texto • palavra
+   18 alteracaoElenco: ABRE_COLCHETES texto • FECHA_COLCHETES
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    FECHA_COLCHETES    shift, and go to state 28
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    palavra  go to state 25
+
+
+State 23
+
+   21 inicioDialogo: texto INICIO •
+
+    $default  reduce using rule 21 (inicioDialogo)
+
+
+State 24
+
+   17 declaracaoInicio: texto VIRGULA •
+
+    $default  reduce using rule 17 (declaracaoInicio)
+
+
+State 25
+
+    9 texto: texto palavra •
+
+    $default  reduce using rule 9 (texto)
+
+
+State 26
+
+    9 texto: texto • palavra
+   16 declaracao: declaracaoInicio texto • FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    FIM                shift, and go to state 29
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    palavra  go to state 25
+
+
+State 27
+
+    9 texto: texto • palavra
+   19 dialogo: inicioDialogo texto • FIM
+   20        | inicioDialogo texto • VIRGULA texto FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    FIM                shift, and go to state 30
+    VIRGULA            shift, and go to state 31
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    palavra  go to state 25
+
+
+State 28
+
+   18 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES •
+
+    $default  reduce using rule 18 (alteracaoElenco)
+
+
+State 29
+
+   16 declaracao: declaracaoInicio texto FIM •
+
+    $default  reduce using rule 16 (declaracao)
+
+
+State 30
+
+   19 dialogo: inicioDialogo texto FIM •
+
+    $default  reduce using rule 19 (dialogo)
+
+
+State 31
+
+   20 dialogo: inicioDialogo texto VIRGULA • texto FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    texto    go to state 32
+    palavra  go to state 14
+
+
+State 32
+
+    9 texto: texto • palavra
+   20 dialogo: inicioDialogo texto VIRGULA texto • FIM
+
+    SAEM               shift, and go to state 5
+    ENTRAM             shift, and go to state 6
+    TODOS              shift, and go to state 7
+    SOMAR              shift, and go to state 8
+    FIM                shift, and go to state 33
+    TOKEN              shift, and go to state 10
+    ADJETIVO_POSITIVO  shift, and go to state 11
+
+    palavra  go to state 25
+
+
+State 33
+
+   20 dialogo: inicioDialogo texto VIRGULA texto FIM •
+
+    $default  reduce using rule 20 (dialogo)

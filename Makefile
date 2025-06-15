@@ -9,9 +9,9 @@ INPUT = program.nr
 # Alvo padrão
 all: $(EXEC)
 
-# Gera o parser com bison
+# Gera o parser com bison (ativando warnings e debug)
 nr.tab.c nr.tab.h: $(YACCFILE)
-	bison -d $(YACCFILE) -Wconflicts-sr -Wcounterexamples
+	bison -d -v -Wconflicts-sr -Wcounterexamples $(YACCFILE)
 
 # Gera o lexer com flex
 lex.yy.c: $(LEXFILE) nr.tab.h
@@ -19,7 +19,7 @@ lex.yy.c: $(LEXFILE) nr.tab.h
 
 # Compila tudo
 $(EXEC): lex.yy.c nr.tab.c
-	g++ -o $(EXEC) nr.tab.c lex.yy.c
+	g++ -g -o $(EXEC) nr.tab.c lex.yy.c nrUtils.c
 
 # Executa o parser com o arquivo de entrada
 run: $(EXEC) $(INPUT)
@@ -27,4 +27,4 @@ run: $(EXEC) $(INPUT)
 
 # Limpeza
 clean:
-	rm -f lex.yy.c nr.tab.c nr.tab.h $(EXEC)
+	rm -f lex.yy.c nr.tab.c nr.tab.h nr.output $(EXEC)
