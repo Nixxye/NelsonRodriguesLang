@@ -2,12 +2,13 @@
     #include <stdio.h>
     #include <string.h> 
     #include "nrUtils.h"
-    enum ESTADOS {
-        TITULO = 0,
-        ATO = 1,
-        CENA = 2,
-    };
-    int estado = 0;
+    #include "nr.tab.h"
+    // enum ESTADOS {
+    //     TITULO = 0,
+    //     ATO = 1,
+    //     CENA = 2,
+    // };
+    // int estado = 0;
 %}
 
 %%
@@ -19,7 +20,7 @@
     sscanf(yytext, "ATO %15[^:]", romano);
 
     int numero = romano_para_inteiro(romano);
-    printf("ATO: %d\n", numero);
+    return ATO;
 }
 
 ^\tCENA[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?: {
@@ -30,65 +31,65 @@
     printf("\tCENA: %d\n", numero);
 }
 (?i:saem) {
-    printf("SAEM\n");
+    return SAEM;
 }
 (?i:todos) {
-    printf("TODOS\n");
+    return TODOS;
 }
 
 (?i:mais) {
-    printf("MAIS\n");
+    return SOMAR;
 }
 
 (?i:menos) {
-    printf("MENOS\n");
+    return SUBTRAIR;
 }
 
 (?i:razão) {
-    printf("DIVIDIR\n");
+   return DIVIDIR; 
 }
 
 (?i:produto) {
-    printf("MULTIPLICAR\n");
+    return MULTIPLICAR;
 }
 
 : {
-    printf("BEGIN\n");
+    return INICIO;
 }
 
-[.!] {
-    printf("END\n");
+[.!?] {
+    return FIM;
 }
 "[" {
-    printf("ABRE COLCHETES\n");
+    return ABRE_COLCHETES;
 }
 "]" {
-    printf("FECHA COLCHETES\n");
+    return FECHA_COLCHETES;
 }
 "(" {
-    printf("ABRE PARENTESES\n");
+    return ABRE_PARENTESES;
 }
 ")" {
-    printf("FECHA PARENTESIS\n");
+    return FECHA_PARENTESES;
 }
 
 [0-9]+\.[0-9]+ {
-    printf("NUMERO: %s\n", yytext);
+    return NUMERO;
 }
 
 .|\n                            { /* ignora tudo o resto */ }
 
+(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela) {
+   return VIRGULA; 
+}
+
 [A-Za-z]+ { // Token
-    printf("TOKEN: %s\n", yytext);
+    return TOKEN;
 }
 
 
 %%
 
-int main() {
-    yylex();
-    return 0;
-}
 
 int yywrap() {
     return 1;

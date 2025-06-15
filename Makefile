@@ -1,25 +1,30 @@
 # Nome do executável
-LEXER = nrlexer
+EXEC = nrparser
 
 # Arquivos
 LEXFILE = nr.l
+YACCFILE = nr.y
 INPUT = program.nr
 
 # Alvo padrão
-all: $(LEXER)
+all: $(EXEC)
 
-# Compila o lexer
-$(LEXER): lex.yy.c
-	g++ -o $(LEXER) lex.yy.c
+# Gera o parser com bison
+nr.tab.c nr.tab.h: $(YACCFILE)
+	bison -d $(YACCFILE)
 
-# Gera o código com flex
-lex.yy.c: $(LEXFILE)
+# Gera o lexer com flex
+lex.yy.c: $(LEXFILE) nr.tab.h
 	flex $(LEXFILE)
 
-# Executa o lexer com o arquivo de entrada
-run: $(LEXER) $(INPUT)
-	./$(LEXER) < $(INPUT)
+# Compila tudo
+$(EXEC): lex.yy.c nr.tab.c
+	g++ -o $(EXEC) nr.tab.c lex.yy.c
+
+# Executa o parser com o arquivo de entrada
+run: $(EXEC) $(INPUT)
+	./$(EXEC) < $(INPUT)
 
 # Limpeza
 clean:
-	rm -f lex.yy.c $(LEXER)
+	rm -f lex.yy.c nr.tab.c nr.tab.h $(EXEC)
