@@ -40,7 +40,7 @@
 %token <texto> ATO CENA SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO
+%token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO TU EH
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
 
@@ -134,7 +134,7 @@ dialogo:
         }
     }
     // Precisa ser mais importante do que texto com vírgula
-    | inicioDialogo texto VIRGULA texto FIM {
+    | inicioDialogo texto VIRGULA TU EH texto FIM {
         switch (estado) {
             case E_TITULO:
                 printf("Título com vírgula: %s\n", $3);
@@ -143,11 +143,18 @@ dialogo:
                 printf("Declarações com vírgula: %s\n", $3);
                 break;
             case E_DIALOGO:
-                printf("Diálogo com vírgula: %s\n", $3);
+                printf("Diálogo com vírgula: %s\n", $2);
                 if (DEBUG_BISON) {
-                    printf("Alterando variável: %s\n", $3);
+                    // printf("Taela de símbolos:\n");
+                    // print_symbols();
+                    printf("Alterando variável: %s\n", $2);
+                    printf("    Valor atual: %d\n", get_int_value($2));
                 }
-                set_int_value($3, get_int_value($3) + 1);// alterar para o valor do segundo texto
+                // pegar valor do texto !!!
+                set_int_value($2, get_int_value($2) + 1);
+                if (DEBUG_BISON) {
+                    printf("    Novo valor: %d\n", get_int_value($2));
+                }
                 break;
             case E_CENA:
                 printf("Cena com vírgula: %s\n", $3);

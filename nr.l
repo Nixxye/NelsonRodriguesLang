@@ -9,7 +9,7 @@
     //     CENA = 2,
     // };
     // int estado = 0;
-    int DEBUG_LEX = 0;
+    int DEBUG_LEX = 1;
 %}
 
 %%
@@ -30,7 +30,14 @@
     if (DEBUG_LEX) printf("TOKEN: CENA (%s)\n", yytext);
     return CENA;
 }
-
+(?i:tu)|(?i:você) {
+    if (DEBUG_LEX) printf("TOKEN: TU\n");
+    return TU;
+}
+(?i:é)|(?i:és) { // acentuação depois
+    if (DEBUG_LEX) printf("TOKEN: É\n");
+    return EH;
+}
 (?i:saem)|(?i:sai) {
     if (DEBUG_LEX) printf("TOKEN: SAEM\n");
     return SAEM;

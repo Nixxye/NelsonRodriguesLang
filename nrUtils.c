@@ -43,7 +43,20 @@ void add_symbol(const char *name, VarType type) {
     newSymbol->name = strdup(name);
     newSymbol->type = type;
     newSymbol->next = symbolTable[index];
+    newSymbol->active = 0; // Marca como inativo
     symbolTable[index] = newSymbol;
+    // Inicializa o valor da variável
+    switch (type) {
+        case INT_VAR:
+            set_int_value(name, 0); // Inicializa com 0
+            break;
+        case FLOAT_VAR:
+            set_float_value(name, 0.0f); // Inicializa com 0.0
+            break;
+        case BOOL_VAR:
+            set_bool_value(name, 0); // Inicializa com false
+            break;
+    }
 }
 
 // Adiciona valor inteiro
@@ -160,17 +173,17 @@ VarType get_variable_type(const char *name) {
 }
 
 // Impressão das tabelas
-void print_symbols(void) {
-    printf("Tabela de Símbolos:\n");
-    for (int i = 0; i < TABLE_SIZE; i++) {
-        Symbol *symbol = symbolTable[i];
-        while (symbol) {
-            printf("[%s - %d] -> ", symbol->name, symbol->type);
-            symbol = symbol->next;
-        }
-    }
-    printf("\n");
-}
+// void print_symbols(void) {
+//     printf("Tabela de Símbolos:\n");
+//     for (int i = 0; i < TABLE_SIZE; i++) {
+//         Symbol *symbol = symbolTable[i];
+//         while (symbol) {
+//             printf("[%s - %d] -> ", symbol->name, symbol->type);
+//             symbol = symbol->next;
+//         }
+//     }
+//     printf("\n");
+// }
 
 void print_values(void) {
     printf("Tabela de Inteiros:\n");
@@ -202,4 +215,29 @@ void print_values(void) {
         }
     }
     printf("\n");
+}
+
+const char* vartype_to_string(VarType type) {
+    switch (type) {
+        case INT_VAR: return "int";
+        case FLOAT_VAR: return "float";
+        case CHAR_VAR: return "char";
+        case STRING_VAR: return "string";
+        case BOOL_VAR: return "bool";
+        default: return "unknown";
+    }
+}
+
+void print_symbols(void) {
+    printf("=== Tabela de Símbolos ===\n");
+    for (int i = 0; i < TABLE_SIZE; ++i) {
+        Symbol *entry = symbolTable[i];
+        while (entry != NULL) {
+            printf("Nome: %-15s | Tipo: %-6s | Ativo: %s\n",
+                   entry->name,
+                   vartype_to_string(entry->type),
+                   entry->active ? "sim" : "não");
+            entry = entry->next;
+        }
+    }
 }

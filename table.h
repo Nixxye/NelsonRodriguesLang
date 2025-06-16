@@ -19,6 +19,7 @@ typedef struct Symbol {
     char *name;
     VarType type;
     struct Symbol *next;
+    int active; // 1 para ativo, 0 para inativo
 } Symbol;
 
 typedef struct IntValue {

@@ -78,7 +78,9 @@ extern int yydebug;
     NUMERO = 273,                  /* NUMERO  */
     VIRGULA = 274,                 /* VIRGULA  */
     TOKEN = 275,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 276        /* ADJETIVO_POSITIVO  */
+    ADJETIVO_POSITIVO = 276,       /* ADJETIVO_POSITIVO  */
+    TU = 277,                      /* TU  */
+    EH = 278                       /* EH  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -91,7 +93,7 @@ union YYSTYPE
 
     char* texto;
 
-#line 95 "nr.tab.h"
+#line 97 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
