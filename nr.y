@@ -34,16 +34,18 @@
 
 %union {
     char* texto;
+    int inteiro;
 }
 
 /* Declaração dos tokens */
-%token <texto> ATO CENA SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
+%token <texto> SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO TU EH
+%token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-
+%nterm <inteiro> adjetivos
 %%
 
 /* Regras da gramática */
@@ -61,7 +63,9 @@ bloco:
     ;
 
 texto:
-    palavra
+    palavra { 
+        $$ = strdup($1);
+    }
     | texto palavra {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
@@ -80,6 +84,22 @@ palavra:
     | TODOS { $$ = strdup($1); }
     ;
 
+adjetivos:
+    ADJETIVO_POSITIVO { 
+        $$ = 1;
+    }
+    | TOKEN {
+        $$ = 0;
+    }
+    | adjetivos ADJETIVO_POSITIVO {
+        if (DEBUG_BISON) {
+            printf("Adjetivo positivo concatenado: %s\n", $2);
+        }
+        $$ = $1 + 1;
+    }
+    | adjetivos TOKEN {
+        $$ = $1;
+    }
 
 declaracao:
     declaracaoInicio texto FIM {
@@ -134,7 +154,7 @@ dialogo:
         }
     }
     // Precisa ser mais importante do que texto com vírgula
-    | inicioDialogo texto VIRGULA TU EH texto FIM {
+    | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         switch (estado) {
             case E_TITULO:
                 printf("Título com vírgula: %s\n", $3);
@@ -145,13 +165,13 @@ dialogo:
             case E_DIALOGO:
                 printf("Diálogo com vírgula: %s\n", $2);
                 if (DEBUG_BISON) {
-                    // printf("Taela de símbolos:\n");
+                    // printf("Tabela de símbolos:\n");
                     // print_symbols();
                     printf("Alterando variável: %s\n", $2);
                     printf("    Valor atual: %d\n", get_int_value($2));
                 }
                 // pegar valor do texto !!!
-                set_int_value($2, get_int_value($2) + 1);
+                set_int_value($2, get_int_value($2) + $6);
                 if (DEBUG_BISON) {
                     printf("    Novo valor: %d\n", get_int_value($2));
                 }
@@ -188,7 +208,7 @@ inicioDialogo:
 ato: 
     ATO {
         if (estado == E_DECLARACOES) {
-            printf("Ato: %s\n", $1);
+            printf("Ato: %d\n", $1);
             estado = E_ATO;
         } else if (estado != E_ATO) {
             yyerror("Ato fora de contexto");
@@ -198,7 +218,7 @@ ato:
 cena: 
     CENA {
         if (estado == E_ATO) {
-            printf("Cena: %s\n", $1);
+            printf("Cena: %d\n", $1);
             estado = E_CENA;
         } else if (estado == E_CENA) {
             // faz algo

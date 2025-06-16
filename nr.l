@@ -20,6 +20,8 @@
     sscanf(yytext, "ATO %15[^:]", romano);
     int numero = romano_para_inteiro(romano);
     if (DEBUG_LEX) printf("TOKEN: ATO (%s)\n", yytext);
+    yylval.inteiro = numero;
+    yylval.texto = strdup(yytext);
     return ATO;
 }
 
@@ -28,28 +30,35 @@
     sscanf(yytext, "CENA %15[^:]", romano);
     int numero = romano_para_inteiro(romano);
     if (DEBUG_LEX) printf("TOKEN: CENA (%s)\n", yytext);
+    yylval.inteiro = numero;
+    yylval.texto = strdup(yytext);
     return CENA;
 }
 (?i:tu)|(?i:você) {
     if (DEBUG_LEX) printf("TOKEN: TU\n");
+    yylval.texto = strdup(yytext);
     return TU;
 }
 (?i:é)|(?i:és) { // acentuação depois
     if (DEBUG_LEX) printf("TOKEN: É\n");
+    yylval.texto = strdup(yytext);
     return EH;
 }
 (?i:saem)|(?i:sai) {
     if (DEBUG_LEX) printf("TOKEN: SAEM\n");
+    yylval.texto = strdup(yytext);
     return SAEM;
 }
 
 (?i:todos) {
     if (DEBUG_LEX) printf("TOKEN: TODOS\n");
+    yylval.texto = strdup(yytext);
     return TODOS;
 }
 
 (?i:entram)|(?i:entra) {
     if (DEBUG_LEX) printf("TOKEN: ENTRAM\n");
+    yylval.texto = strdup(yytext);
     return ENTRAM;
 }
 
@@ -60,21 +69,25 @@
 
 (?i:mais) {
     if (DEBUG_LEX) printf("TOKEN: SOMAR\n");
+    yylval.texto = strdup(yytext);
     return SOMAR;
 }
 
 (?i:menos) {
     if (DEBUG_LEX) printf("TOKEN: SUBTRAIR\n");
+    yylval.texto = strdup(yytext);
     return SUBTRAIR;
 }
 
 (?i:razão) {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
+    yylval.texto = strdup(yytext);
     return DIVIDIR;
 }
 
 (?i:produto) {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
+    yylval.texto = strdup(yytext);
     return MULTIPLICAR;
 }
 
@@ -113,8 +126,9 @@
     return NUMERO;
 }
 
-(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela) {
+(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela)|(?i:code)|(?i:pudim)|(?i:doce) {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
+    yylval.texto = strdup(yytext);
     return ADJETIVO_POSITIVO;
 }
 

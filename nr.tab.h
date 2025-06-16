@@ -60,27 +60,27 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    ATO = 258,                     /* ATO  */
-    CENA = 259,                    /* CENA  */
-    SAEM = 260,                    /* SAEM  */
-    ENTRAM = 261,                  /* ENTRAM  */
-    TODOS = 262,                   /* TODOS  */
-    SOMAR = 263,                   /* SOMAR  */
-    SUBTRAIR = 264,                /* SUBTRAIR  */
-    DIVIDIR = 265,                 /* DIVIDIR  */
-    MULTIPLICAR = 266,             /* MULTIPLICAR  */
-    INICIO = 267,                  /* INICIO  */
-    FIM = 268,                     /* FIM  */
-    ABRE_COLCHETES = 269,          /* ABRE_COLCHETES  */
-    FECHA_COLCHETES = 270,         /* FECHA_COLCHETES  */
-    ABRE_PARENTESES = 271,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 272,        /* FECHA_PARENTESES  */
-    NUMERO = 273,                  /* NUMERO  */
-    VIRGULA = 274,                 /* VIRGULA  */
-    TOKEN = 275,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 276,       /* ADJETIVO_POSITIVO  */
-    TU = 277,                      /* TU  */
-    EH = 278                       /* EH  */
+    SAEM = 258,                    /* SAEM  */
+    ENTRAM = 259,                  /* ENTRAM  */
+    TODOS = 260,                   /* TODOS  */
+    SOMAR = 261,                   /* SOMAR  */
+    SUBTRAIR = 262,                /* SUBTRAIR  */
+    DIVIDIR = 263,                 /* DIVIDIR  */
+    MULTIPLICAR = 264,             /* MULTIPLICAR  */
+    INICIO = 265,                  /* INICIO  */
+    FIM = 266,                     /* FIM  */
+    ABRE_COLCHETES = 267,          /* ABRE_COLCHETES  */
+    FECHA_COLCHETES = 268,         /* FECHA_COLCHETES  */
+    ABRE_PARENTESES = 269,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 270,        /* FECHA_PARENTESES  */
+    NUMERO = 271,                  /* NUMERO  */
+    VIRGULA = 272,                 /* VIRGULA  */
+    TOKEN = 273,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 274,       /* ADJETIVO_POSITIVO  */
+    TU = 275,                      /* TU  */
+    EH = 276,                      /* EH  */
+    ATO = 277,                     /* ATO  */
+    CENA = 278                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -92,8 +92,9 @@ union YYSTYPE
 #line 35 "nr.y"
 
     char* texto;
+    int inteiro;
 
-#line 97 "nr.tab.h"
+#line 98 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
