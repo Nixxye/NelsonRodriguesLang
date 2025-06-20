@@ -5,6 +5,7 @@ Symbol *symbolTable[TABLE_SIZE] = {0};
 IntValue *intTable[TABLE_SIZE] = {0};
 FloatValue *floatTable[TABLE_SIZE] = {0};
 BoolValue *boolTable[TABLE_SIZE] = {0};
+StringValue *stringTable[TABLE_SIZE] = {0};
 
 // Função de hash simples
 unsigned int hash(const char *str) {
@@ -55,6 +56,24 @@ void add_symbol(const char *name, VarType type) {
             break;
         case BOOL_VAR:
             set_bool_value(name, 0); // Inicializa com false
+            break;
+        case STRING_VAR:
+            // Inicializa com string vazia
+            StringValue *newStringValue = (StringValue *) malloc(sizeof(StringValue));
+            if (!newStringValue) {
+              perror("malloc failed");
+              exit(EXIT_FAILURE);
+            }
+            newStringValue->name = strdup(name);
+            if (!newStringValue->name) {
+              perror("strdup failed");
+              exit(EXIT_FAILURE);
+            }
+            newStringValue->value = strdup(""); // Inicializa com string vazia
+            newStringValue->next = NULL;
+            unsigned int strIndex = hash(name);
+            newStringValue->next = stringTable[strIndex];
+            stringTable[strIndex] = newStringValue;
             break;
     }
 }
@@ -116,6 +135,27 @@ void set_bool_value(const char *name, int value) {
     boolTable[index] = newValue;
 }
 
+// Adiciona valor string
+void set_string_value(const char *name, const char *value) {
+    unsigned int index = hash(name);
+    StringValue *val = stringTable[index];
+    while (val) {
+        if (strcmp(val->name, name) == 0) {
+            free(val->value); // Libera memória da string antiga
+            val->value = strdup(value); // Atribui nova string
+            return;
+        }
+        val = val->next;
+    }
+    StringValue *newValue = (StringValue *) malloc(sizeof(StringValue));
+    newValue->name = strdup(name);
+    newValue->value = strdup(value);
+    newValue->next = stringTable[index];
+    stringTable[index] = newValue;
+}
+
+
+
 // Recupera valor inteiro
 int get_int_value(const char *name) {
     unsigned int index = hash(name);
@@ -155,6 +195,20 @@ int get_bool_value(const char *name) {
         val = val->next;
     }
     fprintf(stderr, "Erro: Variável '%s' não encontrada na tabela de booleanos!\n", name);
+    exit(EXIT_FAILURE);
+}
+
+// Recupera valor string
+char *get_string_value(const char *name) {
+    unsigned int index = hash(name);
+    StringValue *val = stringTable[index];
+    while (val) {
+        if (strcmp(val->name, name) == 0) {
+            return val->value; // Retorna a string
+        }
+        val = val->next;
+    }
+    fprintf(stderr, "Erro: Variável '%s' não encontrada na tabela de strings!\n", name);
     exit(EXIT_FAILURE);
 }
 
@@ -240,4 +294,39 @@ void print_symbols(void) {
             entry = entry->next;
         }
     }
+}
+
+char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto) {
+    if (!original || !alvo || !substituto) return NULL;
+
+    size_t len_original = strlen(original);
+    size_t len_alvo = strlen(alvo);
+    size_t len_substituto = strlen(substituto);
+
+    // Estimar o número máximo de substituições
+    int cont = 0;
+    const char *p = original;
+    while ((p = strstr(p, alvo)) != NULL) {
+        cont++;
+        p += len_alvo;
+    }
+
+    // Aloca memória para o novo texto
+    size_t novo_tamanho = len_original + cont * (len_substituto - len_alvo) + 1;
+    char *resultado = (char*) malloc(novo_tamanho);
+    if (!resultado) return NULL;
+
+    char *dest = resultado;
+    p = original;
+    while (*p) {
+        if (strstr(p, alvo) == p) {
+            strcpy(dest, substituto);
+            dest += len_substituto;
+            p += len_alvo;
+        } else {
+            *dest++ = *p++;
+        }
+    }
+    *dest = '\0';
+    return resultado;
 }

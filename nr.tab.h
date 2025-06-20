@@ -84,8 +84,13 @@ extern int yydebug;
     ARTIGO = 279,                  /* ARTIGO  */
     MESMO = 280,                   /* MESMO  */
     NUMERO = 281,                  /* NUMERO  */
-    ATO = 282,                     /* ATO  */
-    CENA = 283                     /* CENA  */
+    ADICIONAR_CENARIO = 282,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 283,      /* SUBSTITUIR_CENARIO  */
+    POR = 284,                     /* POR  */
+    NO_CENARIO = 285,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 286,         /* MOSTRAR_CENARIO  */
+    ATO = 287,                     /* ATO  */
+    CENA = 288                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -94,12 +99,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "nr.y"
+#line 40 "nr.y"
 
     char* texto;
     int inteiro;
 
-#line 103 "nr.tab.h"
+#line 108 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

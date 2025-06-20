@@ -21,14 +21,17 @@
     };
     int estado = 0;
 
+    char *cenarioAtual = NULL;
+
     int DEBUG_BISON = 1;
     // Funções auxiliares
     char* concatena(char* a, char* b) {
         size_t len = strlen(a) + strlen(b) + 2;
         char* res = (char *) malloc(len);
         snprintf(res, len, "%s %s", a, b);
-        free(a);
+        // free(a);
         return res;
+        // ajustar os free onde usa concatena
     }
 
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
@@ -43,7 +46,7 @@
 %token <texto> SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO
+%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -63,8 +66,64 @@ bloco:
     | cena
     | dialogo
     | declaracao
+    | declaracaoCenario
+    | concatenarCenario
+    | substituiCenario
     | alteracaoElenco
     ;
+
+
+/* Cenários - manipulação de Strings */
+
+declaracaoCenario:
+    ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES {
+        if (estado == E_DECLARACOES) {
+            add_symbol($2, STRING_VAR);
+            set_string_value($2, $4);
+            if (DEBUG_BISON) {
+                printf("Cenário adicionado: %s = %s\n", $2, $4);
+            }
+            cenarioAtual = strdup($2);
+        } else {
+            yyerror("Declaração de cenário fora de contexto");
+        }
+    }
+
+concatenarCenario:
+    ADICIONAR_CENARIO INICIO texto FIM {
+        if (estado != E_DECLARACOES) {
+            char * valorCenario = get_string_value(cenarioAtual);
+
+            if (valorCenario == NULL) {
+                yyerror("Nenhum cenário atual definido");
+            } else {
+                char* novoCenario = concatena(valorCenario, $3);
+                set_string_value(cenarioAtual, novoCenario);
+                // free(novoCenario);
+                if (DEBUG_BISON) {
+                    printf("Cenário atualizado: %s\n", cenarioAtual);
+                }
+            }
+        } else {
+            yyerror("Adição de cenário fora de contexto");
+        }
+    }
+
+substituiCenario:
+    SUBSTITUIR_CENARIO texto POR texto NO_CENARIO {
+        if (estado != E_DECLARACOES) {
+            char * valorCenario = get_string_value(cenarioAtual);
+            if (valorCenario == NULL) {
+                yyerror("Nenhum cenário atual definido");
+            } else {
+                char* novoValorCenario = substituir_ocorrencias(cenarioAtual, $2, $4);
+                set_string_value(cenarioAtual, novoValorCenario);
+                printf("Novo cenário: %s\n", get_string_value(cenarioAtual));
+            }
+        } else {
+            yyerror("Substituição de cenário fora de contexto");
+        }
+    }
 
 texto:
     palavra { 
@@ -214,7 +273,10 @@ expressao:
     }
 
 dialogo:
-    inicioDialogo texto FIM {
+    inicioDialogo MOSTRAR_CENARIO {
+        printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+    }
+    | inicioDialogo texto FIM {
         printf("Diálogo: %s\n", $2);
         switch (estado) {
             case E_TITULO:

@@ -11,7 +11,6 @@
     // int estado = 0;
     int DEBUG_LEX = 1;
 %}
-
 %%
 #.+# { // Comentário 
 }
@@ -44,6 +43,35 @@
     return ARTIGO;
 }
 
+(?i:onde[ ]estamos\?)|(?i:onde[ ]estou\?) {
+    if (DEBUG_LEX) printf("TOKEN: ONDE_ESTAMOS\n");
+    yylval.texto = strdup(yytext);
+    return MOSTRAR_CENARIO;
+}
+
+[aA][dD][iI][cC][iI][oO][nN][eE][ ][aA][oO][ ][cC][eE][nN][aA][rR][iI][oO] {
+    if (DEBUG_LEX) printf("TOKEN: ADICIONAR_CENARIO\n");
+    yylval.texto = strdup(yytext);
+    return ADICIONAR_CENARIO;
+}
+
+(?:substitua) {
+    if (DEBUG_LEX) printf("TOKEN: SUBSTITUIR_CENARIO\n");
+    yylval.texto = strdup(yytext);
+    return SUBSTITUIR_CENARIO;
+}
+
+(?i:por) {
+    if (DEBUG_LEX) printf("TOKEN: POR\n");
+    yylval.texto = strdup(yytext);
+    return POR;
+}
+
+(?:no)" "(?i:cenário) {
+    if (DEBUG_LEX) printf("TOKEN: NO_CENARIO\n");
+    yylval.texto = strdup(yytext);
+    return NO_CENARIO;
+}
 
 (?i:entre)|(?i:de) {
     if (DEBUG_LEX) printf("TOKEN: ENTRE\n");

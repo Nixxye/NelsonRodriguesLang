@@ -40,3 +40,4 @@ char* trim(char* str) {
 
     return str;
 }
+
