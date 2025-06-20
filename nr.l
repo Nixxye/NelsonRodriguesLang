@@ -32,6 +32,29 @@
     yylval.inteiro = numero;
     return CENA;
 }
+(^|[ \t])[eE]([ \t]|[.,?!]) {
+    if (DEBUG_LEX) printf("TOKEN: E\n");
+    yylval.texto = strdup(yytext);
+    return E;
+}
+
+(?i:[o|a|os|as|um|uma|uns|umas])[ ] {
+    if (DEBUG_LEX) printf("TOKEN: ARTIGO (%s)\n", yytext);
+    yylval.texto = strdup(yytext);
+    return ARTIGO;
+}
+
+
+(?i:entre)|(?i:de) {
+    if (DEBUG_LEX) printf("TOKEN: ENTRE\n");
+    yylval.texto = strdup(yytext);
+    return ENTRE;
+}
+(?:mesma)|(?i:mesmo)|(?i:mesmas)|(?i:mesmos) {
+    if (DEBUG_LEX) printf("TOKEN: MESMO\n");
+    yylval.texto = strdup(yytext);
+    return MESMO;
+}
 (?i:tu)|(?i:você) {
     if (DEBUG_LEX) printf("TOKEN: TU\n");
     yylval.texto = strdup(yytext);
@@ -64,7 +87,29 @@
     if (DEBUG_LEX) printf("TOKEN: VIRGULA\n");
     return VIRGULA;
 }
+(?i:soma) {
+    if (DEBUG_LEX) printf("TOKEN: SOMA\n");
+    yylval.texto = strdup(yytext);
+    return SOMAR;
+}
 
+(?i:subtração) {
+    if (DEBUG_LEX) printf("TOKEN: SUBTRAÇÃO\n");
+    yylval.texto = strdup(yytext);
+    return SUBTRAIR;
+}
+
+(?i:divisão) {
+    if (DEBUG_LEX) printf("TOKEN: DIVISÃO\n");
+    yylval.texto = strdup(yytext);
+    return DIVIDIR;
+}
+
+(?i:multiplicação) {
+    if (DEBUG_LEX) printf("TOKEN: MULTIPLICAÇÃO\n");
+    yylval.texto = strdup(yytext);
+    return MULTIPLICAR;
+}
 (?i:mais) {
     if (DEBUG_LEX) printf("TOKEN: SOMAR\n");
     yylval.texto = strdup(yytext);
@@ -119,8 +164,9 @@
     return FECHA_PARENTESES;
 }
 
-[0-9]+\.[0-9]+ {
+[0-9]+ {
     if (DEBUG_LEX) printf("TOKEN: NUMERO (%s)\n", yytext);
+    yylval.texto = strdup(yytext);
     return NUMERO;
 }
 

@@ -30,6 +30,8 @@
         free(a);
         return res;
     }
+
+    char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
 %}
 
 %union {
@@ -41,11 +43,11 @@
 %token <texto> SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH
+%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos
+%nterm <inteiro> adjetivos valor expressao
 %%
 
 /* Regras da gramática */
@@ -78,10 +80,14 @@ texto:
 palavra:
     TOKEN { $$ = strdup($1); }
     | ADJETIVO_POSITIVO { $$ = strdup($1); }
+    | ADJETIVO_NEGATIVO { $$ = strdup($1); }
+    | ARTIGO { $$ = strdup($1); }
+    | ENTRE { $$ = strdup($1); }
     | SOMAR { $$ = strdup($1); }
     | ENTRAM { $$ = strdup($1); }
     | SAEM { $$ = strdup($1); }
     | TODOS { $$ = strdup($1); }
+    | E { $$ = strdup($1); }
     ;
 
 adjetivos:
@@ -107,6 +113,9 @@ adjetivos:
         $$ = $1 - 1;
     }
     | adjetivos TOKEN {
+        $$ = $1;
+    }
+    | adjetivos ENTRE {
         $$ = $1;
     }
 
@@ -136,6 +145,47 @@ alteracaoElenco:
         } else {
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
+    }
+
+valor:
+    NUMERO {
+        if (DEBUG_BISON) {
+            printf("Valor numérico: %d\n", atoi($1));
+        }
+        $$ = atoi($1);
+    }
+    | ARTIGO texto {
+        if (DEBUG_BISON) {
+            printf("Valor entre parênteses: %s\n", $2);
+        }
+        $$ = get_int_value($2);
+    }
+    | TU MESMO { 
+        if (DEBUG_BISON) {
+            printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
+        }
+        if (personagemDialogo == NULL) {
+            yyerror("Variável 'tu mesmo' não definida");
+            $$ = 0; // Valor padrão
+        } else {
+            $$ = get_int_value(personagemDialogo);
+        }
+    }
+    | texto {
+        if (DEBUG_BISON) {
+            printf("Valor de texto: %s\n", $1);
+        }
+        $$ = get_int_value($1); //O texto todo é uma variável
+    }
+
+
+
+expressao:
+    ARTIGO SOMAR ENTRE valor E valor {
+        if (DEBUG_BISON) {
+            printf("Expressão de soma: %s\n", $2);
+        }
+        $$ = $4 + $6; // Exemplo de operação
     }
 
 dialogo:
@@ -197,6 +247,20 @@ dialogo:
         }
         $$ = $1;
     }
+    | inicioDialogo texto VIRGULA TU EH {
+        personagemDialogo = $2;
+    } expressao FIM{
+        if (DEBUG_BISON) {
+            printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
+        }
+        set_int_value(personagemDialogo, $7);
+        if (DEBUG_BISON) {
+            printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+        }
+        free(personagemDialogo);
+        personagemDialogo = NULL;
+    }
+
 
 inicioDialogo:   
     texto INICIO {

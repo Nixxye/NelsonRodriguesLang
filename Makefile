@@ -11,7 +11,9 @@ all: $(EXEC)
 
 # Gera o parser com bison (ativando warnings e debug)
 nr.tab.c nr.tab.h: $(YACCFILE)
-	bison -d -v -Wconflicts-sr -Wcounterexamples $(YACCFILE)
+	bison -d -v $(YACCFILE)
+# bison -d -v -Wconflicts-sr -Wcounterexamples $(YACCFILE)
+
 
 # Gera o lexer com flex
 lex.yy.c: $(LEXFILE) nr.tab.h

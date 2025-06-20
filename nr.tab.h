@@ -73,15 +73,19 @@ extern int yydebug;
     FECHA_COLCHETES = 268,         /* FECHA_COLCHETES  */
     ABRE_PARENTESES = 269,         /* ABRE_PARENTESES  */
     FECHA_PARENTESES = 270,        /* FECHA_PARENTESES  */
-    NUMERO = 271,                  /* NUMERO  */
-    VIRGULA = 272,                 /* VIRGULA  */
-    TOKEN = 273,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 274,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 275,       /* ADJETIVO_NEGATIVO  */
-    TU = 276,                      /* TU  */
-    EH = 277,                      /* EH  */
-    ATO = 278,                     /* ATO  */
-    CENA = 279                     /* CENA  */
+    VIRGULA = 271,                 /* VIRGULA  */
+    TOKEN = 272,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 273,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 274,       /* ADJETIVO_NEGATIVO  */
+    TU = 275,                      /* TU  */
+    EH = 276,                      /* EH  */
+    E = 277,                       /* E  */
+    ENTRE = 278,                   /* ENTRE  */
+    ARTIGO = 279,                  /* ARTIGO  */
+    MESMO = 280,                   /* MESMO  */
+    NUMERO = 281,                  /* NUMERO  */
+    ATO = 282,                     /* ATO  */
+    CENA = 283                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -90,12 +94,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 35 "nr.y"
+#line 37 "nr.y"
 
     char* texto;
     int inteiro;
 
-#line 99 "nr.tab.h"
+#line 103 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
