@@ -68,5 +68,7 @@ int get_bool_value(const char *name);
 char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);
+char* trim(char* str);
+char* concatena(char* a, char* b);
 
 #endif // TABLE_H

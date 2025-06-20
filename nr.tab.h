@@ -99,7 +99,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 40 "nr.y"
+#line 31 "nr.y"
 
     char* texto;
     int inteiro;

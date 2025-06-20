@@ -25,15 +25,6 @@
 
     int DEBUG_BISON = 1;
     // Funções auxiliares
-    char* concatena(char* a, char* b) {
-        size_t len = strlen(a) + strlen(b) + 2;
-        char* res = (char *) malloc(len);
-        snprintf(res, len, "%s %s", a, b);
-        // free(a);
-        return res;
-        // ajustar os free onde usa concatena
-    }
-
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
 %}
 
@@ -52,7 +43,6 @@
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
 %nterm <inteiro> adjetivos valor expressao 
 
-%left NUMERO
 %%
 
 /* Regras da gramática */
@@ -110,13 +100,13 @@ concatenarCenario:
     }
 
 substituiCenario:
-    SUBSTITUIR_CENARIO texto POR texto NO_CENARIO {
+    SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM{
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
             if (valorCenario == NULL) {
                 yyerror("Nenhum cenário atual definido");
             } else {
-                char* novoValorCenario = substituir_ocorrencias(cenarioAtual, $2, $4);
+                char* novoValorCenario = substituir_ocorrencias(valorCenario, $2, $4);
                 set_string_value(cenarioAtual, novoValorCenario);
                 printf("Novo cenário: %s\n", get_string_value(cenarioAtual));
             }
@@ -155,6 +145,9 @@ palavra:
     | SAEM { $$ = strdup($1); }
     | TODOS { $$ = strdup($1); }
     | E { $$ = strdup($1); }
+    | SUBSTITUIR_CENARIO { $$ = strdup($1); }
+    | POR { $$ = strdup($1); }
+    | NO_CENARIO { $$ = strdup($1); }
     ;
 
 adjetivos:
@@ -336,7 +329,7 @@ dialogo:
     }
     | inicioDialogo texto VIRGULA TU EH {
         personagemDialogo = $2;
-    } expressao FIM{
+    } expressao FIM {
         if (DEBUG_BISON) {
             printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
         }

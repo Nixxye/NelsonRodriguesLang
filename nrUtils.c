@@ -330,3 +330,27 @@ char* substituir_ocorrencias(const char* original, const char* alvo, const char*
     *dest = '\0';
     return resultado;
 }
+
+char* trim(char* str) {
+    // Remove espaços do início
+    while (*str == ' ' || *str == '\t'|| *str == '\r') str++;
+
+    // Remove espaços do fim
+    char* end = str + strlen(str) - 1;
+    while (end > str && *end == ' ') {
+        *end = '\0';
+        end--;
+    }
+
+    return str;
+}
+char* concatena(char* a, char* b) {
+    char* a_trim = trim(a);
+    char* b_trim = trim(b);
+    size_t len = strlen(a) + strlen(b) + 2;
+    char* res = (char *) malloc(len);
+    snprintf(res, len, "%s %s", a, b);
+    // free(a);
+    return res;
+    // ajustar os free onde usa concatena
+}

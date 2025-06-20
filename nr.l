@@ -55,19 +55,19 @@
     return ADICIONAR_CENARIO;
 }
 
-(?:substitua) {
+[Ss][Uu][Bb][Ss][Tt][Ii][Tt][Uu][Aa] {
     if (DEBUG_LEX) printf("TOKEN: SUBSTITUIR_CENARIO\n");
     yylval.texto = strdup(yytext);
     return SUBSTITUIR_CENARIO;
 }
 
-(?i:por) {
+[Pp][Oo][Rr] {
     if (DEBUG_LEX) printf("TOKEN: POR\n");
     yylval.texto = strdup(yytext);
     return POR;
 }
 
-(?:no)" "(?i:cenário) {
+[Nn][Oo][ ][Cc][Ee][Nn][Aa][Rr][Ii][Oo] {
     if (DEBUG_LEX) printf("TOKEN: NO_CENARIO\n");
     yylval.texto = strdup(yytext);
     return NO_CENARIO;

@@ -26,18 +26,3 @@ int romano_para_inteiro(const char *romano) {
     }
     return valor;
 }
-
-char* trim(char* str) {
-    // Remove espaços do início
-    while (*str == ' ' || *str == '\t'|| *str == '\r') str++;
-
-    // Remove espaços do fim
-    char* end = str + strlen(str) - 1;
-    while (end > str && *end == ' ') {
-        *end = '\0';
-        end--;
-    }
-
-    return str;
-}
-
