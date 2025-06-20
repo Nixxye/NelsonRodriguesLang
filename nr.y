@@ -41,7 +41,7 @@
 %token <texto> SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO TU EH
+%token <texto> NUMERO VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -88,6 +88,9 @@ adjetivos:
     ADJETIVO_POSITIVO { 
         $$ = 1;
     }
+    | ADJETIVO_NEGATIVO {
+        $$ = -1;
+    }
     | TOKEN {
         $$ = 0;
     }
@@ -96,6 +99,12 @@ adjetivos:
             printf("Adjetivo positivo concatenado: %s\n", $2);
         }
         $$ = $1 + 1;
+    }
+    | adjetivos ADJETIVO_NEGATIVO {
+        if (DEBUG_BISON) {
+            printf("Adjetivo negativo concatenado: %s\n", $2);
+        }
+        $$ = $1 - 1;
     }
     | adjetivos TOKEN {
         $$ = $1;

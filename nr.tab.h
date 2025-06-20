@@ -77,10 +77,11 @@ extern int yydebug;
     VIRGULA = 272,                 /* VIRGULA  */
     TOKEN = 273,                   /* TOKEN  */
     ADJETIVO_POSITIVO = 274,       /* ADJETIVO_POSITIVO  */
-    TU = 275,                      /* TU  */
-    EH = 276,                      /* EH  */
-    ATO = 277,                     /* ATO  */
-    CENA = 278                     /* CENA  */
+    ADJETIVO_NEGATIVO = 275,       /* ADJETIVO_NEGATIVO  */
+    TU = 276,                      /* TU  */
+    EH = 277,                      /* EH  */
+    ATO = 278,                     /* ATO  */
+    CENA = 279                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -94,7 +95,7 @@ union YYSTYPE
     char* texto;
     int inteiro;
 
-#line 98 "nr.tab.h"
+#line 99 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -21,7 +21,6 @@
     int numero = romano_para_inteiro(romano);
     if (DEBUG_LEX) printf("TOKEN: ATO (%s)\n", yytext);
     yylval.inteiro = numero;
-    yylval.texto = strdup(yytext);
     return ATO;
 }
 
@@ -31,7 +30,6 @@
     int numero = romano_para_inteiro(romano);
     if (DEBUG_LEX) printf("TOKEN: CENA (%s)\n", yytext);
     yylval.inteiro = numero;
-    yylval.texto = strdup(yytext);
     return CENA;
 }
 (?i:tu)|(?i:você) {
@@ -131,7 +129,11 @@
     yylval.texto = strdup(yytext);
     return ADJETIVO_POSITIVO;
 }
-
+(?i:podre)(?i:canalha) {
+    if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
+    yylval.texto = strdup(yytext);
+    return ADJETIVO_NEGATIVO;
+}
 [A-Za-z]+ {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
     yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
