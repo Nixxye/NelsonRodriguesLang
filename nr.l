@@ -175,7 +175,7 @@
     yylval.texto = strdup(yytext);
     return ADJETIVO_POSITIVO;
 }
-(?i:podre)(?i:canalha) {
+(?i:podre)|(?i:canalha) {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ADJETIVO_NEGATIVO;

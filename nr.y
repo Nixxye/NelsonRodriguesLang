@@ -47,7 +47,9 @@
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos valor expressao
+%nterm <inteiro> adjetivos valor expressao 
+
+%left NUMERO
 %%
 
 /* Regras da gramática */
@@ -67,6 +69,12 @@ bloco:
 texto:
     palavra { 
         $$ = strdup($1);
+    }
+    | texto NUMERO {
+        // if (DEBUG_BISON) {
+        //     printf("Concatenando: %s + %s\n", $1, $2);
+        // }
+        $$ = concatena($1, $2);
     }
     | texto palavra {
         // if (DEBUG_BISON) {
@@ -148,18 +156,12 @@ alteracaoElenco:
     }
 
 valor:
-    NUMERO {
+    NUMERO  {
         if (DEBUG_BISON) {
             printf("Valor numérico: %d\n", atoi($1));
         }
         $$ = atoi($1);
-    }
-    | ARTIGO texto {
-        if (DEBUG_BISON) {
-            printf("Valor entre parênteses: %s\n", $2);
-        }
-        $$ = get_int_value($2);
-    }
+    } 
     | TU MESMO { 
         if (DEBUG_BISON) {
             printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
@@ -173,7 +175,7 @@ valor:
     }
     | texto {
         if (DEBUG_BISON) {
-            printf("Valor de texto: %s\n", $1);
+            printf("Valor de texto: %d\n", get_int_value($1));
         }
         $$ = get_int_value($1); //O texto todo é uma variável
     }
@@ -186,6 +188,29 @@ expressao:
             printf("Expressão de soma: %s\n", $2);
         }
         $$ = $4 + $6; // Exemplo de operação
+    }
+    | ARTIGO SUBTRAIR ENTRE valor E valor {
+        if (DEBUG_BISON) {
+            printf("Expressão de subtração: %s\n", $2);
+        }
+        $$ = $4 - $6;
+    }
+    | ARTIGO MULTIPLICAR ENTRE valor E valor {
+        if (DEBUG_BISON) {
+            printf("Expressão de multiplicação: %s\n", $2);
+        }
+        $$ = $4 * $6;
+    }
+    | ARTIGO DIVIDIR ENTRE valor E valor {
+        if (DEBUG_BISON) {
+            printf("Expressão de divisão: %s\n", $2);
+        }
+        if ($6 == 0) {
+            yyerror("Divisão por zero");
+            $$ = 0; // Valor padrão em caso de erro
+        } else {
+            $$ = $4 / $6;
+        }
     }
 
 dialogo:

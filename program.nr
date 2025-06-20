@@ -8,7 +8,7 @@ ATO I: Onde o filho chora e a mae nao ve.
 		[Entra Jose Dirceu e Maria Roberta] 
 		Jose Dirceu: Maria Roberta, você é doce como um pudim de padaria numa tarde de domingo! # Maria += 2 #
 		Maria: Jose Dirceu, tu és podre como um canalha sem vergonha na cara! # Jose -= 3 # 
-		Jose Dirceu: Maria Roberta, tu és a soma de tu mesma e 2!
+		Jose Dirceu: Maria Roberta, tu és a soma de tu mesma e Jose Dirceu!
 		Maria: Voce e mais doce do que 5 sonhos de padaria! # Se houver um numero, os adjetivos sao ignorados e substituidos por ele #
 	[Sai Jose Dirceu]
 	[Todos saem]
