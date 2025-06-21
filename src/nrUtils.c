@@ -396,3 +396,32 @@ void gerar_print_string(const char *nome) {
     // Chamada para printf
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
 }
+
+void gerar_print_int(const char *nome) {
+    // Obtém símbolo da variável
+    Symbol *sym = get_symbol(nome);
+    if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável inteira '%s' inválida ou não declarada\n", nome);
+        return;
+    }
+
+    // Declara printf (se ainda não foi)
+    LLVMTypeRef printf_type = LLVMFunctionType(
+        LLVMInt32TypeInContext(contexto),
+        (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8TypeInContext(contexto), 0) },
+        1,  // 1 argumento fixo (formato)
+        1   // é varargs
+    );
+    LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
+    if (!printf_func)
+        printf_func = LLVMAddFunction(modulo, "printf", printf_type);
+
+    // Cria string global para formato "%d\n"
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%d\n", "fmt");
+
+    // Carrega o valor inteiro da variável
+    LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMInt32TypeInContext(contexto), sym->llvm_ref, "tmpint");
+
+    // Chamada para printf
+    LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
+}

@@ -65,6 +65,7 @@ char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
 Symbol* get_symbol(const char *name);
 void gerar_print_string(const char *nome);
+void gerar_print_int(const char *nome);
 
 // Funções utilitárias de manipulação de strings
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);

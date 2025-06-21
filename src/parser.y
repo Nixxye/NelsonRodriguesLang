@@ -24,7 +24,7 @@
 
     char *cenarioAtual = NULL;
 
-    int DEBUG_BISON = 1;
+    int DEBUG_BISON = 0;
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
@@ -40,7 +40,7 @@
 %token <texto> MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO
+%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -63,7 +63,7 @@ bloco:
     | concatenarCenario
     | substituiCenario
     | alteracaoElenco
-    | if_sentenca {printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA %d\n", $1);}
+    | if_sentenca
     ;
 
 
@@ -112,7 +112,9 @@ substituiCenario:
             } else {
                 char* novoValorCenario = substituir_ocorrencias(valorCenario, $2, $4);
                 set_string_value(cenarioAtual, novoValorCenario);
-                printf("Novo cenário: %s\n", get_string_value(cenarioAtual));
+                if (DEBUG_BISON) {
+                    printf("Novo cenário: %s\n", get_string_value(cenarioAtual));
+                }
             }
         } else {
             yyerror("Substituição de cenário fora de contexto");
@@ -188,13 +190,14 @@ adjetivos:
 
 declaracao:
     declaracaoInicio texto FIM {
-        printf("Declaração: %s\n", $1);
+        if (DEBUG_BISON) {
+            printf("Declaração: %s\n", $2);
+        }
     }
 
 declaracaoInicio:
     texto VIRGULA {
         if (estado == E_DECLARACOES) {
-            printf("Início da declaração\n");
             if (DEBUG_BISON) {
                 printf("Criando variável: %s\n", $1);
             }
@@ -206,9 +209,13 @@ declaracaoInicio:
 alteracaoElenco:
     ABRE_COLCHETES texto FECHA_COLCHETES {
         if (estado == E_CENA) {
-            printf("Alteração de elenco: %s\n", $2);
+            if (DEBUG_BISON) {
+                printf("Alteração de elenco: %s\n", $2);
+            }
         } if (estado == E_DIALOGO) {
-            printf("Alteração de elenco: %s\n", $2);
+            if (DEBUG_BISON) {
+                printf("Alteração de elenco: %s\n", $2);
+            }
         } else {
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
@@ -326,42 +333,47 @@ dialogo:
 
     }
     | inicioDialogo texto FIM {
-        printf("Diálogo: %s\n", $2);
-        switch (estado) {
-            case E_TITULO:
-                printf("Título\n");
-                break;
-            case E_DECLARACOES:
-                printf("Declarações\n");
-                break;
-            case E_DIALOGO:
-                printf("Diálogo\n");
-                break;
-            case E_CENA:
-                printf("Cena\n");
-                break;
-            case E_ATO:
-                printf("Ato\n");
-                break;
-            default:
-                yyerror("Estado desconhecido no diálogo\n");
-                break;
+        if (DEBUG_BISON) {
+            printf("Diálogo: %s\n", $2);
+            switch (estado) {
+                case E_TITULO:
+                    printf("Título\n");
+                    break;
+                case E_DECLARACOES:
+                    printf("Declarações\n");
+                    break;
+                case E_DIALOGO:
+                    printf("Diálogo\n");
+                    break;
+                case E_CENA:
+                    printf("Cena\n");
+                    break;
+                case E_ATO:
+                    printf("Ato\n");
+                    break;
+                default:
+                    yyerror("Estado desconhecido no diálogo\n");
+                    break;
+            }
         }
+
     }
     // Precisa ser mais importante do que texto com vírgula
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         switch (estado) {
             case E_TITULO:
-                printf("Título com vírgula: %s\n", $3);
+                if (DEBUG_BISON) {
+                    printf("Título com vírgula: %s\n", $3);
+                }
                 break;
             case E_DECLARACOES:
-                printf("Declarações com vírgula: %s\n", $3);
+                if (DEBUG_BISON) {
+                    printf("Declarações com vírgula: %s\n", $3);
+                }
                 break;
             case E_DIALOGO:
-                printf("Diálogo com vírgula: %s\n", $2);
                 if (DEBUG_BISON) {
-                    // printf("Tabela de símbolos:\n");
-                    // print_symbols();
+                    printf("Diálogo com vírgula: %s\n", $2);
                     printf("Alterando variável: %s\n", $2);
                     printf("    Valor atual: %d\n", get_int_value($2));
                 }
@@ -396,39 +408,63 @@ dialogo:
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
+    | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM {
+        if (DEBUG_BISON) {
+            if (get_int_value($2) == -1) {
+                yyerror("Variável não definida");
+            } else {
+                printf("Valor de %s: %d\n", $2, get_int_value($2));
+            }
+        }
+        gerar_print_int($2);
+    }
 
 
 inicioDialogo:   
     texto INICIO {
         personagemQueFala = $1;
         if (estado == E_TITULO) {
-            printf("Título: %s\n", $1);
+            if (DEBUG_BISON) {
+                printf("Título: %s\n", $1);
+            }
             estado = E_DECLARACOES;
         } 
         else if (estado == E_DIALOGO) {
-            printf("Apenas um texto\n");
+            if (DEBUG_BISON) {
+                printf("Apenas um texto\n");
+            }    
         } else if (estado == E_CENA) {
-            printf("Início do diálogo: %s\n", $1);
+            if (DEBUG_BISON) {
+                printf("Início do diálogo: %s\n", $1);
+            }
             estado = E_DIALOGO;
-        } else {            
-            yyerror("Diálogo fora de contexto\n");
+        } else {     
+            if (DEBUG_BISON) {
+                yyerror("Diálogo fora de contexto\n");
+            }        
         }
     }
 
 ato: 
     ATO {
         if (estado == E_DECLARACOES) {
-            printf("Ato: %d\n", $1);
+            if (DEBUG_BISON) {
+                printf("Ato: %d\n", $1);
+            }
             estado = E_ATO;
         } else if (estado != E_ATO) {
-            yyerror("Ato fora de contexto");
+            if (DEBUG_BISON) {
+                yyerror("Ato fora de contexto");
+            }
         }
     }
 
 cena: 
     CENA {
         if (estado == E_ATO) {
-            printf("Cena: %d\n", $1);
+            if (DEBUG_BISON) {
+                printf("Cena: %d\n", $1);
+            }
             estado = E_CENA;
         } else if (estado == E_CENA) {
             // faz algo

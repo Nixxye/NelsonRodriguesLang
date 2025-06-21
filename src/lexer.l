@@ -208,6 +208,11 @@
     return MENOR;
 }
 
+(?i:abre)[ ](?i:teu)[ ](?i:coracao)[ ](?i:mizeravel) {
+    if (DEBUG_LEX) printf("TOKEN: ABRE_TEU_CORACAO\n");
+    yylval.texto = strdup(yytext);
+    return MOSTRA_VALOR;
+}
 [Ii][Gg][Uu][Aa][Ll][ \t]+[Qq][Uu][Ee] {
     //igual que
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
