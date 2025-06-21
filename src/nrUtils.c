@@ -425,3 +425,53 @@ void gerar_print_int(const char *nome) {
     // Chamada para printf
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
 }
+
+void gerar_leitura_inteiro(const char *nome) {
+    Symbol *sym = get_symbol(nome);
+    if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável inteira '%s' inválida ou não declarada\n", nome);
+        return;
+    }
+
+    // printf("Digite valor de <nome>: ");
+    LLVMTypeRef printf_type = LLVMFunctionType(
+        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+    LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
+    if (!printf_func)
+        printf_func = LLVMAddFunction(modulo, "printf", printf_type);
+
+    char msg[256];
+    snprintf(msg, sizeof(msg), "Digite valor de %s: ", nome);
+    LLVMValueRef prompt = LLVMBuildGlobalStringPtr(builder, msg, "prompt");
+    LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ prompt }, 1, "");
+
+    // scanf("%d", &var)
+    LLVMTypeRef scanf_type = LLVMFunctionType(
+        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+    LLVMValueRef scanf_func = LLVMGetNamedFunction(modulo, "scanf");
+    if (!scanf_func)
+        scanf_func = LLVMAddFunction(modulo, "scanf", scanf_type);
+
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%d", "fmt");
+    LLVMValueRef result = LLVMBuildCall2(builder, scanf_type, scanf_func,
+                                         (LLVMValueRef[]){ fmt, sym->llvm_ref }, 2, "res_scanf");
+
+    // if (result != 1)
+    LLVMValueRef cond = LLVMBuildICmp(builder, LLVMIntNE,
+                                      result, LLVMConstInt(LLVMInt32Type(), 1, 0),
+                                      "scanf_failed");
+
+    LLVMBasicBlockRef okBlock = LLVMAppendBasicBlock(funcao_main, "ok");
+    LLVMBasicBlockRef errBlock = LLVMAppendBasicBlock(funcao_main, "erro");
+
+    LLVMBuildCondBr(builder, cond, errBlock, okBlock);
+
+    // erro:
+    LLVMPositionBuilderAtEnd(builder, errBlock);
+    LLVMValueRef errMsg = LLVMBuildGlobalStringPtr(builder, "Erro: valor inválido (esperado inteiro)\n", "errmsg");
+    LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ errMsg }, 1, "");
+    LLVMBuildBr(builder, okBlock);
+
+    // ok:
+    LLVMPositionBuilderAtEnd(builder, okBlock);
+}

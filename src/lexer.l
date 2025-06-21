@@ -209,10 +209,16 @@
 }
 
 (?i:abre)[ ](?i:teu)[ ](?i:coracao)[ ](?i:mizeravel) {
-    if (DEBUG_LEX) printf("TOKEN: ABRE_TEU_CORACAO\n");
+    if (DEBUG_LEX) printf("TOKEN: MOSTRA_VALOR\n");
     yylval.texto = strdup(yytext);
     return MOSTRA_VALOR;
 }
+(?i:escuta)[ ](?i:teu)[ ](?i:coracao)[ ](?i:mizeravel) {
+    if (DEBUG_LEX) printf("TOKEN: LE_VALOR\n");
+    yylval.texto = strdup(yytext);
+    return LE_VALOR;
+}
+
 [Ii][Gg][Uu][Aa][Ll][ \t]+[Qq][Uu][Ee] {
     //igual que
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
