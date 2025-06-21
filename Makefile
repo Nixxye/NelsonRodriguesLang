@@ -1,6 +1,6 @@
 # Nome do executável
 EXEC = nrparser
-LLVM_EXEC = llvm_exec
+LLVM_EXEC = executavel
 
 # Diretórios
 SRC_DIR = src
