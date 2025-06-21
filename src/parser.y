@@ -1,8 +1,8 @@
 %debug
 
 %code requires {
-  #include "table.h"
-  #include "LLVMgen.h"
+  #include "../include/nrUtils.h"
+  #include "../include/LLVMgen.h"
 }
 
 %{

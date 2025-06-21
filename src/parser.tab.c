@@ -67,7 +67,7 @@
 
 
 /* First part of user prologue.  */
-#line 8 "nr.y"
+#line 8 "src/parser.y"
 
     #include <stdio.h>
     #include <stdlib.h>
@@ -91,7 +91,7 @@
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
 
-#line 95 "nr.tab.c"
+#line 95 "src/parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -114,7 +114,7 @@
 #  endif
 # endif
 
-#include "nr.tab.h"
+#include "parser.tab.h"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -1258,7 +1258,7 @@ yyreduce:
   switch (yyn)
     {
   case 12: /* declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES  */
-#line 70 "nr.y"
+#line 70 "src/parser.y"
                                                          {
         if (estado == E_DECLARACOES) {
             add_symbol((yyvsp[-3].texto), STRING_VAR);
@@ -1271,11 +1271,11 @@ yyreduce:
             yyerror("Declaração de cenário fora de contexto");
         }
     }
-#line 1275 "nr.tab.c"
+#line 1275 "src/parser.tab.c"
     break;
 
   case 13: /* concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM  */
-#line 84 "nr.y"
+#line 84 "src/parser.y"
                                        {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1294,11 +1294,11 @@ yyreduce:
             yyerror("Adição de cenário fora de contexto");
         }
     }
-#line 1298 "nr.tab.c"
+#line 1298 "src/parser.tab.c"
     break;
 
   case 14: /* substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM  */
-#line 104 "nr.y"
+#line 104 "src/parser.y"
                                                      {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1313,189 +1313,189 @@ yyreduce:
             yyerror("Substituição de cenário fora de contexto");
         }
     }
-#line 1317 "nr.tab.c"
+#line 1317 "src/parser.tab.c"
     break;
 
   case 15: /* texto: palavra  */
-#line 120 "nr.y"
+#line 120 "src/parser.y"
             { 
         (yyval.texto) = strdup((yyvsp[0].texto));
     }
-#line 1325 "nr.tab.c"
+#line 1325 "src/parser.tab.c"
     break;
 
   case 16: /* texto: texto NUMERO  */
-#line 123 "nr.y"
+#line 123 "src/parser.y"
                    {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
         // }
         (yyval.texto) = concatena((yyvsp[-1].texto), (yyvsp[0].texto));
     }
-#line 1336 "nr.tab.c"
+#line 1336 "src/parser.tab.c"
     break;
 
   case 17: /* texto: texto palavra  */
-#line 129 "nr.y"
+#line 129 "src/parser.y"
                     {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
         // }
         (yyval.texto) = concatena((yyvsp[-1].texto), (yyvsp[0].texto));
     }
-#line 1347 "nr.tab.c"
+#line 1347 "src/parser.tab.c"
     break;
 
   case 18: /* palavra: TOKEN  */
-#line 139 "nr.y"
+#line 139 "src/parser.y"
           { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1353 "nr.tab.c"
+#line 1353 "src/parser.tab.c"
     break;
 
   case 19: /* palavra: ADJETIVO_POSITIVO  */
-#line 140 "nr.y"
+#line 140 "src/parser.y"
                         { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1359 "nr.tab.c"
+#line 1359 "src/parser.tab.c"
     break;
 
   case 20: /* palavra: ADJETIVO_NEGATIVO  */
-#line 141 "nr.y"
+#line 141 "src/parser.y"
                         { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1365 "nr.tab.c"
+#line 1365 "src/parser.tab.c"
     break;
 
   case 21: /* palavra: ARTIGO  */
-#line 142 "nr.y"
+#line 142 "src/parser.y"
              { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1371 "nr.tab.c"
+#line 1371 "src/parser.tab.c"
     break;
 
   case 22: /* palavra: ENTRE  */
-#line 143 "nr.y"
+#line 143 "src/parser.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1377 "nr.tab.c"
+#line 1377 "src/parser.tab.c"
     break;
 
   case 23: /* palavra: SOMAR  */
-#line 144 "nr.y"
+#line 144 "src/parser.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1383 "nr.tab.c"
+#line 1383 "src/parser.tab.c"
     break;
 
   case 24: /* palavra: ENTRAM  */
-#line 145 "nr.y"
+#line 145 "src/parser.y"
              { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1389 "nr.tab.c"
+#line 1389 "src/parser.tab.c"
     break;
 
   case 25: /* palavra: SAEM  */
-#line 146 "nr.y"
+#line 146 "src/parser.y"
            { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1395 "nr.tab.c"
+#line 1395 "src/parser.tab.c"
     break;
 
   case 26: /* palavra: TODOS  */
-#line 147 "nr.y"
+#line 147 "src/parser.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1401 "nr.tab.c"
+#line 1401 "src/parser.tab.c"
     break;
 
   case 27: /* palavra: E  */
-#line 148 "nr.y"
+#line 148 "src/parser.y"
         { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1407 "nr.tab.c"
+#line 1407 "src/parser.tab.c"
     break;
 
   case 28: /* palavra: SUBSTITUIR_CENARIO  */
-#line 149 "nr.y"
+#line 149 "src/parser.y"
                          { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1413 "nr.tab.c"
+#line 1413 "src/parser.tab.c"
     break;
 
   case 29: /* palavra: POR  */
-#line 150 "nr.y"
+#line 150 "src/parser.y"
           { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1419 "nr.tab.c"
+#line 1419 "src/parser.tab.c"
     break;
 
   case 30: /* palavra: NO_CENARIO  */
-#line 151 "nr.y"
+#line 151 "src/parser.y"
                  { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1425 "nr.tab.c"
+#line 1425 "src/parser.tab.c"
     break;
 
   case 31: /* adjetivos: ADJETIVO_POSITIVO  */
-#line 155 "nr.y"
+#line 155 "src/parser.y"
                       { 
         (yyval.inteiro) = 1;
     }
-#line 1433 "nr.tab.c"
+#line 1433 "src/parser.tab.c"
     break;
 
   case 32: /* adjetivos: ADJETIVO_NEGATIVO  */
-#line 158 "nr.y"
+#line 158 "src/parser.y"
                         {
         (yyval.inteiro) = -1;
     }
-#line 1441 "nr.tab.c"
+#line 1441 "src/parser.tab.c"
     break;
 
   case 33: /* adjetivos: TOKEN  */
-#line 161 "nr.y"
+#line 161 "src/parser.y"
             {
         (yyval.inteiro) = 0;
     }
-#line 1449 "nr.tab.c"
+#line 1449 "src/parser.tab.c"
     break;
 
   case 34: /* adjetivos: adjetivos ADJETIVO_POSITIVO  */
-#line 164 "nr.y"
+#line 164 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", (yyvsp[0].texto));
         }
         (yyval.inteiro) = (yyvsp[-1].inteiro) + 1;
     }
-#line 1460 "nr.tab.c"
+#line 1460 "src/parser.tab.c"
     break;
 
   case 35: /* adjetivos: adjetivos ADJETIVO_NEGATIVO  */
-#line 170 "nr.y"
+#line 170 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo negativo concatenado: %s\n", (yyvsp[0].texto));
         }
         (yyval.inteiro) = (yyvsp[-1].inteiro) - 1;
     }
-#line 1471 "nr.tab.c"
+#line 1471 "src/parser.tab.c"
     break;
 
   case 36: /* adjetivos: adjetivos TOKEN  */
-#line 176 "nr.y"
+#line 176 "src/parser.y"
                       {
         (yyval.inteiro) = (yyvsp[-1].inteiro);
     }
-#line 1479 "nr.tab.c"
+#line 1479 "src/parser.tab.c"
     break;
 
   case 37: /* adjetivos: adjetivos ENTRE  */
-#line 179 "nr.y"
+#line 179 "src/parser.y"
                       {
         (yyval.inteiro) = (yyvsp[-1].inteiro);
     }
-#line 1487 "nr.tab.c"
+#line 1487 "src/parser.tab.c"
     break;
 
   case 38: /* declaracao: declaracaoInicio texto FIM  */
-#line 184 "nr.y"
+#line 184 "src/parser.y"
                                {
         printf("Declaração: %s\n", (yyvsp[-2].texto));
     }
-#line 1495 "nr.tab.c"
+#line 1495 "src/parser.tab.c"
     break;
 
   case 39: /* declaracaoInicio: texto VIRGULA  */
-#line 189 "nr.y"
+#line 189 "src/parser.y"
                   {
         if (estado == E_DECLARACOES) {
             printf("Início da declaração\n");
@@ -1506,11 +1506,11 @@ yyreduce:
         }
         (yyval.texto) = (yyvsp[-1].texto);
     }
-#line 1510 "nr.tab.c"
+#line 1510 "src/parser.tab.c"
     break;
 
   case 40: /* alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES  */
-#line 201 "nr.y"
+#line 201 "src/parser.y"
                                          {
         if (estado == E_CENA) {
             printf("Alteração de elenco: %s\n", (yyvsp[-1].texto));
@@ -1520,22 +1520,22 @@ yyreduce:
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
     }
-#line 1524 "nr.tab.c"
+#line 1524 "src/parser.tab.c"
     break;
 
   case 41: /* valor: NUMERO  */
-#line 212 "nr.y"
+#line 212 "src/parser.y"
             {
         if (DEBUG_BISON) {
             printf("Valor numérico: %d\n", atoi((yyvsp[0].texto)));
         }
         (yyval.inteiro) = atoi((yyvsp[0].texto));
     }
-#line 1535 "nr.tab.c"
+#line 1535 "src/parser.tab.c"
     break;
 
   case 42: /* valor: TU MESMO  */
-#line 218 "nr.y"
+#line 218 "src/parser.y"
                { 
         if (DEBUG_BISON) {
             printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
@@ -1547,55 +1547,55 @@ yyreduce:
             (yyval.inteiro) = get_int_value(personagemDialogo);
         }
     }
-#line 1551 "nr.tab.c"
+#line 1551 "src/parser.tab.c"
     break;
 
   case 43: /* valor: texto  */
-#line 229 "nr.y"
+#line 229 "src/parser.y"
             {
         if (DEBUG_BISON) {
             printf("Valor de texto: %d\n", get_int_value((yyvsp[0].texto)));
         }
         (yyval.inteiro) = get_int_value((yyvsp[0].texto)); //O texto todo é uma variável
     }
-#line 1562 "nr.tab.c"
+#line 1562 "src/parser.tab.c"
     break;
 
   case 44: /* expressao: ARTIGO SOMAR ENTRE valor E valor  */
-#line 239 "nr.y"
+#line 239 "src/parser.y"
                                      {
         if (DEBUG_BISON) {
             printf("Expressão de soma: %s\n", (yyvsp[-4].texto));
         }
         (yyval.inteiro) = (yyvsp[-2].inteiro) + (yyvsp[0].inteiro); // Exemplo de operação
     }
-#line 1573 "nr.tab.c"
+#line 1573 "src/parser.tab.c"
     break;
 
   case 45: /* expressao: ARTIGO SUBTRAIR ENTRE valor E valor  */
-#line 245 "nr.y"
+#line 245 "src/parser.y"
                                           {
         if (DEBUG_BISON) {
             printf("Expressão de subtração: %s\n", (yyvsp[-4].texto));
         }
         (yyval.inteiro) = (yyvsp[-2].inteiro) - (yyvsp[0].inteiro);
     }
-#line 1584 "nr.tab.c"
+#line 1584 "src/parser.tab.c"
     break;
 
   case 46: /* expressao: ARTIGO MULTIPLICAR ENTRE valor E valor  */
-#line 251 "nr.y"
+#line 251 "src/parser.y"
                                              {
         if (DEBUG_BISON) {
             printf("Expressão de multiplicação: %s\n", (yyvsp[-4].texto));
         }
         (yyval.inteiro) = (yyvsp[-2].inteiro) * (yyvsp[0].inteiro);
     }
-#line 1595 "nr.tab.c"
+#line 1595 "src/parser.tab.c"
     break;
 
   case 47: /* expressao: ARTIGO DIVIDIR ENTRE valor E valor  */
-#line 257 "nr.y"
+#line 257 "src/parser.y"
                                          {
         if (DEBUG_BISON) {
             printf("Expressão de divisão: %s\n", (yyvsp[-4].texto));
@@ -1607,22 +1607,22 @@ yyreduce:
             (yyval.inteiro) = (yyvsp[-2].inteiro) / (yyvsp[0].inteiro);
         }
     }
-#line 1611 "nr.tab.c"
+#line 1611 "src/parser.tab.c"
     break;
 
   case 48: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
-#line 270 "nr.y"
+#line 270 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
         }
         gerar_print_string(cenarioAtual);
     }
-#line 1622 "nr.tab.c"
+#line 1622 "src/parser.tab.c"
     break;
 
   case 49: /* dialogo: inicioDialogo texto FIM  */
-#line 276 "nr.y"
+#line 276 "src/parser.y"
                               {
         printf("Diálogo: %s\n", (yyvsp[-1].texto));
         switch (estado) {
@@ -1646,11 +1646,11 @@ yyreduce:
                 break;
         }
     }
-#line 1650 "nr.tab.c"
+#line 1650 "src/parser.tab.c"
     break;
 
   case 50: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 300 "nr.y"
+#line 300 "src/parser.y"
                                                       {
         switch (estado) {
             case E_TITULO:
@@ -1685,19 +1685,19 @@ yyreduce:
         }
         (yyval.texto) = (yyvsp[-6].texto);
     }
-#line 1689 "nr.tab.c"
+#line 1689 "src/parser.tab.c"
     break;
 
   case 51: /* $@1: %empty  */
-#line 334 "nr.y"
+#line 334 "src/parser.y"
                                         {
         personagemDialogo = (yyvsp[-3].texto);
     }
-#line 1697 "nr.tab.c"
+#line 1697 "src/parser.tab.c"
     break;
 
   case 52: /* dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM  */
-#line 336 "nr.y"
+#line 336 "src/parser.y"
                     {
         if (DEBUG_BISON) {
             printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
@@ -1709,11 +1709,11 @@ yyreduce:
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
-#line 1713 "nr.tab.c"
+#line 1713 "src/parser.tab.c"
     break;
 
   case 53: /* inicioDialogo: texto INICIO  */
-#line 350 "nr.y"
+#line 350 "src/parser.y"
                  {
         if (estado == E_TITULO) {
             printf("Título: %s\n", (yyvsp[-1].texto));
@@ -1728,11 +1728,11 @@ yyreduce:
             yyerror("Diálogo fora de contexto\n");
         }
     }
-#line 1732 "nr.tab.c"
+#line 1732 "src/parser.tab.c"
     break;
 
   case 54: /* ato: ATO  */
-#line 366 "nr.y"
+#line 366 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             printf("Ato: %d\n", (yyvsp[0].inteiro));
@@ -1741,11 +1741,11 @@ yyreduce:
             yyerror("Ato fora de contexto");
         }
     }
-#line 1745 "nr.tab.c"
+#line 1745 "src/parser.tab.c"
     break;
 
   case 55: /* cena: CENA  */
-#line 376 "nr.y"
+#line 376 "src/parser.y"
          {
         if (estado == E_ATO) {
             printf("Cena: %d\n", (yyvsp[0].inteiro));
@@ -1756,11 +1756,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 1760 "nr.tab.c"
+#line 1760 "src/parser.tab.c"
     break;
 
 
-#line 1764 "nr.tab.c"
+#line 1764 "src/parser.tab.c"
 
       default: break;
     }
@@ -1953,7 +1953,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 388 "nr.y"
+#line 388 "src/parser.y"
 
 
 int main() {

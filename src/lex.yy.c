@@ -1,5 +1,6 @@
+#line 2 "src/lex.yy.c"
 
-#line 3 "lex.yy.c"
+#line 4 "src/lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -665,21 +666,45 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "nr.l"
-#line 2 "nr.l"
+#line 1 "src/lexer.l"
+#line 2 "src/lexer.l"
     #include <stdio.h>
     #include <string.h> 
-    #include "nrUtils.h"
-    #include "nr.tab.h"
-    // enum ESTADOS {
-    //     TITULO = 0,
-    //     ATO = 1,
-    //     CENA = 2,
-    // };
-    // int estado = 0;
+    #include "parser.tab.h"
+
     int DEBUG_LEX = 1;
-#line 682 "lex.yy.c"
-#line 683 "lex.yy.c"
+    
+    // Função auxiliar para converter números romanos para inteiros
+    int romano_para_inteiro(const char *romano) {
+        int valor = 0;
+        while (*romano) {
+            switch (*romano) {
+                case 'M': valor += 1000; break;
+                case 'D': valor += 500; break;
+                case 'C':
+                    if (*(romano + 1) == 'M') { valor += 900; romano++; }
+                    else if (*(romano + 1) == 'D') { valor += 400; romano++; }
+                    else valor += 100;
+                    break;
+                case 'L': valor += 50; break;
+                case 'X':
+                    if (*(romano + 1) == 'C') { valor += 90; romano++; }
+                    else if (*(romano + 1) == 'L') { valor += 40; romano++; }
+                    else valor += 10;
+                    break;
+                case 'V': valor += 5; break;
+                case 'I':
+                    if (*(romano + 1) == 'X') { valor += 9; romano++; }
+                    else if (*(romano + 1) == 'V') { valor += 4; romano++; }
+                    else valor += 1;
+                    break;
+            }
+            romano++;
+        }
+        return valor;
+    }
+#line 707 "src/lex.yy.c"
+#line 708 "src/lex.yy.c"
 
 #define INITIAL 0
 
@@ -899,9 +924,9 @@ YY_DECL
 		}
 
 	{
-#line 14 "nr.l"
+#line 38 "src/lexer.l"
 
-#line 905 "lex.yy.c"
+#line 930 "src/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -961,13 +986,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "nr.l"
+#line 39 "src/lexer.l"
 { // Comentário 
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "nr.l"
+#line 41 "src/lexer.l"
 {
     char romano[16];
     sscanf(yytext, "ATO %15[^:]", romano);
@@ -979,7 +1004,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "nr.l"
+#line 50 "src/lexer.l"
 {
     char romano[16];
     sscanf(yytext, "CENA %15[^:]", romano);
@@ -991,7 +1016,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 34 "nr.l"
+#line 58 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: E\n");
     yylval.texto = strdup(yytext);
@@ -1000,7 +1025,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 40 "nr.l"
+#line 64 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ARTIGO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1009,7 +1034,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "nr.l"
+#line 70 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ONDE_ESTAMOS\n");
     yylval.texto = strdup(yytext);
@@ -1018,7 +1043,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "nr.l"
+#line 76 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ADICIONAR_CENARIO\n");
     yylval.texto = strdup(yytext);
@@ -1027,7 +1052,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 58 "nr.l"
+#line 82 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SUBSTITUIR_CENARIO\n");
     yylval.texto = strdup(yytext);
@@ -1036,7 +1061,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 64 "nr.l"
+#line 88 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: POR\n");
     yylval.texto = strdup(yytext);
@@ -1045,7 +1070,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 70 "nr.l"
+#line 94 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: NO_CENARIO\n");
     yylval.texto = strdup(yytext);
@@ -1054,7 +1079,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 76 "nr.l"
+#line 100 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENTRE\n");
     yylval.texto = strdup(yytext);
@@ -1063,7 +1088,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 81 "nr.l"
+#line 105 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MESMO\n");
     yylval.texto = strdup(yytext);
@@ -1072,7 +1097,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 86 "nr.l"
+#line 110 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TU\n");
     yylval.texto = strdup(yytext);
@@ -1081,7 +1106,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 91 "nr.l"
+#line 115 "src/lexer.l"
 { // acentuação depois
     if (DEBUG_LEX) printf("TOKEN: É\n");
     yylval.texto = strdup(yytext);
@@ -1090,7 +1115,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 96 "nr.l"
+#line 120 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SAEM\n");
     yylval.texto = strdup(yytext);
@@ -1099,7 +1124,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 102 "nr.l"
+#line 126 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TODOS\n");
     yylval.texto = strdup(yytext);
@@ -1108,7 +1133,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 108 "nr.l"
+#line 132 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENTRAM\n");
     yylval.texto = strdup(yytext);
@@ -1117,7 +1142,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 114 "nr.l"
+#line 138 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: VIRGULA\n");
     return VIRGULA;
@@ -1125,7 +1150,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 118 "nr.l"
+#line 142 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SOMA\n");
     yylval.texto = strdup(yytext);
@@ -1134,7 +1159,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 124 "nr.l"
+#line 148 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SUBTRAÇÃO\n");
     yylval.texto = strdup(yytext);
@@ -1143,7 +1168,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 130 "nr.l"
+#line 154 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: DIVISÃO\n");
     yylval.texto = strdup(yytext);
@@ -1152,7 +1177,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 136 "nr.l"
+#line 160 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAÇÃO\n");
     yylval.texto = strdup(yytext);
@@ -1161,7 +1186,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 141 "nr.l"
+#line 165 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SOMAR\n");
     yylval.texto = strdup(yytext);
@@ -1170,7 +1195,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 147 "nr.l"
+#line 171 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SUBTRAIR\n");
     yylval.texto = strdup(yytext);
@@ -1179,7 +1204,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 153 "nr.l"
+#line 177 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);
@@ -1188,7 +1213,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 159 "nr.l"
+#line 183 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
     yylval.texto = strdup(yytext);
@@ -1197,7 +1222,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 165 "nr.l"
+#line 189 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: INICIO\n");
     return INICIO;
@@ -1205,7 +1230,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 170 "nr.l"
+#line 194 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FIM\n");
     return FIM;
@@ -1213,7 +1238,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 175 "nr.l"
+#line 199 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ABRE_COLCHETES\n");
     return ABRE_COLCHETES;
@@ -1221,7 +1246,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 180 "nr.l"
+#line 204 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FECHA_COLCHETES\n");
     return FECHA_COLCHETES;
@@ -1229,7 +1254,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 185 "nr.l"
+#line 209 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ABRE_PARENTESES\n");
     return ABRE_PARENTESES;
@@ -1237,7 +1262,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 190 "nr.l"
+#line 214 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FECHA_PARENTESES\n");
     return FECHA_PARENTESES;
@@ -1245,7 +1270,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 195 "nr.l"
+#line 219 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: NUMERO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1254,7 +1279,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 201 "nr.l"
+#line 225 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1263,7 +1288,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 206 "nr.l"
+#line 230 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1272,7 +1297,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 211 "nr.l"
+#line 235 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
     yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
@@ -1282,15 +1307,15 @@ YY_RULE_SETUP
 case 37:
 /* rule 37 can match eol */
 YY_RULE_SETUP
-#line 218 "nr.l"
+#line 242 "src/lexer.l"
 { /* ignora tudo o resto */ }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 220 "nr.l"
+#line 244 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 1294 "lex.yy.c"
+#line 1319 "src/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2298,7 +2323,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 220 "nr.l"
+#line 244 "src/lexer.l"
 
 
 

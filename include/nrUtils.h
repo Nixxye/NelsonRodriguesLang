@@ -1,5 +1,5 @@
-#ifndef TABLE_H
-#define TABLE_H
+#ifndef NR_UTILS_H
+#define NR_UTILS_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,8 +10,6 @@
 
 typedef enum {
     INT_VAR,
-    FLOAT_VAR,
-    CHAR_VAR,
     STRING_VAR,
     BOOL_VAR
 } VarType;
@@ -32,11 +30,6 @@ typedef struct IntValue {
     struct IntValue *next;
 } IntValue;
 
-typedef struct FloatValue {
-    char *name;
-    float value;
-    struct FloatValue *next;
-} FloatValue;
 
 typedef struct BoolValue {
     char *name;
@@ -50,14 +43,13 @@ typedef struct StringValue {
     struct StringValue *next;
 } StringValue;
 
-// Tabelas globais - só devem ser **definidas** em um .c
+// Tabelas globais 
 extern Symbol *symbolTable[TABLE_SIZE];
 extern IntValue *intTable[TABLE_SIZE];
-extern FloatValue *floatTable[TABLE_SIZE];
 extern BoolValue *boolTable[TABLE_SIZE];
 extern StringValue *stringTable[TABLE_SIZE];
 
-// Funções utilitárias
+// Funções utilitárias tabela de símbolos
 unsigned int hash(const char *str);
 void add_symbol(const char *name, VarType type);
 void set_int_value(const char *name, int value);
@@ -73,8 +65,10 @@ char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
 Symbol* get_symbol(const char *name);
 void gerar_print_string(const char *nome);
+
+// Funções utilitárias de manipulação de strings
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);
 char* trim(char* str);
 char* concatena(char* a, char* b);
 
-#endif // TABLE_H
+#endif // NR_UTILS_H

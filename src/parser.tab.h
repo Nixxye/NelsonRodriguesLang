@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_NR_TAB_H_INCLUDED
-# define YY_YY_NR_TAB_H_INCLUDED
+#ifndef YY_YY_SRC_PARSER_TAB_H_INCLUDED
+# define YY_YY_SRC_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
@@ -45,12 +45,12 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 3 "nr.y"
+#line 3 "src/parser.y"
 
-  #include "table.h"
-  #include "LLVMgen.h"
+  #include "../include/nrUtils.h"
+  #include "../include/LLVMgen.h"
 
-#line 54 "nr.tab.h"
+#line 54 "src/parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -100,12 +100,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 32 "nr.y"
+#line 32 "src/parser.y"
 
     char* texto;
     int inteiro;
 
-#line 109 "nr.tab.h"
+#line 109 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -120,4 +120,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_NR_TAB_H_INCLUDED  */
+#endif /* !YY_YY_SRC_PARSER_TAB_H_INCLUDED  */

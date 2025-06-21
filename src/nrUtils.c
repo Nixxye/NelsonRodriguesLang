@@ -1,9 +1,8 @@
-#include "table.h"
+#include "../include/nrUtils.h"
 
 // Definições das tabelas globais
 Symbol *symbolTable[TABLE_SIZE] = {0};
 IntValue *intTable[TABLE_SIZE] = {0};
-FloatValue *floatTable[TABLE_SIZE] = {0};
 BoolValue *boolTable[TABLE_SIZE] = {0};
 StringValue *stringTable[TABLE_SIZE] = {0};
 
@@ -52,22 +51,10 @@ void add_symbol(const char *name, VarType type) {
             set_int_value(name, 0);
             break;
 
-        case FLOAT_VAR:
-            newSymbol->llvm_type = LLVMFloatTypeInContext(contexto);
-            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-            set_float_value(name, 0.0f);
-            break;
-
         case BOOL_VAR:
             newSymbol->llvm_type = LLVMInt1TypeInContext(contexto);
             newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
             set_bool_value(name, 0);
-            break;
-
-        case CHAR_VAR:
-            newSymbol->llvm_type = LLVMInt8TypeInContext(contexto);
-            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-            // Você pode adicionar tabela de char se necessário
             break;
 
         case STRING_VAR:
@@ -123,24 +110,6 @@ void set_int_value(const char *name, int value) {
     intTable[index] = newValue;
 }
 
-// Adiciona valor float
-void set_float_value(const char *name, float value) {
-    //add_symbol(name, FLOAT_VAR);
-    unsigned int index = hash(name);
-    FloatValue *val = floatTable[index];
-    while (val) {
-        if (strcmp(val->name, name) == 0) {
-            val->value = value;
-            return;
-        }
-        val = val->next;
-    }
-    FloatValue *newValue = (FloatValue *) malloc(sizeof(FloatValue));
-    newValue->name = strdup(name);
-    newValue->value = value;
-    newValue->next = floatTable[index];
-    floatTable[index] = newValue;
-}
 
 // Adiciona valor booleano
 void set_bool_value(const char *name, int value) {
@@ -235,19 +204,6 @@ int get_int_value(const char *name) {
     exit(EXIT_FAILURE);
 }
 
-// Recupera valor float
-float get_float_value(const char *name) {
-    unsigned int index = hash(name);
-    FloatValue *val = floatTable[index];
-    while (val) {
-        if (strcmp(val->name, name) == 0) {
-            return val->value;
-        }
-        val = val->next;
-    }
-    fprintf(stderr, "Erro: Variável '%s' não encontrada na tabela de floats!\n", name);
-    exit(EXIT_FAILURE);
-}
 
 // Recupera valor booleano
 int get_bool_value(const char *name) {
@@ -314,16 +270,6 @@ void print_values(void) {
     }
     printf("\n");
 
-    printf("Tabela de Floats:\n");
-    for (int i = 0; i < TABLE_SIZE; i++) {
-        FloatValue *val = floatTable[i];
-        while (val) {
-            printf("[%s = %.2f] -> ", val->name, val->value);
-            val = val->next;
-        }
-    }
-    printf("\n");
-
     printf("Tabela de Booleanos:\n");
     for (int i = 0; i < TABLE_SIZE; i++) {
         BoolValue *val = boolTable[i];
@@ -333,13 +279,21 @@ void print_values(void) {
         }
     }
     printf("\n");
+
+    printf("Tabela de Strings:\n");
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        StringValue *val = stringTable[i];
+        while (val) {
+            printf("[%s = %s] -> ", val->name, val->value);
+            val = val->next;
+        }
+    }
+    printf("\n");
 }
 
 const char* vartype_to_string(VarType type) {
     switch (type) {
         case INT_VAR: return "int";
-        case FLOAT_VAR: return "float";
-        case CHAR_VAR: return "char";
         case STRING_VAR: return "string";
         case BOOL_VAR: return "bool";
         default: return "unknown";

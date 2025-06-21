@@ -2,40 +2,53 @@
 EXEC = nrparser
 LLVM_EXEC = llvm_exec
 
+# Diretórios
+SRC_DIR = src
+INC_DIR = include
+
 # Arquivos
-LEXFILE = nr.l
-YACCFILE = nr.y
+LEXFILE = $(SRC_DIR)/lexer.l
+YACCFILE = $(SRC_DIR)/parser.y
 INPUT = program.nr
-CODEGEN = LLVMgen.c
-UTILS = nrUtils.c
+CODEGEN = $(SRC_DIR)/LLVMgen.c
+UTILS = $(SRC_DIR)/nrUtils.c
+
+# Gerados
+PARSER_C = $(SRC_DIR)/parser.tab.c
+PARSER_H = $(SRC_DIR)/parser.tab.h
+LEX_C = $(SRC_DIR)/lex.yy.c
 
 # Flags do LLVM
 LLVMFLAGS = `llvm-config --cflags --ldflags --libs core` -Wno-unused-command-line-argument
 
+# Compilador
+CC = clang++
+CFLAGS = -g -I$(INC_DIR)
+
 # Alvo padrão
 all: $(EXEC)
 
-# Gera o parser com bison (ativando warnings e debug)
-nr.tab.c nr.tab.h: $(YACCFILE)
-	bison -d -v $(YACCFILE)
+# Gera o parser com bison
+$(PARSER_C) $(PARSER_H): $(YACCFILE)
+	bison -d -v -o $(PARSER_C) $(YACCFILE)
 
 # Gera o lexer com flex
-lex.yy.c: $(LEXFILE) nr.tab.h
-	flex $(LEXFILE)
+$(LEX_C): $(LEXFILE) $(PARSER_H)
+	flex -o $(LEX_C) $(LEXFILE)
 
 # Compila tudo com suporte a LLVM
-$(EXEC): lex.yy.c nr.tab.c $(CODEGEN) $(UTILS)
-	clang++ -g -o $(EXEC) nr.tab.c lex.yy.c $(CODEGEN) $(UTILS) $(LLVMFLAGS)
+$(EXEC): $(LEX_C) $(PARSER_C) $(CODEGEN) $(UTILS)
+	$(CC) $(CFLAGS) -o $@ $(LEX_C) $(PARSER_C) $(CODEGEN) $(UTILS) $(LLVMFLAGS)
 
 # Executa o parser com o arquivo de entrada
 run: $(EXEC) $(INPUT)
 	./$(EXEC) < $(INPUT)
 
-# Gera o LLVM IR e executa via Clang
+# Gera e executa o LLVM IR via clang
 run-llvm: run
 	clang nrLLVM.ll -o $(LLVM_EXEC)
-	./$(LLVM_EXEC)
 
 # Limpeza
 clean:
-	rm -f lex.yy.c nr.tab.c nr.tab.h nr.output $(EXEC) $(LLVM_EXEC) nrLLVM.ll
+	rm -f $(SRC_DIR)/lex.yy.c $(SRC_DIR)/parser.tab.c $(SRC_DIR)/parser.tab.h \
+	      $(SRC_DIR)/parser.output $(EXEC) $(LLVM_EXEC) nrLLVM.ll

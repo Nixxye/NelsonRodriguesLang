@@ -1,5 +1,5 @@
 // codegen.c
-#include "LLVMgen.h"
+#include "../include/LLVMgen.h"
 
 LLVMModuleRef modulo;
 LLVMBuilderRef builder;
