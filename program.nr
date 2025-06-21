@@ -12,9 +12,9 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Substitua pica por pila no cenario.
 		Jose Dirceu: Onde estamos?
 		Jose Dirceu: Maria Roberta, você é doce como um pudim de padaria numa tarde de domingo! # Maria += 2 #
-		Maria: Jose Dirceu, tu és podre como um canalha sem vergonha na cara! # Jose -= 3 # 
+		Maria Roberta: Jose Dirceu, tu és podre como um canalha sem vergonha na cara! # Jose -= 3 # 
 		Jose Dirceu: Maria Roberta, tu és a soma de tu mesma e Jose Dirceu!
-		# Maria: Você é mais doce do que 5 sonhos de padaria! #  # Se houver um numero, os adjetivos sao ignorados e substituidos por ele #
+		Maria Roberta : se eu for maior que Jose Dirceu, entao a soma entre eu e Jose Dirceu!
 	[Sai Jose Dirceu]
 	[Todos saem]
 # Um comentário qualquer #
