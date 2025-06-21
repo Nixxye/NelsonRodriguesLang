@@ -37,14 +37,14 @@
 }
 
 /* Declaração dos tokens */
-%token <texto> MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
+%token <texto> ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos valor expressao condicao if_sentenca
+%nterm <inteiro> adjetivos valor expressao condicao if_sentenca while
 
 %%
 
@@ -63,7 +63,8 @@ bloco:
     | concatenarCenario
     | substituiCenario
     | alteracaoElenco
-    | if_sentenca {printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA %d\n", $1);}
+    | if_sentenca 
+    | while
     ;
 
 
@@ -150,11 +151,6 @@ palavra:
     | TODOS { $$ = strdup($1); }
     | E { $$ = strdup($1); }
     | ENTAO { $$ = strdup($1); }
-    | NAO { $$ = strdup($1); }
-    | FOR { $$ = strdup($1); }
-    | MAIOR { $$ = strdup($1); }
-    | MENOR { $$ = strdup($1); }
-    | IGUAL { $$ = strdup($1); }
     ;
 
 adjetivos:
@@ -293,6 +289,11 @@ if_sentenca:
         } else {
             $<inteiro>$ = 0; // valor padrão 
         }
+    }
+
+while:
+    ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM{
+        printf("WHILE DETECTADO\n");
     }
 
 condicao:

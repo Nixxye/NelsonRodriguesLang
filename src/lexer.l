@@ -221,6 +221,18 @@
     return NAO;
 }
 
+(?i:enquanto) {
+    if (DEBUG_LEX) printf("TOKEN: ENQUANTO_COMECO\n");
+    yylval.texto = strdup(yytext);
+    return ENQUANTO_COMECO;
+}
+
+(?i:acaba) {
+    if (DEBUG_LEX) printf("TOKEN: ENQUANTO_FIM\n");
+    yylval.texto = strdup(yytext);
+    return ENQUANTO_FIM;
+}
+
 (?i:razão) {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);

@@ -7,14 +7,12 @@ Maria Roberta, a mulher mais pura da rua Aurora.
 ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
 		[Entra Jose Dirceu e Maria Roberta] 
-		Adicione ao cenario: pica de cachorro.
-		Jose Dirceu: Onde estamos?
-		Substitua pica por pila no cenario.
-		Jose Dirceu: Onde estamos?
 		Jose Dirceu: Maria Roberta, você é doce como um pudim de padaria numa tarde de domingo! # Maria += 2 #
 		Maria Roberta: Jose Dirceu, tu és podre como um canalha sem vergonha na cara! # Jose -= 3 # 
-		Jose Dirceu: Maria Roberta, tu és a soma de tu mesma e Jose Dirceu!
-		Maria Roberta : se eu for maior que Jose Dirceu, entao a soma entre eu e Jose Dirceu!
+	Enquanto Maria Roberta for maior que Jose Dirceu, o sofrimento vai continuar:
+		Jose Dirceu: Maria Roberta, tu és podre!
+	o sofrimento acaba!
+	
 	[Sai Jose Dirceu]
 	[Todos saem]
 # Um comentário qualquer #
