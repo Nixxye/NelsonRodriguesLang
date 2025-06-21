@@ -1,6 +1,5 @@
 State 42 conflicts: 1 shift/reduce
-State 44 conflicts: 3 shift/reduce
-State 99 conflicts: 16 shift/reduce
+State 44 conflicts: 16 shift/reduce
 State 102 conflicts: 3 shift/reduce
 
 
@@ -73,7 +72,7 @@ Grammar
    51          | ARTIGO MULTIPLICAR ENTRE valor E valor
    52          | ARTIGO DIVIDIR ENTRE valor E valor
 
-   53 if_sentenca: SE condicao VIRGULA ENTAO texto
+   53 if_sentenca: SE condicao VIRGULA ENTAO expressao
 
    54 condicao: expressao FOR MAIOR expressao
    55         | expressao FOR MENOR expressao
@@ -164,7 +163,7 @@ Nonterminals, with rules where they appear
         on right: 9
     texto <texto> (48)
         on left: 15 16 17
-        on right: 12 13 14 16 17 41 42 43 47 53 62 63 65 66
+        on right: 12 13 14 16 17 41 42 43 47 62 63 65 66
     palavra <texto> (49)
         on left: 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33
         on right: 15 17
@@ -185,8 +184,8 @@ Nonterminals, with rules where they appear
         on right: 48 49 50 51 52
     expressao <inteiro> (55)
         on left: 48 49 50 51 52
-        on right: 54 55 56 57 58 59 65
-    if_sentenca (56)
+        on right: 53 54 55 56 57 58 59 65
+    if_sentenca <inteiro> (56)
         on left: 53
         on right: 11 61
     condicao <inteiro> (57)
@@ -315,7 +314,7 @@ State 8
 
 State 9
 
-   53 if_sentenca: SE • condicao VIRGULA ENTAO texto
+   53 if_sentenca: SE • condicao VIRGULA ENTAO expressao
 
     MAIOR              shift, and go to state 3
     MENOR              shift, and go to state 4
@@ -736,10 +735,23 @@ State 44
     ARTIGO             shift, and go to state 21
     NUMERO             shift, and go to state 54
 
-    NAO       [reduce using rule 47 (valor)]
-    FOR       [reduce using rule 47 (valor)]
-    E         [reduce using rule 47 (valor)]
-    $default  reduce using rule 47 (valor)
+    MAIOR              [reduce using rule 47 (valor)]
+    MENOR              [reduce using rule 47 (valor)]
+    IGUAL              [reduce using rule 47 (valor)]
+    NAO                [reduce using rule 47 (valor)]
+    FOR                [reduce using rule 47 (valor)]
+    ENTAO              [reduce using rule 47 (valor)]
+    SAEM               [reduce using rule 47 (valor)]
+    ENTRAM             [reduce using rule 47 (valor)]
+    TODOS              [reduce using rule 47 (valor)]
+    SOMAR              [reduce using rule 47 (valor)]
+    TOKEN              [reduce using rule 47 (valor)]
+    ADJETIVO_POSITIVO  [reduce using rule 47 (valor)]
+    ADJETIVO_NEGATIVO  [reduce using rule 47 (valor)]
+    E                  [reduce using rule 47 (valor)]
+    ENTRE              [reduce using rule 47 (valor)]
+    ARTIGO             [reduce using rule 47 (valor)]
+    $default           reduce using rule 47 (valor)
 
     palavra  go to state 55
 
@@ -766,7 +778,7 @@ State 46
 
 State 47
 
-   53 if_sentenca: SE condicao • VIRGULA ENTAO texto
+   53 if_sentenca: SE condicao • VIRGULA ENTAO expressao
 
     VIRGULA  shift, and go to state 67
 
@@ -1038,7 +1050,7 @@ State 66
 
 State 67
 
-   53 if_sentenca: SE condicao VIRGULA • ENTAO texto
+   53 if_sentenca: SE condicao VIRGULA • ENTAO expressao
 
     ENTAO  shift, and go to state 84
 
@@ -1376,7 +1388,7 @@ State 83
 
 State 84
 
-   53 if_sentenca: SE condicao VIRGULA ENTAO • texto
+   53 if_sentenca: SE condicao VIRGULA ENTAO • expressao
 
     MAIOR              shift, and go to state 3
     MENOR              shift, and go to state 4
@@ -1384,6 +1396,7 @@ State 84
     NAO                shift, and go to state 6
     FOR                shift, and go to state 7
     ENTAO              shift, and go to state 8
+    EU                 shift, and go to state 40
     SAEM               shift, and go to state 10
     ENTRAM             shift, and go to state 11
     TODOS              shift, and go to state 12
@@ -1391,12 +1404,16 @@ State 84
     TOKEN              shift, and go to state 16
     ADJETIVO_POSITIVO  shift, and go to state 17
     ADJETIVO_NEGATIVO  shift, and go to state 18
+    TU                 shift, and go to state 41
     E                  shift, and go to state 19
     ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
+    ARTIGO             shift, and go to state 42
+    NUMERO             shift, and go to state 43
 
-    texto    go to state 99
-    palavra  go to state 31
+    texto      go to state 44
+    palavra    go to state 31
+    valor      go to state 45
+    expressao  go to state 99
 
 
 State 85
@@ -1611,47 +1628,9 @@ State 98
 
 State 99
 
-   16 texto: texto • NUMERO
-   17      | texto • palavra
-   53 if_sentenca: SE condicao VIRGULA ENTAO texto •
+   53 if_sentenca: SE condicao VIRGULA ENTAO expressao •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 54
-
-    MAIOR              [reduce using rule 53 (if_sentenca)]
-    MENOR              [reduce using rule 53 (if_sentenca)]
-    IGUAL              [reduce using rule 53 (if_sentenca)]
-    NAO                [reduce using rule 53 (if_sentenca)]
-    FOR                [reduce using rule 53 (if_sentenca)]
-    ENTAO              [reduce using rule 53 (if_sentenca)]
-    SAEM               [reduce using rule 53 (if_sentenca)]
-    ENTRAM             [reduce using rule 53 (if_sentenca)]
-    TODOS              [reduce using rule 53 (if_sentenca)]
-    SOMAR              [reduce using rule 53 (if_sentenca)]
-    TOKEN              [reduce using rule 53 (if_sentenca)]
-    ADJETIVO_POSITIVO  [reduce using rule 53 (if_sentenca)]
-    ADJETIVO_NEGATIVO  [reduce using rule 53 (if_sentenca)]
-    E                  [reduce using rule 53 (if_sentenca)]
-    ENTRE              [reduce using rule 53 (if_sentenca)]
-    ARTIGO             [reduce using rule 53 (if_sentenca)]
-    $default           reduce using rule 53 (if_sentenca)
-
-    palavra  go to state 55
+    $default  reduce using rule 53 (if_sentenca)
 
 
 State 100

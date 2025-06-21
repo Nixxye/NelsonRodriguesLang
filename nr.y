@@ -36,6 +36,7 @@
 
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
+    int result = 0; // guarda o resultado do if
 %}
 
 %union {
@@ -51,7 +52,7 @@
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos valor expressao condicao
+%nterm <inteiro> adjetivos valor expressao condicao if_sentenca
 
 %left NUMERO
 %%
@@ -71,7 +72,7 @@ bloco:
     | concatenarCenario
     | substituiCenario
     | alteracaoElenco
-    | if_sentenca
+    | if_sentenca {printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA %d\n", $1);}
     ;
 
 
@@ -292,8 +293,16 @@ expressao:
     }
 
 if_sentenca:
-    SE condicao VIRGULA ENTAO texto{
-        printf("IF DETECTADO");
+    SE condicao VIRGULA ENTAO expressao{
+        if (DEBUG_BISON) {
+            printf("Condicao do IF: %d\n", $2);
+            printf("resultado do IF: %d\n", $5);
+        }
+        if ($2) {
+            $<inteiro>$ = $5;
+        } else {
+            $<inteiro>$ = 0; // valor padrão 
+        }
     }
 
 condicao:

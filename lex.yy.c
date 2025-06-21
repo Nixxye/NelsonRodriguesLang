@@ -1243,6 +1243,7 @@ case 28:
 YY_RULE_SETUP
 #line 173 "nr.l"
 {
+    // mais que
     if (DEBUG_LEX) printf("TOKEN: MAIOR\n");
     yylval.texto = strdup(yytext);
     return MAIOR;
@@ -1250,8 +1251,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 179 "nr.l"
+#line 180 "nr.l"
 {
+    // menos que
     if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
     return MENOR;
@@ -1259,8 +1261,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 185 "nr.l"
+#line 187 "nr.l"
 {
+    //igual que
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
     yylval.texto = strdup(yytext);
     return IGUAL;
@@ -1268,7 +1271,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 191 "nr.l"
+#line 194 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: NAO\n");
     yylval.texto = strdup(yytext);
@@ -1277,7 +1280,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 197 "nr.l"
+#line 200 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);
@@ -1286,7 +1289,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 203 "nr.l"
+#line 206 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
     yylval.texto = strdup(yytext);
@@ -1295,7 +1298,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 209 "nr.l"
+#line 212 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: INICIO\n");
     return INICIO;
@@ -1303,7 +1306,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 214 "nr.l"
+#line 217 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FIM\n");
     return FIM;
@@ -1311,7 +1314,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 219 "nr.l"
+#line 222 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ABRE_COLCHETES\n");
     return ABRE_COLCHETES;
@@ -1319,7 +1322,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 224 "nr.l"
+#line 227 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FECHA_COLCHETES\n");
     return FECHA_COLCHETES;
@@ -1327,7 +1330,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 229 "nr.l"
+#line 232 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ABRE_PARENTESES\n");
     return ABRE_PARENTESES;
@@ -1335,7 +1338,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 234 "nr.l"
+#line 237 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FECHA_PARENTESES\n");
     return FECHA_PARENTESES;
@@ -1343,7 +1346,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 239 "nr.l"
+#line 242 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: NUMERO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1352,7 +1355,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 245 "nr.l"
+#line 248 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1361,7 +1364,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 250 "nr.l"
+#line 253 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
@@ -1370,7 +1373,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 255 "nr.l"
+#line 258 "nr.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
     yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
@@ -1380,15 +1383,15 @@ YY_RULE_SETUP
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 262 "nr.l"
+#line 265 "nr.l"
 { /* ignora tudo o resto */ }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 264 "nr.l"
+#line 267 "nr.l"
 ECHO;
 	YY_BREAK
-#line 1392 "lex.yy.c"
+#line 1395 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2396,7 +2399,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 264 "nr.l"
+#line 267 "nr.l"
 
 
 

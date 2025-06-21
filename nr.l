@@ -171,18 +171,21 @@
 }
 
 ([Mm][Aa][Ii][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Aa][Ii][Oo][Rr][ \t]+[Qq][Uu][Ee])  {
+    // mais que
     if (DEBUG_LEX) printf("TOKEN: MAIOR\n");
     yylval.texto = strdup(yytext);
     return MAIOR;
 }
 
 ([Mm][Ee][Nn][Oo][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Ee][Nn][Oo][Rr][ \t]+[Qq][Uu][Ee]) {
+    // menos que
     if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
     return MENOR;
 }
 
 [Ii][Gg][Uu][Aa][Ll][ \t]+[Qq][Uu][Ee] {
+    //igual que
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
     yylval.texto = strdup(yytext);
     return IGUAL;
