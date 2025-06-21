@@ -35,6 +35,7 @@
     }
 
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
+    char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
 %}
 
 %union {
@@ -43,14 +44,14 @@
 }
 
 /* Declaração dos tokens */
-%token <texto> SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
+%token <texto> MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos valor expressao 
+%nterm <inteiro> adjetivos valor expressao condicao
 
 %left NUMERO
 %%
@@ -70,6 +71,7 @@ bloco:
     | concatenarCenario
     | substituiCenario
     | alteracaoElenco
+    | if_sentenca
     ;
 
 
@@ -126,19 +128,20 @@ substituiCenario:
     }
 
 texto:
+    
     palavra { 
         $$ = strdup($1);
     }
     | texto NUMERO {
-        // if (DEBUG_BISON) {
-        //     printf("Concatenando: %s + %s\n", $1, $2);
-        // }
+         if (DEBUG_BISON) {
+             printf("Concatenando: %s + %s\n", $1, $2);
+        }
         $$ = concatena($1, $2);
     }
     | texto palavra {
-        // if (DEBUG_BISON) {
-        //     printf("Concatenando: %s + %s\n", $1, $2);
-        // }
+        if (DEBUG_BISON) {
+            printf("Concatenando: %s + %s\n", $1, $2);
+        }
         $$ = concatena($1, $2);
     }
     ;
@@ -155,6 +158,12 @@ palavra:
     | SAEM { $$ = strdup($1); }
     | TODOS { $$ = strdup($1); }
     | E { $$ = strdup($1); }
+    | ENTAO { $$ = strdup($1); }
+    | NAO { $$ = strdup($1); }
+    | FOR { $$ = strdup($1); }
+    | MAIOR { $$ = strdup($1); }
+    | MENOR { $$ = strdup($1); }
+    | IGUAL { $$ = strdup($1); }
     ;
 
 adjetivos:
@@ -232,6 +241,17 @@ valor:
             $$ = get_int_value(personagemDialogo);
         }
     }
+    | EU {
+        if (DEBUG_BISON) {
+            printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
+        }
+        if (personagemDialogo == NULL) {
+            yyerror("Variável 'eu' não definida");
+            $$ = 0; // Valor padrão
+        } else {
+            $$ = get_int_value(personagemDialogo);
+        }
+    }
     | texto {
         if (DEBUG_BISON) {
             printf("Valor de texto: %d\n", get_int_value($1));
@@ -239,10 +259,9 @@ valor:
         $$ = get_int_value($1); //O texto todo é uma variável
     }
 
-
-
 expressao:
-    ARTIGO SOMAR ENTRE valor E valor {
+    valor
+    | ARTIGO SOMAR ENTRE valor E valor {
         if (DEBUG_BISON) {
             printf("Expressão de soma: %s\n", $2);
         }
@@ -272,9 +291,37 @@ expressao:
         }
     }
 
+if_sentenca:
+    SE condicao VIRGULA ENTAO texto{
+        printf("IF DETECTADO");
+    }
+
+condicao:
+    expressao FOR MAIOR expressao {
+        $$ = $1 > $4;
+    }
+    | expressao FOR MENOR expressao{
+        $$ = $1 < $4;
+    }
+    | expressao FOR IGUAL expressao{
+        $$ = $1 = $4;
+    }
+    | expressao NAO FOR MENOR expressao{
+        $$ = !($1 < $5);
+    }
+    | expressao NAO FOR MAIOR expressao{
+        $$ = !($1 > $5);
+    }
+    | expressao NAO FOR IGUAL expressao{
+        $$ = !($1 = $5);
+    }
+
 dialogo:
     inicioDialogo MOSTRAR_CENARIO {
         printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+    }
+    | inicioDialogo if_sentenca FIM{
+
     }
     | inicioDialogo texto FIM {
         printf("Diálogo: %s\n", $2);
@@ -351,6 +398,7 @@ dialogo:
 
 inicioDialogo:   
     texto INICIO {
+        personagemQueFala = $1;
         if (estado == E_TITULO) {
             printf("Título: %s\n", $1);
             estado = E_DECLARACOES;

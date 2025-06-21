@@ -50,6 +50,7 @@
 }
 
 [aA][dD][iI][cC][iI][oO][nN][eE][ ][aA][oO][ ][cC][eE][nN][aA][rR][iI][oO] {
+    // Adicione ao cenário
     if (DEBUG_LEX) printf("TOKEN: ADICIONAR_CENARIO\n");
     yylval.texto = strdup(yytext);
     return ADICIONAR_CENARIO;
@@ -73,6 +74,36 @@
     return NO_CENARIO;
 }
 
+(?i:se) {
+    if (DEBUG_LEX) printf("TOKEN: SE\n");
+    yylval.texto = strdup(yytext);
+    return SE;
+}
+
+(?i:eu) {
+    if (DEBUG_LEX) printf("TOKEN: EU\n");
+    yylval.texto = strdup(yytext);
+    return EU;
+}
+
+(?i:entao) {
+    if (DEBUG_LEX) printf("TOKEN: ENTAO\n");
+    yylval.texto = strdup(yytext);
+    return ENTAO;
+}
+
+(?i:for) {
+    if (DEBUG_LEX) printf("TOKEN: FOR\n");
+    yylval.texto = strdup(yytext);
+    return FOR;
+}
+
+(?i:for) {
+    if (DEBUG_LEX) printf("TOKEN: FOR\n");
+    yylval.texto = strdup(yytext);
+    return FOR;
+}
+ 
 (?i:entre)|(?i:de) {
     if (DEBUG_LEX) printf("TOKEN: ENTRE\n");
     yylval.texto = strdup(yytext);
@@ -138,16 +169,29 @@
     yylval.texto = strdup(yytext);
     return MULTIPLICAR;
 }
-(?i:mais) {
-    if (DEBUG_LEX) printf("TOKEN: SOMAR\n");
+
+([Mm][Aa][Ii][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Aa][Ii][Oo][Rr][ \t]+[Qq][Uu][Ee])  {
+    if (DEBUG_LEX) printf("TOKEN: MAIOR\n");
     yylval.texto = strdup(yytext);
-    return SOMAR;
+    return MAIOR;
 }
 
-(?i:menos) {
-    if (DEBUG_LEX) printf("TOKEN: SUBTRAIR\n");
+([Mm][Ee][Nn][Oo][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Ee][Nn][Oo][Rr][ \t]+[Qq][Uu][Ee]) {
+    if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
-    return SUBTRAIR;
+    return MENOR;
+}
+
+[Ii][Gg][Uu][Aa][Ll][ \t]+[Qq][Uu][Ee] {
+    if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
+    yylval.texto = strdup(yytext);
+    return IGUAL;
+}
+
+(?i:nao) {
+    if (DEBUG_LEX) printf("TOKEN: NAO\n");
+    yylval.texto = strdup(yytext);
+    return NAO;
 }
 
 (?i:razão) {

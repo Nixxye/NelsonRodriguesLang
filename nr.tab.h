@@ -60,37 +60,45 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    SAEM = 258,                    /* SAEM  */
-    ENTRAM = 259,                  /* ENTRAM  */
-    TODOS = 260,                   /* TODOS  */
-    SOMAR = 261,                   /* SOMAR  */
-    SUBTRAIR = 262,                /* SUBTRAIR  */
-    DIVIDIR = 263,                 /* DIVIDIR  */
-    MULTIPLICAR = 264,             /* MULTIPLICAR  */
-    INICIO = 265,                  /* INICIO  */
-    FIM = 266,                     /* FIM  */
-    ABRE_COLCHETES = 267,          /* ABRE_COLCHETES  */
-    FECHA_COLCHETES = 268,         /* FECHA_COLCHETES  */
-    ABRE_PARENTESES = 269,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 270,        /* FECHA_PARENTESES  */
-    VIRGULA = 271,                 /* VIRGULA  */
-    TOKEN = 272,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 273,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 274,       /* ADJETIVO_NEGATIVO  */
-    TU = 275,                      /* TU  */
-    EH = 276,                      /* EH  */
-    E = 277,                       /* E  */
-    ENTRE = 278,                   /* ENTRE  */
-    ARTIGO = 279,                  /* ARTIGO  */
-    MESMO = 280,                   /* MESMO  */
-    NUMERO = 281,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 282,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 283,      /* SUBSTITUIR_CENARIO  */
-    POR = 284,                     /* POR  */
-    NO_CENARIO = 285,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 286,         /* MOSTRAR_CENARIO  */
-    ATO = 287,                     /* ATO  */
-    CENA = 288                     /* CENA  */
+    MAIOR = 258,                   /* MAIOR  */
+    MENOR = 259,                   /* MENOR  */
+    IGUAL = 260,                   /* IGUAL  */
+    NAO = 261,                     /* NAO  */
+    FOR = 262,                     /* FOR  */
+    ENTAO = 263,                   /* ENTAO  */
+    EU = 264,                      /* EU  */
+    SE = 265,                      /* SE  */
+    SAEM = 266,                    /* SAEM  */
+    ENTRAM = 267,                  /* ENTRAM  */
+    TODOS = 268,                   /* TODOS  */
+    SOMAR = 269,                   /* SOMAR  */
+    SUBTRAIR = 270,                /* SUBTRAIR  */
+    DIVIDIR = 271,                 /* DIVIDIR  */
+    MULTIPLICAR = 272,             /* MULTIPLICAR  */
+    INICIO = 273,                  /* INICIO  */
+    FIM = 274,                     /* FIM  */
+    ABRE_COLCHETES = 275,          /* ABRE_COLCHETES  */
+    FECHA_COLCHETES = 276,         /* FECHA_COLCHETES  */
+    ABRE_PARENTESES = 277,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 278,        /* FECHA_PARENTESES  */
+    VIRGULA = 279,                 /* VIRGULA  */
+    TOKEN = 280,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 281,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 282,       /* ADJETIVO_NEGATIVO  */
+    TU = 283,                      /* TU  */
+    EH = 284,                      /* EH  */
+    E = 285,                       /* E  */
+    ENTRE = 286,                   /* ENTRE  */
+    ARTIGO = 287,                  /* ARTIGO  */
+    MESMO = 288,                   /* MESMO  */
+    NUMERO = 289,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 290,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 291,      /* SUBSTITUIR_CENARIO  */
+    POR = 292,                     /* POR  */
+    NO_CENARIO = 293,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 294,         /* MOSTRAR_CENARIO  */
+    ATO = 295,                     /* ATO  */
+    CENA = 296                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -99,12 +107,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 40 "nr.y"
+#line 41 "nr.y"
 
     char* texto;
     int inteiro;
 
-#line 108 "nr.tab.h"
+#line 116 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
