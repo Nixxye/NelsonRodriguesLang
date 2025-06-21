@@ -67,7 +67,7 @@
 
 
 /* First part of user prologue.  */
-#line 7 "nr.y"
+#line 8 "nr.y"
 
     #include <stdio.h>
     #include <stdlib.h>
@@ -560,12 +560,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    50,    50,    51,    55,    56,    57,    58,    59,    60,
-      61,    62,    69,    83,   103,   119,   122,   128,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   154,   157,   160,   163,   169,   175,   178,   183,   188,
-     200,   211,   217,   228,   238,   244,   250,   256,   269,   272,
-     296,   330,   330,   346,   362,   372
+       0,    51,    51,    52,    56,    57,    58,    59,    60,    61,
+      62,    63,    70,    84,   104,   120,   123,   129,   139,   140,
+     141,   142,   143,   144,   145,   146,   147,   148,   149,   150,
+     151,   155,   158,   161,   164,   170,   176,   179,   184,   189,
+     201,   212,   218,   229,   239,   245,   251,   257,   270,   276,
+     300,   334,   334,   350,   366,   376
 };
 #endif
 
@@ -1258,7 +1258,7 @@ yyreduce:
   switch (yyn)
     {
   case 12: /* declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES  */
-#line 69 "nr.y"
+#line 70 "nr.y"
                                                          {
         if (estado == E_DECLARACOES) {
             add_symbol((yyvsp[-3].texto), STRING_VAR);
@@ -1275,7 +1275,7 @@ yyreduce:
     break;
 
   case 13: /* concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM  */
-#line 83 "nr.y"
+#line 84 "nr.y"
                                        {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1298,7 +1298,7 @@ yyreduce:
     break;
 
   case 14: /* substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM  */
-#line 103 "nr.y"
+#line 104 "nr.y"
                                                      {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1317,7 +1317,7 @@ yyreduce:
     break;
 
   case 15: /* texto: palavra  */
-#line 119 "nr.y"
+#line 120 "nr.y"
             { 
         (yyval.texto) = strdup((yyvsp[0].texto));
     }
@@ -1325,7 +1325,7 @@ yyreduce:
     break;
 
   case 16: /* texto: texto NUMERO  */
-#line 122 "nr.y"
+#line 123 "nr.y"
                    {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
@@ -1336,7 +1336,7 @@ yyreduce:
     break;
 
   case 17: /* texto: texto palavra  */
-#line 128 "nr.y"
+#line 129 "nr.y"
                     {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
@@ -1347,85 +1347,85 @@ yyreduce:
     break;
 
   case 18: /* palavra: TOKEN  */
-#line 138 "nr.y"
+#line 139 "nr.y"
           { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1353 "nr.tab.c"
     break;
 
   case 19: /* palavra: ADJETIVO_POSITIVO  */
-#line 139 "nr.y"
+#line 140 "nr.y"
                         { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1359 "nr.tab.c"
     break;
 
   case 20: /* palavra: ADJETIVO_NEGATIVO  */
-#line 140 "nr.y"
+#line 141 "nr.y"
                         { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1365 "nr.tab.c"
     break;
 
   case 21: /* palavra: ARTIGO  */
-#line 141 "nr.y"
+#line 142 "nr.y"
              { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1371 "nr.tab.c"
     break;
 
   case 22: /* palavra: ENTRE  */
-#line 142 "nr.y"
+#line 143 "nr.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1377 "nr.tab.c"
     break;
 
   case 23: /* palavra: SOMAR  */
-#line 143 "nr.y"
+#line 144 "nr.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1383 "nr.tab.c"
     break;
 
   case 24: /* palavra: ENTRAM  */
-#line 144 "nr.y"
+#line 145 "nr.y"
              { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1389 "nr.tab.c"
     break;
 
   case 25: /* palavra: SAEM  */
-#line 145 "nr.y"
+#line 146 "nr.y"
            { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1395 "nr.tab.c"
     break;
 
   case 26: /* palavra: TODOS  */
-#line 146 "nr.y"
+#line 147 "nr.y"
             { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1401 "nr.tab.c"
     break;
 
   case 27: /* palavra: E  */
-#line 147 "nr.y"
+#line 148 "nr.y"
         { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1407 "nr.tab.c"
     break;
 
   case 28: /* palavra: SUBSTITUIR_CENARIO  */
-#line 148 "nr.y"
+#line 149 "nr.y"
                          { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1413 "nr.tab.c"
     break;
 
   case 29: /* palavra: POR  */
-#line 149 "nr.y"
+#line 150 "nr.y"
           { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1419 "nr.tab.c"
     break;
 
   case 30: /* palavra: NO_CENARIO  */
-#line 150 "nr.y"
+#line 151 "nr.y"
                  { (yyval.texto) = strdup((yyvsp[0].texto)); }
 #line 1425 "nr.tab.c"
     break;
 
   case 31: /* adjetivos: ADJETIVO_POSITIVO  */
-#line 154 "nr.y"
+#line 155 "nr.y"
                       { 
         (yyval.inteiro) = 1;
     }
@@ -1433,7 +1433,7 @@ yyreduce:
     break;
 
   case 32: /* adjetivos: ADJETIVO_NEGATIVO  */
-#line 157 "nr.y"
+#line 158 "nr.y"
                         {
         (yyval.inteiro) = -1;
     }
@@ -1441,7 +1441,7 @@ yyreduce:
     break;
 
   case 33: /* adjetivos: TOKEN  */
-#line 160 "nr.y"
+#line 161 "nr.y"
             {
         (yyval.inteiro) = 0;
     }
@@ -1449,7 +1449,7 @@ yyreduce:
     break;
 
   case 34: /* adjetivos: adjetivos ADJETIVO_POSITIVO  */
-#line 163 "nr.y"
+#line 164 "nr.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", (yyvsp[0].texto));
@@ -1460,7 +1460,7 @@ yyreduce:
     break;
 
   case 35: /* adjetivos: adjetivos ADJETIVO_NEGATIVO  */
-#line 169 "nr.y"
+#line 170 "nr.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo negativo concatenado: %s\n", (yyvsp[0].texto));
@@ -1471,7 +1471,7 @@ yyreduce:
     break;
 
   case 36: /* adjetivos: adjetivos TOKEN  */
-#line 175 "nr.y"
+#line 176 "nr.y"
                       {
         (yyval.inteiro) = (yyvsp[-1].inteiro);
     }
@@ -1479,7 +1479,7 @@ yyreduce:
     break;
 
   case 37: /* adjetivos: adjetivos ENTRE  */
-#line 178 "nr.y"
+#line 179 "nr.y"
                       {
         (yyval.inteiro) = (yyvsp[-1].inteiro);
     }
@@ -1487,7 +1487,7 @@ yyreduce:
     break;
 
   case 38: /* declaracao: declaracaoInicio texto FIM  */
-#line 183 "nr.y"
+#line 184 "nr.y"
                                {
         printf("Declaração: %s\n", (yyvsp[-2].texto));
     }
@@ -1495,7 +1495,7 @@ yyreduce:
     break;
 
   case 39: /* declaracaoInicio: texto VIRGULA  */
-#line 188 "nr.y"
+#line 189 "nr.y"
                   {
         if (estado == E_DECLARACOES) {
             printf("Início da declaração\n");
@@ -1510,7 +1510,7 @@ yyreduce:
     break;
 
   case 40: /* alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES  */
-#line 200 "nr.y"
+#line 201 "nr.y"
                                          {
         if (estado == E_CENA) {
             printf("Alteração de elenco: %s\n", (yyvsp[-1].texto));
@@ -1524,7 +1524,7 @@ yyreduce:
     break;
 
   case 41: /* valor: NUMERO  */
-#line 211 "nr.y"
+#line 212 "nr.y"
             {
         if (DEBUG_BISON) {
             printf("Valor numérico: %d\n", atoi((yyvsp[0].texto)));
@@ -1535,7 +1535,7 @@ yyreduce:
     break;
 
   case 42: /* valor: TU MESMO  */
-#line 217 "nr.y"
+#line 218 "nr.y"
                { 
         if (DEBUG_BISON) {
             printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
@@ -1551,7 +1551,7 @@ yyreduce:
     break;
 
   case 43: /* valor: texto  */
-#line 228 "nr.y"
+#line 229 "nr.y"
             {
         if (DEBUG_BISON) {
             printf("Valor de texto: %d\n", get_int_value((yyvsp[0].texto)));
@@ -1562,7 +1562,7 @@ yyreduce:
     break;
 
   case 44: /* expressao: ARTIGO SOMAR ENTRE valor E valor  */
-#line 238 "nr.y"
+#line 239 "nr.y"
                                      {
         if (DEBUG_BISON) {
             printf("Expressão de soma: %s\n", (yyvsp[-4].texto));
@@ -1573,7 +1573,7 @@ yyreduce:
     break;
 
   case 45: /* expressao: ARTIGO SUBTRAIR ENTRE valor E valor  */
-#line 244 "nr.y"
+#line 245 "nr.y"
                                           {
         if (DEBUG_BISON) {
             printf("Expressão de subtração: %s\n", (yyvsp[-4].texto));
@@ -1584,7 +1584,7 @@ yyreduce:
     break;
 
   case 46: /* expressao: ARTIGO MULTIPLICAR ENTRE valor E valor  */
-#line 250 "nr.y"
+#line 251 "nr.y"
                                              {
         if (DEBUG_BISON) {
             printf("Expressão de multiplicação: %s\n", (yyvsp[-4].texto));
@@ -1595,7 +1595,7 @@ yyreduce:
     break;
 
   case 47: /* expressao: ARTIGO DIVIDIR ENTRE valor E valor  */
-#line 256 "nr.y"
+#line 257 "nr.y"
                                          {
         if (DEBUG_BISON) {
             printf("Expressão de divisão: %s\n", (yyvsp[-4].texto));
@@ -1611,15 +1611,18 @@ yyreduce:
     break;
 
   case 48: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
-#line 269 "nr.y"
+#line 270 "nr.y"
                                   {
-        printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+        if (DEBUG_BISON) {
+            printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+        }
+        gerar_print_string(cenarioAtual);
     }
-#line 1619 "nr.tab.c"
+#line 1622 "nr.tab.c"
     break;
 
   case 49: /* dialogo: inicioDialogo texto FIM  */
-#line 272 "nr.y"
+#line 276 "nr.y"
                               {
         printf("Diálogo: %s\n", (yyvsp[-1].texto));
         switch (estado) {
@@ -1643,11 +1646,11 @@ yyreduce:
                 break;
         }
     }
-#line 1647 "nr.tab.c"
+#line 1650 "nr.tab.c"
     break;
 
   case 50: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 296 "nr.y"
+#line 300 "nr.y"
                                                       {
         switch (estado) {
             case E_TITULO:
@@ -1682,19 +1685,19 @@ yyreduce:
         }
         (yyval.texto) = (yyvsp[-6].texto);
     }
-#line 1686 "nr.tab.c"
+#line 1689 "nr.tab.c"
     break;
 
   case 51: /* $@1: %empty  */
-#line 330 "nr.y"
+#line 334 "nr.y"
                                         {
         personagemDialogo = (yyvsp[-3].texto);
     }
-#line 1694 "nr.tab.c"
+#line 1697 "nr.tab.c"
     break;
 
   case 52: /* dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM  */
-#line 332 "nr.y"
+#line 336 "nr.y"
                     {
         if (DEBUG_BISON) {
             printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
@@ -1706,11 +1709,11 @@ yyreduce:
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
-#line 1710 "nr.tab.c"
+#line 1713 "nr.tab.c"
     break;
 
   case 53: /* inicioDialogo: texto INICIO  */
-#line 346 "nr.y"
+#line 350 "nr.y"
                  {
         if (estado == E_TITULO) {
             printf("Título: %s\n", (yyvsp[-1].texto));
@@ -1725,11 +1728,11 @@ yyreduce:
             yyerror("Diálogo fora de contexto\n");
         }
     }
-#line 1729 "nr.tab.c"
+#line 1732 "nr.tab.c"
     break;
 
   case 54: /* ato: ATO  */
-#line 362 "nr.y"
+#line 366 "nr.y"
         {
         if (estado == E_DECLARACOES) {
             printf("Ato: %d\n", (yyvsp[0].inteiro));
@@ -1738,11 +1741,11 @@ yyreduce:
             yyerror("Ato fora de contexto");
         }
     }
-#line 1742 "nr.tab.c"
+#line 1745 "nr.tab.c"
     break;
 
   case 55: /* cena: CENA  */
-#line 372 "nr.y"
+#line 376 "nr.y"
          {
         if (estado == E_ATO) {
             printf("Cena: %d\n", (yyvsp[0].inteiro));
@@ -1753,11 +1756,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 1757 "nr.tab.c"
+#line 1760 "nr.tab.c"
     break;
 
 
-#line 1761 "nr.tab.c"
+#line 1764 "nr.tab.c"
 
       default: break;
     }
@@ -1950,11 +1953,13 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 384 "nr.y"
+#line 388 "nr.y"
 
 
 int main() {
+    iniciar_codegen();
     yyparse();
+    finalizar_codegen();
     return 0;
 }
 

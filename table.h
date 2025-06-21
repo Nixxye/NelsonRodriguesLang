@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "LLVMgen.h"
 
 #define TABLE_SIZE 100
 
@@ -20,6 +21,9 @@ typedef struct Symbol {
     VarType type;
     struct Symbol *next;
     int active; // 1 para ativo, 0 para inativo
+    //LLVM:
+    LLVMValueRef llvm_ref; // ponteiro alocado com LLVMBuildAlloca
+    LLVMTypeRef llvm_type;        // tipo LLVM (ex: LLVMInt32Type())
 } Symbol;
 
 typedef struct IntValue {
@@ -67,6 +71,8 @@ float get_float_value(const char *name);
 int get_bool_value(const char *name);
 char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
+Symbol* get_symbol(const char *name);
+void gerar_print_string(const char *nome);
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);
 char* trim(char* str);
 char* concatena(char* a, char* b);

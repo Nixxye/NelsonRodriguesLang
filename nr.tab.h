@@ -48,8 +48,9 @@ extern int yydebug;
 #line 3 "nr.y"
 
   #include "table.h"
+  #include "LLVMgen.h"
 
-#line 53 "nr.tab.h"
+#line 54 "nr.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -99,12 +100,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "nr.y"
+#line 32 "nr.y"
 
     char* texto;
     int inteiro;
 
-#line 108 "nr.tab.h"
+#line 109 "nr.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

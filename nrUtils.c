@@ -20,6 +20,7 @@ unsigned int hash(const char *str) {
 void add_symbol(const char *name, VarType type) {
     unsigned int index = hash(name);
     Symbol *symbol = symbolTable[index];
+
     while (symbol) {
         if (strcmp(symbol->name, name) == 0) {
             if (symbol->type != type) {
@@ -30,47 +31,54 @@ void add_symbol(const char *name, VarType type) {
         }
         symbol = symbol->next;
     }
+
     Symbol *newSymbol = (Symbol *) malloc(sizeof(Symbol));
-    if (!newSymbol) {
-      perror("malloc failed");
-      exit(EXIT_FAILURE);
-    }
-    newSymbol->name = strdup(name);
-    if (!newSymbol->name) {
-      perror("strdup failed");
-      exit(EXIT_FAILURE);
-    }
+    if (!newSymbol) { perror("malloc failed"); exit(EXIT_FAILURE); }
 
     newSymbol->name = strdup(name);
     newSymbol->type = type;
+    newSymbol->active = 0;
     newSymbol->next = symbolTable[index];
-    newSymbol->active = 0; // Marca como inativo
+    newSymbol->llvm_ref = NULL;
+    newSymbol->llvm_type = NULL;
+
     symbolTable[index] = newSymbol;
-    // Inicializa o valor da variável
+
+    // LLVM type and allocation
     switch (type) {
         case INT_VAR:
-            set_int_value(name, 0); // Inicializa com 0
+            newSymbol->llvm_type = LLVMInt32TypeInContext(contexto);
+            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
+            set_int_value(name, 0);
             break;
+
         case FLOAT_VAR:
-            set_float_value(name, 0.0f); // Inicializa com 0.0
+            newSymbol->llvm_type = LLVMFloatTypeInContext(contexto);
+            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
+            set_float_value(name, 0.0f);
             break;
+
         case BOOL_VAR:
-            set_bool_value(name, 0); // Inicializa com false
+            newSymbol->llvm_type = LLVMInt1TypeInContext(contexto);
+            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
+            set_bool_value(name, 0);
             break;
+
+        case CHAR_VAR:
+            newSymbol->llvm_type = LLVMInt8TypeInContext(contexto);
+            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
+            // Você pode adicionar tabela de char se necessário
+            break;
+
         case STRING_VAR:
-            // Inicializa com string vazia
-            StringValue *newStringValue = (StringValue *) malloc(sizeof(StringValue));
-            if (!newStringValue) {
-              perror("malloc failed");
-              exit(EXIT_FAILURE);
-            }
+            newSymbol->llvm_type = LLVMPointerType(LLVMInt8TypeInContext(contexto), 0);
+            newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
+
+            // Inicializa string com ""
+            StringValue *newStringValue = (StringValue*) malloc(sizeof(StringValue));
+            if (!newStringValue) { perror("malloc failed"); exit(EXIT_FAILURE); }
             newStringValue->name = strdup(name);
-            if (!newStringValue->name) {
-              perror("strdup failed");
-              exit(EXIT_FAILURE);
-            }
-            newStringValue->value = strdup(""); // Inicializa com string vazia
-            newStringValue->next = NULL;
+            newStringValue->value = strdup("");
             unsigned int strIndex = hash(name);
             newStringValue->next = stringTable[strIndex];
             stringTable[strIndex] = newStringValue;
@@ -80,6 +88,24 @@ void add_symbol(const char *name, VarType type) {
 
 // Adiciona valor inteiro
 void set_int_value(const char *name, int value) {
+    // LLVM:
+        Symbol *sym = get_symbol(name);
+    if (!sym) {
+        fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (sym->type != INT_VAR) {
+        fprintf(stderr, "Erro: tipo incompatível ao atribuir a '%s'!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (!sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável '%s' não tem referência LLVM!\n", name);
+        exit(EXIT_FAILURE);
+    }
+
+    LLVMValueRef valConst = LLVMConstInt(LLVMInt32Type(), value, 0);
+    LLVMBuildStore(builder, valConst, sym->llvm_ref);
+    // Tabela de valores inteiros:
     unsigned int index = hash(name);
     //add_symbol(name, INT_VAR);
     IntValue *val = intTable[index];
@@ -118,31 +144,70 @@ void set_float_value(const char *name, float value) {
 
 // Adiciona valor booleano
 void set_bool_value(const char *name, int value) {
-    //add_symbol(name, BOOL_VAR);
+    // LLVM:
+    Symbol *sym = get_symbol(name);
+    if (!sym) {
+        fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (sym->type != BOOL_VAR) {
+        fprintf(stderr, "Erro: tipo incompatível ao atribuir booleano a '%s'!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (!sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável '%s' não tem referência LLVM!\n", name);
+        exit(EXIT_FAILURE);
+    }
+
+    LLVMValueRef valConst = LLVMConstInt(LLVMInt1Type(), value ? 1 : 0, 0);
+    LLVMBuildStore(builder, valConst, sym->llvm_ref);
+
+    // Atualiza tabela de valores booleanos
     unsigned int index = hash(name);
     BoolValue *val = boolTable[index];
     while (val) {
         if (strcmp(val->name, name) == 0) {
-            val->value = value;
+            val->value = value ? 1 : 0;
             return;
         }
         val = val->next;
     }
     BoolValue *newValue = (BoolValue *) malloc(sizeof(BoolValue));
     newValue->name = strdup(name);
-    newValue->value = value;
+    newValue->value = value ? 1 : 0;
     newValue->next = boolTable[index];
     boolTable[index] = newValue;
 }
 
+
 // Adiciona valor string
 void set_string_value(const char *name, const char *value) {
+    // LLVM:
+    Symbol *sym = get_symbol(name);
+    if (!sym) {
+        fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (sym->type != STRING_VAR) {
+        fprintf(stderr, "Erro: tipo incompatível ao atribuir string a '%s'!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (!sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável '%s' não tem referência LLVM!\n", name);
+        exit(EXIT_FAILURE);
+    }
+
+    // Cria constante string no módulo LLVM
+    LLVMValueRef strConst = LLVMBuildGlobalStringPtr(builder, value, "strtmp");
+    LLVMBuildStore(builder, strConst, sym->llvm_ref);
+
+    // Atualiza tabela de valores string
     unsigned int index = hash(name);
     StringValue *val = stringTable[index];
     while (val) {
         if (strcmp(val->name, name) == 0) {
-            free(val->value); // Libera memória da string antiga
-            val->value = strdup(value); // Atribui nova string
+            free(val->value);
+            val->value = strdup(value);
             return;
         }
         val = val->next;
@@ -226,18 +291,17 @@ VarType get_variable_type(const char *name) {
     exit(EXIT_FAILURE);
 }
 
-// Impressão das tabelas
-// void print_symbols(void) {
-//     printf("Tabela de Símbolos:\n");
-//     for (int i = 0; i < TABLE_SIZE; i++) {
-//         Symbol *symbol = symbolTable[i];
-//         while (symbol) {
-//             printf("[%s - %d] -> ", symbol->name, symbol->type);
-//             symbol = symbol->next;
-//         }
-//     }
-//     printf("\n");
-// }
+Symbol* get_symbol(const char *name) {
+    unsigned int index = hash(name);
+    Symbol *symbol = symbolTable[index];
+    while (symbol) {
+        if (strcmp(symbol->name, name) == 0) {
+            return symbol;
+        }
+        symbol = symbol->next;
+    }
+    return NULL; // Não encontrado
+}
 
 void print_values(void) {
     printf("Tabela de Inteiros:\n");
@@ -353,4 +417,28 @@ char* concatena(char* a, char* b) {
     // free(a);
     return res;
     // ajustar os free onde usa concatena
+}
+
+void gerar_print_string(const char *nome) {
+    // Obtém símbolo da variável
+    Symbol *sym = get_symbol(nome);
+    if (!sym || sym->type != STRING_VAR || !sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável de string '%s' inválida ou não declarada\n", nome);
+        return;
+    }
+
+    // Declara printf (se ainda não foi)
+    LLVMTypeRef printf_type = LLVMFunctionType(LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+    LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
+    if (!printf_func)
+        printf_func = LLVMAddFunction(modulo, "printf", printf_type);
+
+    // Cria string global "%s\n"
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s\n", "fmt");
+
+    // Carrega o valor da variável
+    LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMPointerType(LLVMInt8Type(), 0), sym->llvm_ref, "tmpstr");
+
+    // Chamada para printf
+    LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
 }

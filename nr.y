@@ -2,6 +2,7 @@
 
 %code requires {
   #include "table.h"
+  #include "LLVMgen.h"
 }
 
 %{
@@ -267,7 +268,10 @@ expressao:
 
 dialogo:
     inicioDialogo MOSTRAR_CENARIO {
-        printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+        if (DEBUG_BISON) {
+            printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
+        }
+        gerar_print_string(cenarioAtual);
     }
     | inicioDialogo texto FIM {
         printf("Diálogo: %s\n", $2);
@@ -384,7 +388,9 @@ cena:
 %%
 
 int main() {
+    iniciar_codegen();
     yyparse();
+    finalizar_codegen();
     return 0;
 }
 
