@@ -37,7 +37,7 @@
 }
 
 /* Declaração dos tokens */
-%token <texto> ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
+%token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO
@@ -64,6 +64,7 @@ bloco:
     | substituiCenario
     | alteracaoElenco
     | if_sentenca 
+    | if_bloco
     | while
     ;
 
@@ -279,21 +280,31 @@ expressao:
     }
 
 if_sentenca:
-    SE condicao VIRGULA ENTAO expressao{
+    SE condicao VIRGULA texto expressao{
         if (DEBUG_BISON) {
+            printf("IF BLOCO DETECTADO\n");
             printf("Condicao do IF: %d\n", $2);
             printf("resultado do IF: %d\n", $5);
         }
-        if ($2) {
-            $<inteiro>$ = $5;
-        } else {
-            $<inteiro>$ = 0; // valor padrão 
+    }
+
+if_bloco:
+    SE condicao VIRGULA texto INICIO bloco ENDIF{
+        if (DEBUG_BISON) { 
+            printf("IF BLOCO DETECTADO\n");
         }
     }
 
 while:
     ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM{
-        printf("WHILE DETECTADO\n");
+        if (DEBUG_BISON) { 
+            printf("WHILE DETECTADO\n");
+        }
+    }
+    | FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM{
+        if (DEBUG_BISON) { 
+            printf("DO  WHILE DETECTADO\n");
+        }
     }
 
 condicao:
@@ -324,7 +335,9 @@ dialogo:
         gerar_print_string(cenarioAtual);
     }
     | inicioDialogo if_sentenca FIM{
-
+        if (DEBUG_BISON) {
+            printf("if sentenca");
+        }
     }
     | inicioDialogo texto FIM {
         printf("Diálogo: %s\n", $2);

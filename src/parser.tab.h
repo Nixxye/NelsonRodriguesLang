@@ -61,47 +61,49 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    ENQUANTO_COMECO = 258,         /* ENQUANTO_COMECO  */
-    ENQUANTO_FIM = 259,            /* ENQUANTO_FIM  */
-    MAIOR = 260,                   /* MAIOR  */
-    MENOR = 261,                   /* MENOR  */
-    IGUAL = 262,                   /* IGUAL  */
-    NAO = 263,                     /* NAO  */
-    FOR = 264,                     /* FOR  */
-    ENTAO = 265,                   /* ENTAO  */
-    EU = 266,                      /* EU  */
-    SE = 267,                      /* SE  */
-    SAEM = 268,                    /* SAEM  */
-    ENTRAM = 269,                  /* ENTRAM  */
-    TODOS = 270,                   /* TODOS  */
-    SOMAR = 271,                   /* SOMAR  */
-    SUBTRAIR = 272,                /* SUBTRAIR  */
-    DIVIDIR = 273,                 /* DIVIDIR  */
-    MULTIPLICAR = 274,             /* MULTIPLICAR  */
-    INICIO = 275,                  /* INICIO  */
-    FIM = 276,                     /* FIM  */
-    ABRE_COLCHETES = 277,          /* ABRE_COLCHETES  */
-    FECHA_COLCHETES = 278,         /* FECHA_COLCHETES  */
-    ABRE_PARENTESES = 279,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 280,        /* FECHA_PARENTESES  */
-    VIRGULA = 281,                 /* VIRGULA  */
-    TOKEN = 282,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 283,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 284,       /* ADJETIVO_NEGATIVO  */
-    TU = 285,                      /* TU  */
-    EH = 286,                      /* EH  */
-    E = 287,                       /* E  */
-    ENTRE = 288,                   /* ENTRE  */
-    ARTIGO = 289,                  /* ARTIGO  */
-    MESMO = 290,                   /* MESMO  */
-    NUMERO = 291,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 292,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 293,      /* SUBSTITUIR_CENARIO  */
-    POR = 294,                     /* POR  */
-    NO_CENARIO = 295,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 296,         /* MOSTRAR_CENARIO  */
-    ATO = 297,                     /* ATO  */
-    CENA = 298                     /* CENA  */
+    FACA = 258,                    /* FACA  */
+    ENDIF = 259,                   /* ENDIF  */
+    ENQUANTO_COMECO = 260,         /* ENQUANTO_COMECO  */
+    ENQUANTO_FIM = 261,            /* ENQUANTO_FIM  */
+    MAIOR = 262,                   /* MAIOR  */
+    MENOR = 263,                   /* MENOR  */
+    IGUAL = 264,                   /* IGUAL  */
+    NAO = 265,                     /* NAO  */
+    FOR = 266,                     /* FOR  */
+    ENTAO = 267,                   /* ENTAO  */
+    EU = 268,                      /* EU  */
+    SE = 269,                      /* SE  */
+    SAEM = 270,                    /* SAEM  */
+    ENTRAM = 271,                  /* ENTRAM  */
+    TODOS = 272,                   /* TODOS  */
+    SOMAR = 273,                   /* SOMAR  */
+    SUBTRAIR = 274,                /* SUBTRAIR  */
+    DIVIDIR = 275,                 /* DIVIDIR  */
+    MULTIPLICAR = 276,             /* MULTIPLICAR  */
+    INICIO = 277,                  /* INICIO  */
+    FIM = 278,                     /* FIM  */
+    ABRE_COLCHETES = 279,          /* ABRE_COLCHETES  */
+    FECHA_COLCHETES = 280,         /* FECHA_COLCHETES  */
+    ABRE_PARENTESES = 281,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 282,        /* FECHA_PARENTESES  */
+    VIRGULA = 283,                 /* VIRGULA  */
+    TOKEN = 284,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 285,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 286,       /* ADJETIVO_NEGATIVO  */
+    TU = 287,                      /* TU  */
+    EH = 288,                      /* EH  */
+    E = 289,                       /* E  */
+    ENTRE = 290,                   /* ENTRE  */
+    ARTIGO = 291,                  /* ARTIGO  */
+    MESMO = 292,                   /* MESMO  */
+    NUMERO = 293,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 294,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 295,      /* SUBSTITUIR_CENARIO  */
+    POR = 296,                     /* POR  */
+    NO_CENARIO = 297,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 298,         /* MOSTRAR_CENARIO  */
+    ATO = 299,                     /* ATO  */
+    CENA = 300                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -115,7 +117,7 @@ union YYSTYPE
     char* texto;
     int inteiro;
 
-#line 119 "src/parser.tab.h"
+#line 121 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

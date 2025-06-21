@@ -233,6 +233,18 @@
     return ENQUANTO_FIM;
 }
 
+"Assim se cala o destino!"|"E tudo se encerra!"|"Fim das ilusões!"|"A verdade se recolhe!"|"A sentença finda!" {
+    if (DEBUG_LEX) printf("TOKEN: ENDIF\n");
+    yylval.texto = strdup(yytext);
+    return ENDIF;
+}
+
+"Primeiro" {
+    if (DEBUG_LEX) printf("TOKEN: FACA\n");
+    yylval.texto = strdup(yytext);
+    return FACA;
+}
+
 (?i:razão) {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);

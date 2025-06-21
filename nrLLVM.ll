@@ -14,5 +14,7 @@ entrada:
   store i32 2, ptr %"Maria Roberta", align 4
   store i32 -2, ptr %"Jose Dirceu", align 4
   store i32 1, ptr %"Maria Roberta", align 4
+  store i32 0, ptr %"Maria Roberta", align 4
+  store i32 -1, ptr %"Maria Roberta", align 4
   ret i32 0
 }
