@@ -38,7 +38,7 @@
 
 /* Declaração dos tokens */
 %token <texto> MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
-%token <texto> INICIO FIM ABRE_COLCHETES FECHA_COLCHETES
+%token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR
 %token <inteiro> ATO CENA 
@@ -60,6 +60,7 @@ bloco:
     | dialogo
     | declaracao
     | declaracaoCenario
+    | declaracaoQuestionamento
     | concatenarCenario
     | substituiCenario
     | alteracaoElenco
@@ -120,6 +121,49 @@ substituiCenario:
             yyerror("Substituição de cenário fora de contexto");
         }
     }
+
+/* Booleanos - operações lógicas */
+declaracaoQuestionamento:
+    texto INTERROGACAO NAO FIM {
+        if (DEBUG_BISON) {
+            printf("Declaração de questionamento negativo: %s\n", $1);
+        }
+        Symbol *sym = get_symbol($1);
+        if (!sym) {
+            add_symbol($1, BOOL_VAR);
+        } else if (sym->type != BOOL_VAR) {
+            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
+            YYABORT;
+        }
+        set_bool_value($1, 0); // Inicializa como falso
+    }
+    | texto INTERROGACAO SIM FIM {
+        if (DEBUG_BISON) {
+            printf("Declaração de questionamento afirmativo: %s\n", $1);
+        }
+        Symbol *sym = get_symbol($1);
+        if (!sym) {
+            add_symbol($1, BOOL_VAR);
+        } else if (sym->type != BOOL_VAR) {
+            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
+            YYABORT;
+        }
+        set_bool_value($1, 1); // Inicializa como verdadeiro
+    }
+    | texto INTERROGACAO {
+        if (DEBUG_BISON) {
+            printf("Declaração de questionamento: %s\n", $1);
+        }
+        Symbol *sym = get_symbol($1);
+        if (!sym) {
+            add_symbol($1, BOOL_VAR);
+        } else if (sym->type != BOOL_VAR) {
+            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
+            YYABORT;
+        }
+        set_bool_value($1, 0); // Inicializa como falso
+    }
+
 
 texto:
     palavra { 

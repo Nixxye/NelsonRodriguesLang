@@ -36,8 +36,8 @@
     }
 %}
 %%
-#.+# { // Comentário 
-}
+"#"([^\n#]|(\n))*"#"   { /* comentário multilinha */ }
+
 ^ATO[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?[:].+\. {
     char romano[16];
     sscanf(yytext, "ATO %15[^:]", romano);
@@ -104,6 +104,20 @@
     return SE;
 }
 
+[Ss][Ii][Mm] {
+    if (DEBUG_LEX) printf("TOKEN: SIM\n");
+    yylval.texto = strdup(yytext);
+    return SIM;
+}
+
+(?i:nao) {
+    if (DEBUG_LEX) printf("TOKEN: NAO\n");
+    yylval.texto = strdup(yytext);
+    return NAO;
+}
+
+
+
 (?i:eu) {
     if (DEBUG_LEX) printf("TOKEN: EU\n");
     yylval.texto = strdup(yytext);
@@ -114,12 +128,6 @@
     if (DEBUG_LEX) printf("TOKEN: ENTAO\n");
     yylval.texto = strdup(yytext);
     return ENTAO;
-}
-
-(?i:for) {
-    if (DEBUG_LEX) printf("TOKEN: FOR\n");
-    yylval.texto = strdup(yytext);
-    return FOR;
 }
 
 (?i:for) {
@@ -249,9 +257,13 @@
     return INICIO;
 }
 
-[.!?] {
+[.!] {
     if (DEBUG_LEX) printf("TOKEN: FIM\n");
     return FIM;
+}
+[?] {
+    if (DEBUG_LEX) printf("TOKEN: INTERROGACAO\n");
+    return INTERROGACAO;
 }
 
 "[" {

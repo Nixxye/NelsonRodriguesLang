@@ -365,10 +365,11 @@ char* trim(char* str) {
 char* concatena(char* a, char* b) {
     char* a_trim = trim(a);
     char* b_trim = trim(b);
-    size_t len = strlen(a) + strlen(b) + 2;
+    size_t len = strlen(a_trim) + strlen(b_trim) + 2;
     char* res = (char *) malloc(len);
-    snprintf(res, len, "%s %s", a, b);
+    snprintf(res, len, "%s %s", a_trim, b_trim);
     // free(a);
+    // free(b);
     return res;
     // ajustar os free onde usa concatena
 }
