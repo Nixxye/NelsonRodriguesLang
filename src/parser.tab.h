@@ -61,49 +61,53 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    MAIOR = 258,                   /* MAIOR  */
-    MENOR = 259,                   /* MENOR  */
-    IGUAL = 260,                   /* IGUAL  */
-    NAO = 261,                     /* NAO  */
-    FOR = 262,                     /* FOR  */
-    ENTAO = 263,                   /* ENTAO  */
-    EU = 264,                      /* EU  */
-    SE = 265,                      /* SE  */
-    SAEM = 266,                    /* SAEM  */
-    ENTRAM = 267,                  /* ENTRAM  */
-    TODOS = 268,                   /* TODOS  */
-    SOMAR = 269,                   /* SOMAR  */
-    SUBTRAIR = 270,                /* SUBTRAIR  */
-    DIVIDIR = 271,                 /* DIVIDIR  */
-    MULTIPLICAR = 272,             /* MULTIPLICAR  */
-    INICIO = 273,                  /* INICIO  */
-    FIM = 274,                     /* FIM  */
-    SIM = 275,                     /* SIM  */
-    INTERROGACAO = 276,            /* INTERROGACAO  */
-    ABRE_COLCHETES = 277,          /* ABRE_COLCHETES  */
-    FECHA_COLCHETES = 278,         /* FECHA_COLCHETES  */
-    ABRE_PARENTESES = 279,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 280,        /* FECHA_PARENTESES  */
-    VIRGULA = 281,                 /* VIRGULA  */
-    TOKEN = 282,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 283,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 284,       /* ADJETIVO_NEGATIVO  */
-    TU = 285,                      /* TU  */
-    EH = 286,                      /* EH  */
-    E = 287,                       /* E  */
-    ENTRE = 288,                   /* ENTRE  */
-    ARTIGO = 289,                  /* ARTIGO  */
-    MESMO = 290,                   /* MESMO  */
-    NUMERO = 291,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 292,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 293,      /* SUBSTITUIR_CENARIO  */
-    POR = 294,                     /* POR  */
-    NO_CENARIO = 295,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 296,         /* MOSTRAR_CENARIO  */
-    MOSTRA_VALOR = 297,            /* MOSTRA_VALOR  */
-    LE_VALOR = 298,                /* LE_VALOR  */
-    ATO = 299,                     /* ATO  */
-    CENA = 300                     /* CENA  */
+    FACA = 258,                    /* FACA  */
+    ENDIF = 259,                   /* ENDIF  */
+    ENQUANTO_COMECO = 260,         /* ENQUANTO_COMECO  */
+    ENQUANTO_FIM = 261,            /* ENQUANTO_FIM  */
+    MAIOR = 262,                   /* MAIOR  */
+    MENOR = 263,                   /* MENOR  */
+    IGUAL = 264,                   /* IGUAL  */
+    NAO = 265,                     /* NAO  */
+    FOR = 266,                     /* FOR  */
+    ENTAO = 267,                   /* ENTAO  */
+    EU = 268,                      /* EU  */
+    SE = 269,                      /* SE  */
+    SAEM = 270,                    /* SAEM  */
+    ENTRAM = 271,                  /* ENTRAM  */
+    TODOS = 272,                   /* TODOS  */
+    SOMAR = 273,                   /* SOMAR  */
+    SUBTRAIR = 274,                /* SUBTRAIR  */
+    DIVIDIR = 275,                 /* DIVIDIR  */
+    MULTIPLICAR = 276,             /* MULTIPLICAR  */
+    INICIO = 277,                  /* INICIO  */
+    FIM = 278,                     /* FIM  */
+    SIM = 279,                     /* SIM  */
+    INTERROGACAO = 280,            /* INTERROGACAO  */
+    ABRE_COLCHETES = 281,          /* ABRE_COLCHETES  */
+    FECHA_COLCHETES = 282,         /* FECHA_COLCHETES  */
+    ABRE_PARENTESES = 283,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 284,        /* FECHA_PARENTESES  */
+    VIRGULA = 285,                 /* VIRGULA  */
+    TOKEN = 286,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 287,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 288,       /* ADJETIVO_NEGATIVO  */
+    TU = 289,                      /* TU  */
+    EH = 290,                      /* EH  */
+    E = 291,                       /* E  */
+    ENTRE = 292,                   /* ENTRE  */
+    ARTIGO = 293,                  /* ARTIGO  */
+    MESMO = 294,                   /* MESMO  */
+    NUMERO = 295,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 296,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 297,      /* SUBSTITUIR_CENARIO  */
+    POR = 298,                     /* POR  */
+    NO_CENARIO = 299,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 300,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 301,            /* MOSTRA_VALOR  */
+    LE_VALOR = 302,                /* LE_VALOR  */
+    ATO = 303,                     /* ATO  */
+    CENA = 304                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -112,12 +116,20 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 34 "src/parser.y"
+#line 35 "src/parser.y"
 
+    // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
+
+    struct {
+        LLVMBasicBlockRef cond_bb;
+        LLVMBasicBlockRef body_bb;
+        LLVMBasicBlockRef after_bb;
+    } WhileBlocks; // Estrutura para blocos de while
     char* texto;
     int inteiro;
+    LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 121 "src/parser.tab.h"
+#line 133 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

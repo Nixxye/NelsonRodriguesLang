@@ -22,7 +22,7 @@ LEX_C = $(SRC_DIR)/lex.yy.c
 LLVMFLAGS = `llvm-config --cflags --ldflags --libs core` -Wno-unused-command-line-argument
 
 # Compilador
-CC = clang++
+CC = clang
 CFLAGS = -g -I$(INC_DIR)
 
 # Alvo padrão

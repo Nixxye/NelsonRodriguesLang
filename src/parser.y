@@ -24,16 +24,25 @@
 
     char *cenarioAtual = NULL;
 
-    int DEBUG_BISON = 0;
+    int DEBUG_BISON = 1;
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
     int result = 0; // guarda o resultado do if
+
 %}
 
 %union {
+    // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
+
+    struct {
+        LLVMBasicBlockRef cond_bb;
+        LLVMBasicBlockRef body_bb;
+        LLVMBasicBlockRef after_bb;
+    } WhileBlocks; // Estrutura para blocos de while
     char* texto;
     int inteiro;
+    LLVMValueRef llmValueRef; // Referência para valores LLM
 }
 
 /* Declaração dos tokens */
@@ -44,8 +53,9 @@
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
-%nterm <inteiro> adjetivos valor expressao condicao if_sentenca while
-
+%nterm <inteiro> adjetivos if_sentenca while
+%nterm <llmValueRef> condicao valor expressao
+%type <WhileBlocks> while_aux
 %%
 
 /* Regras da gramática */
@@ -55,7 +65,12 @@ programa:
     ;
 
 bloco:
-    ato
+    instrucao                   {  }
+  | bloco instrucao            {  }
+  ;
+
+instrucao:
+        ato
     | cena
     | dialogo
     | declaracao
@@ -172,15 +187,15 @@ texto:
         $$ = strdup($1);
     }
     | texto NUMERO {
-         if (DEBUG_BISON) {
-             printf("Concatenando: %s + %s\n", $1, $2);
-        }
+        //  if (DEBUG_BISON) {
+        //      printf("Concatenando: %s + %s\n", $1, $2);
+        // }
         $$ = concatena($1, $2);
     }
     | texto palavra {
-        if (DEBUG_BISON) {
-            printf("Concatenando: %s + %s\n", $1, $2);
-        }
+        // if (DEBUG_BISON) {
+        //     printf("Concatenando: %s + %s\n", $1, $2);
+        // }
         $$ = concatena($1, $2);
     }
     ;
@@ -263,72 +278,83 @@ alteracaoElenco:
     }
 
 valor:
-    NUMERO  {
+    NUMERO {
         if (DEBUG_BISON) {
             printf("Valor numérico: %d\n", atoi($1));
         }
-        $$ = atoi($1);
-    } 
-    | TU MESMO { 
-        if (DEBUG_BISON) {
-            printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
-        }
+        $$ = LLVMConstInt(LLVMInt32Type(), atoi($1), 0);
+    }
+  | TU MESMO {
         if (personagemDialogo == NULL) {
             yyerror("Variável 'tu mesmo' não definida");
-            $$ = 0; // Valor padrão
+            $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            $$ = get_int_value(personagemDialogo);
+            if (DEBUG_BISON) {
+                // printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
+            }
+            Symbol *sym = get_symbol(personagemDialogo);
+            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+                yyerror("Variável 'tu mesmo' inválida ou não declarada");
+                $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
+            } else {
+                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_tu");
+            }
         }
     }
-    | EU {
-        if (DEBUG_BISON) {
-            printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
-        }
-        if (personagemDialogo == NULL) {
+  | EU {
+        if (personagemQueFala == NULL) {
             yyerror("Variável 'eu' não definida");
-            $$ = 0; // Valor padrão
+            $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            $$ = get_int_value(personagemDialogo);
+            if (DEBUG_BISON) {
+                // printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
+            }
+            Symbol *sym = get_symbol(personagemQueFala);
+            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+                yyerror("Variável 'eu' inválida ou não declarada");
+                $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
+            } else {
+                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_eu");
+            }
         }
     }
-    | texto {
+  | texto {
         if (DEBUG_BISON) {
-            printf("Valor de texto: %d\n", get_int_value($1));
+            printf("Valor de variável: %s\n", $1);
         }
-        $$ = get_int_value($1); //O texto todo é uma variável
-    }
+        Symbol *sym = get_symbol($1);
+        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            printf("Variável inválida ou não declarada: %s\n", $1);
+            $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
+        } else {
+            $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_var");
+        }
+    };
+
 
 expressao:
-    valor
-    | ARTIGO SOMAR ENTRE valor E valor {
-        if (DEBUG_BISON) {
-            printf("Expressão de soma: %s\n", $2);
-        }
-        $$ = $4 + $6; // Exemplo de operação
+    valor {
+        $$ = $1; // valor já retorna LLVMValueRef
     }
-    | ARTIGO SUBTRAIR ENTRE valor E valor {
-        if (DEBUG_BISON) {
-            printf("Expressão de subtração: %s\n", $2);
-        }
-        $$ = $4 - $6;
+  | ARTIGO SOMAR ENTRE valor E valor {
+        if (DEBUG_BISON) printf("Expressão de soma\n");
+        $$ = LLVMBuildAdd(builder, $4, $6, "addtmp");
     }
-    | ARTIGO MULTIPLICAR ENTRE valor E valor {
-        if (DEBUG_BISON) {
-            printf("Expressão de multiplicação: %s\n", $2);
-        }
-        $$ = $4 * $6;
+  | ARTIGO SUBTRAIR ENTRE valor E valor {
+        if (DEBUG_BISON) printf("Expressão de subtração\n");
+        $$ = LLVMBuildSub(builder, $4, $6, "subtmp");
     }
-    | ARTIGO DIVIDIR ENTRE valor E valor {
-        if (DEBUG_BISON) {
-            printf("Expressão de divisão: %s\n", $2);
-        }
-        if ($6 == 0) {
-            yyerror("Divisão por zero");
-            $$ = 0; // Valor padrão em caso de erro
-        } else {
-            $$ = $4 / $6;
-        }
+  | ARTIGO MULTIPLICAR ENTRE valor E valor {
+        if (DEBUG_BISON) printf("Expressão de multiplicação\n");
+        $$ = LLVMBuildMul(builder, $4, $6, "multmp");
     }
+  | ARTIGO DIVIDIR ENTRE valor E valor {
+        if (DEBUG_BISON) printf("Expressão de divisão\n");
+
+        // Divisão por zero em tempo de compilação não pode ser detectada aqui
+        $$ = LLVMBuildSDiv(builder, $4, $6, "divtmp");
+    };
+
 
 if_sentenca:
     SE condicao VIRGULA texto expressao{
@@ -346,37 +372,85 @@ if_bloco:
         }
     }
 
+while_aux
+    : {
+        LLVMBasicBlockRef cond_bb = LLVMAppendBasicBlock(funcao_main, "while_cond");
+        LLVMBasicBlockRef body_bb = LLVMAppendBasicBlock(funcao_main, "while_body");
+        LLVMBasicBlockRef after_bb = LLVMAppendBasicBlock(funcao_main, "while_end");
+
+        LLVMBuildBr(builder, cond_bb);
+        LLVMPositionBuilderAtEnd(builder, cond_bb);
+
+        $$.cond_bb = cond_bb;
+        $$.body_bb = body_bb;
+        $$.after_bb = after_bb;
+    }
+    ;
+
+
+
 while:
-    ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM{
-        if (DEBUG_BISON) { 
-            printf("WHILE DETECTADO\n");
-        }
+    ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO
+    {
+        if (DEBUG_BISON) printf("WHILE DETECTADO\n");
+
+        LLVMBuildCondBr(builder, $3, $2.body_bb, $2.after_bb);
+
+        LLVMPositionBuilderAtEnd(builder, $2.body_bb);
     }
-    | FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM{
-        if (DEBUG_BISON) { 
-            printf("DO  WHILE DETECTADO\n");
-        }
+    bloco texto ENQUANTO_FIM FIM
+    {
+        LLVMBuildBr(builder, $2.cond_bb);
+        LLVMPositionBuilderAtEnd(builder, $2.after_bb);
     }
+  | FACA VIRGULA texto INICIO
+    {
+        if (DEBUG_BISON) printf("DO-WHILE DETECTADO\n");
+
+        LLVMBasicBlockRef body_bb = LLVMAppendBasicBlock(funcao_main, "do_body");
+        LLVMBasicBlockRef cond_bb = LLVMAppendBasicBlock(funcao_main, "do_cond");
+        LLVMBasicBlockRef after_bb = LLVMAppendBasicBlock(funcao_main, "do_end");
+
+        push_while_blocks(cond_bb, body_bb, after_bb);
+
+        LLVMBuildBr(builder, body_bb);
+        LLVMPositionBuilderAtEnd(builder, body_bb);
+    }
+    bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
+    {
+        WhileBlocks blocks = pop_while_blocks();
+
+        LLVMBuildBr(builder, blocks.cond_bb);
+        LLVMPositionBuilderAtEnd(builder, blocks.cond_bb);
+
+        LLVMValueRef cond = $7;
+        LLVMBuildCondBr(builder, cond, blocks.body_bb, blocks.after_bb);
+
+        LLVMPositionBuilderAtEnd(builder, blocks.after_bb);
+    }
+;
+
 
 condicao:
-    expressao FOR MAIOR expressao {
-        $$ = $1 > $4;
-    }
-    | expressao FOR MENOR expressao{
-        $$ = $1 < $4;
-    }
-    | expressao FOR IGUAL expressao{
-        $$ = $1 = $4;
-    }
-    | expressao NAO FOR MENOR expressao{
-        $$ = !($1 < $5);
-    }
-    | expressao NAO FOR MAIOR expressao{
-        $$ = !($1 > $5);
-    }
-    | expressao NAO FOR IGUAL expressao{
-        $$ = !($1 = $5);
-    }
+        expressao FOR MAIOR expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSGT, $1, $4, "cmpgt");
+        }
+    | expressao FOR MENOR expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSLT, $1, $4, "cmplt");
+        }
+    | expressao FOR IGUAL expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntEQ, $1, $4, "cmpeq");
+        }
+    | expressao NAO FOR MENOR expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSGE, $1, $5, "cmpnlt");
+        }
+    | expressao NAO FOR MAIOR expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSLE, $1, $5, "cmpngt");
+        }
+    | expressao NAO FOR IGUAL expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntNE, $1, $5, "cmpneq");
+        };
+
 
 dialogo:
     inicioDialogo MOSTRAR_CENARIO {
@@ -385,94 +459,63 @@ dialogo:
         }
         gerar_print_string(cenarioAtual);
     }
-    | inicioDialogo if_sentenca FIM{
+    | inicioDialogo if_sentenca FIM {
         if (DEBUG_BISON) {
-            printf("if sentenca");
+            printf("if sentença\n");
         }
     }
     | inicioDialogo texto FIM {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", $2);
             switch (estado) {
-                case E_TITULO:
-                    printf("Título\n");
-                    break;
-                case E_DECLARACOES:
-                    printf("Declarações\n");
-                    break;
-                case E_DIALOGO:
-                    printf("Diálogo\n");
-                    break;
-                case E_CENA:
-                    printf("Cena\n");
-                    break;
-                case E_ATO:
-                    printf("Ato\n");
-                    break;
+                case E_TITULO:    printf("Título\n"); break;
+                case E_DECLARACOES: printf("Declarações\n"); break;
+                case E_DIALOGO:   printf("Diálogo\n"); break;
+                case E_CENA:      printf("Cena\n"); break;
+                case E_ATO:       printf("Ato\n"); break;
                 default:
                     yyerror("Estado desconhecido no diálogo\n");
-                    break;
             }
         }
-
     }
-    // Precisa ser mais importante do que texto com vírgula
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
-        switch (estado) {
-            case E_TITULO:
-                if (DEBUG_BISON) {
-                    printf("Título com vírgula: %s\n", $3);
-                }
-                break;
-            case E_DECLARACOES:
-                if (DEBUG_BISON) {
-                    printf("Declarações com vírgula: %s\n", $3);
-                }
-                break;
-            case E_DIALOGO:
-                if (DEBUG_BISON) {
-                    printf("Diálogo com vírgula: %s\n", $2);
-                    printf("Alterando variável: %s\n", $2);
-                    printf("    Valor atual: %d\n", get_int_value($2));
-                }
-                // pegar valor do texto !!!
-                set_int_value($2, get_int_value($2) + $6);
-                if (DEBUG_BISON) {
-                    printf("    Novo valor: %d\n", get_int_value($2));
-                }
-                break;
-            case E_CENA:
-                printf("Cena com vírgula: %s\n", $3);
-                break;
-            case E_ATO:
-                printf("Ato com vírgula: %s\n", $3);
-                break;
-            default:
-                yyerror("Estado desconhecido no diálogo com vírgula\n");
-                break;
-        }
-        $$ = $1;
-    }
-    | inicioDialogo texto VIRGULA TU EH {
-        personagemDialogo = $2;
-    } expressao FIM {
+        personagemDialogo = strdup($2);
+
         if (DEBUG_BISON) {
-            printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
+            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
         }
-        set_int_value(personagemDialogo, $7);
+
+        // LLVM: gerar incremento personagem = personagem + $6
+        Symbol *sym = get_symbol(personagemDialogo);
+        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            yyerror("Variável inteira inválida ou não declarada");
+        } else {
+            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+            LLVMValueRef incremento = LLVMConstInt(LLVMInt32Type(), $6, 0);
+            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
+            LLVMBuildStore(builder, soma, sym->llvm_ref);
+        }
+
+        // Atualiza na tabela de valores também
+        // int novoValor = get_int_value(personagemDialogo) + $6;
+        // set_int_value(personagemDialogo, novoValor);
+
         if (DEBUG_BISON) {
-            printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
         }
+
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
+
     | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM {
         if (DEBUG_BISON) {
-            if (get_int_value($2) == -1) {
-                yyerror("Variável não definida");
-            } else {
-                printf("Valor de %s: %d\n", $2, get_int_value($2));
-            }
+            // int val = get_int_value($2);
+            // if (val == -1) {
+            //     yyerror("Variável não definida");
+            // } else {
+            //     printf("Valor de %s: %d\n", $2, val);
+            // }
         }
         gerar_print_int($2);
     }
@@ -482,6 +525,7 @@ dialogo:
         }
         gerar_leitura_inteiro($2);
     }
+;
 
 
 inicioDialogo:   

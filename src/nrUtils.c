@@ -5,6 +5,8 @@ Symbol *symbolTable[TABLE_SIZE] = {0};
 IntValue *intTable[TABLE_SIZE] = {0};
 BoolValue *boolTable[TABLE_SIZE] = {0};
 StringValue *stringTable[TABLE_SIZE] = {0};
+WhileBlocks while_stack[MAX_WHILE_NESTING] = {0};
+
 
 // Função de hash simples
 unsigned int hash(const char *str) {
@@ -192,16 +194,38 @@ void set_string_value(const char *name, const char *value) {
 
 // Recupera valor inteiro
 int get_int_value(const char *name) {
-    unsigned int index = hash(name);
-    IntValue *val = intTable[index];
-    while (val) {
-        if (strcmp(val->name, name) == 0) {
-            return val->value;
-        }
-        val = val->next;
-    }
-    fprintf(stderr, "Erro: Variável '%s' não encontrada na tabela de inteiros!\n", name);
-    exit(EXIT_FAILURE);
+    // Symbol *sym = get_symbol(name);
+    // if (!sym || sym->type != INT_VAR) {
+    //     fprintf(stderr, "Erro: variável inteira '%s' não encontrada ou tipo incorreto!\n", name);
+    //     exit(EXIT_FAILURE);
+    // }
+
+    // // Se tiver llvm_ref e contexto de compilação (builder), tenta ler de LLVM
+    // if (sym->llvm_ref) {
+    //     // Gera instrução de load
+    //     LLVMValueRef loaded = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+
+    //     // Se for constante (LLVMConstInt), conseguimos extrair valor em tempo de compilação
+    //     if (LLVMIsAConstantInt(loaded)) {
+    //         return (int) LLVMConstIntGetSExtValue((LLVMConstantIntRef) loaded);
+    //     } else {
+    //         fprintf(stderr, "Erro: valor de '%s' não é constante em tempo de compilação\n", name);
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
+
+    // // Se não tem llvm_ref, busca na tabela de valores
+    // unsigned int index = hash(name);
+    // IntValue *val = intTable[index];
+    // while (val) {
+    //     if (strcmp(val->name, name) == 0) {
+    //         return val->value;
+    //     }
+    //     val = val->next;
+    // }
+
+    // fprintf(stderr, "Erro: valor de '%s' não encontrado na tabela de inteiros!\n", name);
+    // exit(EXIT_FAILURE);
 }
 
 
@@ -476,3 +500,54 @@ void gerar_leitura_inteiro(const char *nome) {
     // ok:
     LLVMPositionBuilderAtEnd(builder, okBlock);
 }
+
+int while_stack_top = -1;
+
+void push_while_blocks(LLVMBasicBlockRef cond, LLVMBasicBlockRef body, LLVMBasicBlockRef after) {
+    if (while_stack_top + 1 >= MAX_WHILE_NESTING) {
+        fprintf(stderr, "Erro: pilha de while cheia!\n");
+        exit(EXIT_FAILURE);
+    }
+    while_stack_top++;
+    while_stack[while_stack_top].cond_bb = cond;
+    while_stack[while_stack_top].body_bb = body;
+    while_stack[while_stack_top].after_bb = after;
+}
+
+WhileBlocks pop_while_blocks() {
+    if (while_stack_top < 0) {
+        fprintf(stderr, "Erro: pilha de while vazia!\n");
+        exit(EXIT_FAILURE);
+    }
+    return while_stack[while_stack_top--];
+}
+
+WhileBlocks *peek_while_blocks() {
+    if (while_stack_top < 0) return NULL;
+    return &while_stack[while_stack_top];
+}
+
+
+void set_value_from_llvm(const char *name, LLVMValueRef val) {
+    Symbol *sym = get_symbol(name);
+    if (!sym) {
+        fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (sym->type != INT_VAR) {
+        fprintf(stderr, "Erro: variável '%s' não é do tipo inteiro!\n", name);
+        exit(EXIT_FAILURE);
+    }
+    if (!sym->llvm_ref) {
+        fprintf(stderr, "Erro: variável '%s' não tem referência LLVM!\n", name);
+        exit(EXIT_FAILURE);
+    }
+
+    if (LLVMIsAConstantInt(val)) {
+        int intval = (int) LLVMConstIntGetSExtValue(val);
+        set_int_value(name, intval);
+    } else {
+        LLVMBuildStore(builder, val, sym->llvm_ref);
+    }
+}
+

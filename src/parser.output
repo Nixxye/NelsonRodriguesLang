@@ -1,15 +1,9 @@
-<<<<<<< HEAD
-State 43 conflicts: 1 shift/reduce
-State 45 conflicts: 16 shift/reduce
-State 54 conflicts: 1 shift/reduce
-State 110 conflicts: 3 shift/reduce
-=======
-State 42 conflicts: 1 shift/reduce
-State 44 conflicts: 11 shift/reduce
-State 110 conflicts: 11 reduce/reduce
-State 111 conflicts: 12 reduce/reduce
-State 116 conflicts: 3 shift/reduce
->>>>>>> origin/Main_while
+State 23 conflicts: 20 shift/reduce
+State 45 conflicts: 1 shift/reduce
+State 47 conflicts: 11 shift/reduce
+State 120 conflicts: 11 reduce/reduce
+State 121 conflicts: 12 reduce/reduce
+State 144 conflicts: 14 shift/reduce
 
 
 Grammar
@@ -19,411 +13,243 @@ Grammar
     1 programa: ε
     2         | programa bloco
 
-    3 bloco: ato
-    4      | cena
-    5      | dialogo
-    6      | declaracao
-    7      | declaracaoCenario
-<<<<<<< HEAD
-    8      | declaracaoQuestionamento
-    9      | concatenarCenario
-   10      | substituiCenario
-   11      | alteracaoElenco
-   12      | if_sentenca
+    3 bloco: instrucao
+    4      | bloco instrucao
 
-   13 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES
+    5 instrucao: ato
+    6          | cena
+    7          | dialogo
+    8          | declaracao
+    9          | declaracaoCenario
+   10          | declaracaoQuestionamento
+   11          | concatenarCenario
+   12          | substituiCenario
+   13          | alteracaoElenco
+   14          | if_sentenca
+   15          | if_bloco
+   16          | while
 
-   14 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM
+   17 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES
 
-   15 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM
+   18 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM
 
-   16 declaracaoQuestionamento: texto INTERROGACAO NAO FIM
-   17                         | texto INTERROGACAO SIM FIM
-   18                         | texto INTERROGACAO
+   19 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM
 
-   19 texto: palavra
-   20      | texto NUMERO
-   21      | texto palavra
+   20 declaracaoQuestionamento: texto INTERROGACAO NAO FIM
+   21                         | texto INTERROGACAO SIM FIM
+   22                         | texto INTERROGACAO
 
-   22 palavra: TOKEN
-   23        | ADJETIVO_POSITIVO
-   24        | ADJETIVO_NEGATIVO
-   25        | ARTIGO
-   26        | ENTRE
-   27        | SOMAR
-   28        | ENTRAM
-   29        | SAEM
-   30        | TODOS
-   31        | E
-   32        | ENTAO
-   33        | NAO
-   34        | FOR
-   35        | MAIOR
-   36        | MENOR
-   37        | IGUAL
+   23 texto: palavra
+   24      | texto NUMERO
+   25      | texto palavra
 
-   38 adjetivos: ADJETIVO_POSITIVO
-   39          | ADJETIVO_NEGATIVO
-   40          | TOKEN
-   41          | adjetivos ADJETIVO_POSITIVO
-   42          | adjetivos ADJETIVO_NEGATIVO
-   43          | adjetivos TOKEN
-   44          | adjetivos ENTRE
+   26 palavra: TOKEN
+   27        | ADJETIVO_POSITIVO
+   28        | ADJETIVO_NEGATIVO
+   29        | ARTIGO
+   30        | ENTRE
+   31        | SOMAR
+   32        | ENTRAM
+   33        | SAEM
+   34        | TODOS
+   35        | E
+   36        | ENTAO
 
-   45 declaracao: declaracaoInicio texto FIM
+   37 adjetivos: ADJETIVO_POSITIVO
+   38          | ADJETIVO_NEGATIVO
+   39          | TOKEN
+   40          | adjetivos ADJETIVO_POSITIVO
+   41          | adjetivos ADJETIVO_NEGATIVO
+   42          | adjetivos TOKEN
+   43          | adjetivos ENTRE
 
-   46 declaracaoInicio: texto VIRGULA
+   44 declaracao: declaracaoInicio texto FIM
 
-   47 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES
+   45 declaracaoInicio: texto VIRGULA
 
-   48 valor: NUMERO
-   49      | TU MESMO
-   50      | EU
-   51      | texto
+   46 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES
 
-   52 expressao: valor
-   53          | ARTIGO SOMAR ENTRE valor E valor
-   54          | ARTIGO SUBTRAIR ENTRE valor E valor
-   55          | ARTIGO MULTIPLICAR ENTRE valor E valor
-   56          | ARTIGO DIVIDIR ENTRE valor E valor
+   47 valor: NUMERO
+   48      | TU MESMO
+   49      | EU
+   50      | texto
 
-   57 if_sentenca: SE condicao VIRGULA ENTAO expressao
+   51 expressao: valor
+   52          | ARTIGO SOMAR ENTRE valor E valor
+   53          | ARTIGO SUBTRAIR ENTRE valor E valor
+   54          | ARTIGO MULTIPLICAR ENTRE valor E valor
+   55          | ARTIGO DIVIDIR ENTRE valor E valor
 
-   58 condicao: expressao FOR MAIOR expressao
-   59         | expressao FOR MENOR expressao
-   60         | expressao FOR IGUAL expressao
-   61         | expressao NAO FOR MENOR expressao
-   62         | expressao NAO FOR MAIOR expressao
-   63         | expressao NAO FOR IGUAL expressao
+   56 if_sentenca: SE condicao VIRGULA texto expressao
 
-   64 dialogo: inicioDialogo MOSTRAR_CENARIO
-   65        | inicioDialogo if_sentenca FIM
-   66        | inicioDialogo texto FIM
-   67        | inicioDialogo texto VIRGULA TU EH adjetivos FIM
+   57 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF
 
-   68 $@1: ε
+   58 while_aux: ε
 
-   69 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM
-   70        | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM
-   71        | inicioDialogo texto VIRGULA LE_VALOR FIM
+   59 $@1: ε
 
-   72 inicioDialogo: texto INICIO
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
-   73 ato: ATO
+   61 $@2: ε
 
-   74 cena: CENA
-=======
-    8      | concatenarCenario
-    9      | substituiCenario
-   10      | alteracaoElenco
-   11      | if_sentenca
-   12      | if_bloco
-   13      | while
+   62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-   14 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES
+   63 condicao: expressao FOR MAIOR expressao
+   64         | expressao FOR MENOR expressao
+   65         | expressao FOR IGUAL expressao
+   66         | expressao NAO FOR MENOR expressao
+   67         | expressao NAO FOR MAIOR expressao
+   68         | expressao NAO FOR IGUAL expressao
 
-   15 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM
+   69 dialogo: inicioDialogo MOSTRAR_CENARIO
+   70        | inicioDialogo if_sentenca FIM
+   71        | inicioDialogo texto FIM
+   72        | inicioDialogo texto VIRGULA TU EH adjetivos FIM
+   73        | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM
+   74        | inicioDialogo texto VIRGULA LE_VALOR FIM
 
-   16 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM
+   75 inicioDialogo: texto INICIO
 
-   17 texto: palavra
-   18      | texto NUMERO
-   19      | texto palavra
+   76 ato: ATO
 
-   20 palavra: TOKEN
-   21        | ADJETIVO_POSITIVO
-   22        | ADJETIVO_NEGATIVO
-   23        | ARTIGO
-   24        | ENTRE
-   25        | SOMAR
-   26        | ENTRAM
-   27        | SAEM
-   28        | TODOS
-   29        | E
-   30        | ENTAO
-
-   31 adjetivos: ADJETIVO_POSITIVO
-   32          | ADJETIVO_NEGATIVO
-   33          | TOKEN
-   34          | adjetivos ADJETIVO_POSITIVO
-   35          | adjetivos ADJETIVO_NEGATIVO
-   36          | adjetivos TOKEN
-   37          | adjetivos ENTRE
-
-   38 declaracao: declaracaoInicio texto FIM
-
-   39 declaracaoInicio: texto VIRGULA
-
-   40 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES
-
-   41 valor: NUMERO
-   42      | TU MESMO
-   43      | EU
-   44      | texto
-
-   45 expressao: valor
-   46          | ARTIGO SOMAR ENTRE valor E valor
-   47          | ARTIGO SUBTRAIR ENTRE valor E valor
-   48          | ARTIGO MULTIPLICAR ENTRE valor E valor
-   49          | ARTIGO DIVIDIR ENTRE valor E valor
-
-   50 if_sentenca: SE condicao VIRGULA texto expressao
-
-   51 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF
-
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM
-   53      | FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
-
-   54 condicao: expressao FOR MAIOR expressao
-   55         | expressao FOR MENOR expressao
-   56         | expressao FOR IGUAL expressao
-   57         | expressao NAO FOR MENOR expressao
-   58         | expressao NAO FOR MAIOR expressao
-   59         | expressao NAO FOR IGUAL expressao
-
-   60 dialogo: inicioDialogo MOSTRAR_CENARIO
-   61        | inicioDialogo if_sentenca FIM
-   62        | inicioDialogo texto FIM
-   63        | inicioDialogo texto VIRGULA TU EH adjetivos FIM
-
-   64 $@1: ε
-
-   65 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM
-
-   66 inicioDialogo: texto INICIO
-
-   67 ato: ATO
-
-   68 cena: CENA
->>>>>>> origin/Main_while
+   77 cena: CENA
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-<<<<<<< HEAD
-    MAIOR <texto> (258) 35 58 62
-    MENOR <texto> (259) 36 59 61
-    IGUAL <texto> (260) 37 60 63
-    NAO <texto> (261) 16 33 61 62 63
-    FOR <texto> (262) 34 58 59 60 61 62 63
-    ENTAO <texto> (263) 32 57
-    EU <texto> (264) 50
-    SE <texto> (265) 57
-    SAEM <texto> (266) 29
-    ENTRAM <texto> (267) 28
-    TODOS <texto> (268) 30
-    SOMAR <texto> (269) 27 53
-    SUBTRAIR <texto> (270) 54
-    DIVIDIR <texto> (271) 56
-    MULTIPLICAR <texto> (272) 55
-    INICIO <texto> (273) 14 72
-    FIM <texto> (274) 14 15 16 17 45 65 66 67 69 70 71
-    SIM <texto> (275) 17
-    INTERROGACAO <texto> (276) 16 17 18
-    ABRE_COLCHETES <texto> (277) 47
-    FECHA_COLCHETES <texto> (278) 47
-    ABRE_PARENTESES <texto> (279) 13
-    FECHA_PARENTESES <texto> (280) 13
-    VIRGULA <texto> (281) 13 46 57 67 69 70 71
-    TOKEN <texto> (282) 22 40 43
-    ADJETIVO_POSITIVO <texto> (283) 23 38 41
-    ADJETIVO_NEGATIVO <texto> (284) 24 39 42
-    TU <texto> (285) 49 67 69
-    EH <texto> (286) 67 69
-    E <texto> (287) 31 53 54 55 56
-    ENTRE <texto> (288) 26 44 53 54 55 56
-    ARTIGO <texto> (289) 25 53 54 55 56
-    MESMO <texto> (290) 49
-    NUMERO <texto> (291) 20 48
-    ADICIONAR_CENARIO <texto> (292) 14
-    SUBSTITUIR_CENARIO <texto> (293) 15
-    POR <texto> (294) 15
-    NO_CENARIO <texto> (295) 15
-    MOSTRAR_CENARIO <texto> (296) 64
-    MOSTRA_VALOR <texto> (297) 70
-    LE_VALOR <texto> (298) 71
-    ATO <inteiro> (299) 73
-    CENA <inteiro> (300) 74
-=======
-    FACA <texto> (258) 53
-    ENDIF <texto> (259) 51
-    ENQUANTO_COMECO <texto> (260) 52 53
-    ENQUANTO_FIM <texto> (261) 52
-    MAIOR <texto> (262) 54 58
-    MENOR <texto> (263) 55 57
-    IGUAL <texto> (264) 56 59
-    NAO <texto> (265) 57 58 59
-    FOR <texto> (266) 54 55 56 57 58 59
-    ENTAO <texto> (267) 30
-    EU <texto> (268) 43
-    SE <texto> (269) 50 51
-    SAEM <texto> (270) 27
-    ENTRAM <texto> (271) 26
-    TODOS <texto> (272) 28
-    SOMAR <texto> (273) 25 46
-    SUBTRAIR <texto> (274) 47
-    DIVIDIR <texto> (275) 49
-    MULTIPLICAR <texto> (276) 48
-    INICIO <texto> (277) 15 51 52 53 66
-    FIM <texto> (278) 15 16 38 52 53 61 62 63 65
-    ABRE_COLCHETES <texto> (279) 40
-    FECHA_COLCHETES <texto> (280) 40
-    ABRE_PARENTESES <texto> (281) 14
-    FECHA_PARENTESES <texto> (282) 14
-    VIRGULA <texto> (283) 14 39 50 51 52 53 63 65
-    TOKEN <texto> (284) 20 33 36
-    ADJETIVO_POSITIVO <texto> (285) 21 31 34
-    ADJETIVO_NEGATIVO <texto> (286) 22 32 35
-    TU <texto> (287) 42 63 65
-    EH <texto> (288) 63 65
-    E <texto> (289) 29 46 47 48 49
-    ENTRE <texto> (290) 24 37 46 47 48 49
-    ARTIGO <texto> (291) 23 46 47 48 49
-    MESMO <texto> (292) 42
-    NUMERO <texto> (293) 18 41
-    ADICIONAR_CENARIO <texto> (294) 15
-    SUBSTITUIR_CENARIO <texto> (295) 16
-    POR <texto> (296) 16
-    NO_CENARIO <texto> (297) 16
-    MOSTRAR_CENARIO <texto> (298) 60
-    ATO <inteiro> (299) 67
-    CENA <inteiro> (300) 68
->>>>>>> origin/Main_while
+    FACA <texto> (258) 62
+    ENDIF <texto> (259) 57
+    ENQUANTO_COMECO <texto> (260) 60 62
+    ENQUANTO_FIM <texto> (261) 60
+    MAIOR <texto> (262) 63 67
+    MENOR <texto> (263) 64 66
+    IGUAL <texto> (264) 65 68
+    NAO <texto> (265) 20 66 67 68
+    FOR <texto> (266) 63 64 65 66 67 68
+    ENTAO <texto> (267) 36
+    EU <texto> (268) 49
+    SE <texto> (269) 56 57
+    SAEM <texto> (270) 33
+    ENTRAM <texto> (271) 32
+    TODOS <texto> (272) 34
+    SOMAR <texto> (273) 31 52
+    SUBTRAIR <texto> (274) 53
+    DIVIDIR <texto> (275) 55
+    MULTIPLICAR <texto> (276) 54
+    INICIO <texto> (277) 18 57 60 62 75
+    FIM <texto> (278) 18 19 20 21 44 60 62 70 71 72 73 74
+    SIM <texto> (279) 21
+    INTERROGACAO <texto> (280) 20 21 22
+    ABRE_COLCHETES <texto> (281) 46
+    FECHA_COLCHETES <texto> (282) 46
+    ABRE_PARENTESES <texto> (283) 17
+    FECHA_PARENTESES <texto> (284) 17
+    VIRGULA <texto> (285) 17 45 56 57 60 62 72 73 74
+    TOKEN <texto> (286) 26 39 42
+    ADJETIVO_POSITIVO <texto> (287) 27 37 40
+    ADJETIVO_NEGATIVO <texto> (288) 28 38 41
+    TU <texto> (289) 48 72
+    EH <texto> (290) 72
+    E <texto> (291) 35 52 53 54 55
+    ENTRE <texto> (292) 30 43 52 53 54 55
+    ARTIGO <texto> (293) 29 52 53 54 55
+    MESMO <texto> (294) 48
+    NUMERO <texto> (295) 24 47
+    ADICIONAR_CENARIO <texto> (296) 18
+    SUBSTITUIR_CENARIO <texto> (297) 19
+    POR <texto> (298) 19
+    NO_CENARIO <texto> (299) 19
+    MOSTRAR_CENARIO <texto> (300) 69
+    MOSTRA_VALOR <texto> (301) 73
+    LE_VALOR <texto> (302) 74
+    ATO <inteiro> (303) 76
+    CENA <inteiro> (304) 77
 
 
 Nonterminals, with rules where they appear
 
-    $accept (46)
+    $accept (50)
         on left: 0
-    programa (47)
+    programa (51)
         on left: 1 2
         on right: 0 2
-    bloco <texto> (48)
-<<<<<<< HEAD
-        on left: 3 4 5 6 7 8 9 10 11 12
-        on right: 2
-    declaracaoCenario (49)
-        on left: 13
-        on right: 7
-    concatenarCenario (50)
-        on left: 14
+    bloco <texto> (52)
+        on left: 3 4
+        on right: 2 4 57 60 62
+    instrucao (53)
+        on left: 5 6 7 8 9 10 11 12 13 14 15 16
+        on right: 3 4
+    declaracaoCenario (54)
+        on left: 17
         on right: 9
-    substituiCenario (51)
-        on left: 15
-        on right: 10
-    declaracaoQuestionamento (52)
-        on left: 16 17 18
-        on right: 8
-    texto <texto> (53)
-        on left: 19 20 21
-        on right: 13 14 15 16 17 18 20 21 45 46 47 51 66 67 69 70 71 72
-    palavra <texto> (54)
-        on left: 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37
-        on right: 19 21
-    adjetivos <inteiro> (55)
-        on left: 38 39 40 41 42 43 44
-        on right: 41 42 43 44 67
-    declaracao <texto> (56)
-        on left: 45
-        on right: 6
-    declaracaoInicio <texto> (57)
-        on left: 46
-        on right: 45
-    alteracaoElenco (58)
-        on left: 47
+    concatenarCenario (55)
+        on left: 18
         on right: 11
-    valor <inteiro> (59)
-        on left: 48 49 50 51
-        on right: 52 53 54 55 56
-    expressao <inteiro> (60)
-        on left: 52 53 54 55 56
-        on right: 57 58 59 60 61 62 63 69
-    if_sentenca <inteiro> (61)
-        on left: 57
-        on right: 12 65
-    condicao <inteiro> (62)
-        on left: 58 59 60 61 62 63
-        on right: 57
-    dialogo <texto> (63)
-        on left: 64 65 66 67 69 70 71
-        on right: 5
-    $@1 (64)
-        on left: 68
-        on right: 69
-    inicioDialogo <texto> (65)
-        on left: 72
-        on right: 64 65 66 67 69 70 71
-    ato <texto> (66)
-        on left: 73
-        on right: 3
-    cena <texto> (67)
-        on left: 74
-=======
-        on left: 3 4 5 6 7 8 9 10 11 12 13
-        on right: 2 51 52 53
-    declaracaoCenario (49)
-        on left: 14
-        on right: 7
-    concatenarCenario (50)
-        on left: 15
-        on right: 8
-    substituiCenario (51)
-        on left: 16
-        on right: 9
-    texto <texto> (52)
-        on left: 17 18 19
-        on right: 14 15 16 18 19 38 39 40 44 50 51 52 53 62 63 65 66
-    palavra <texto> (53)
-        on left: 20 21 22 23 24 25 26 27 28 29 30
-        on right: 17 19
-    adjetivos <inteiro> (54)
-        on left: 31 32 33 34 35 36 37
-        on right: 34 35 36 37 63
-    declaracao <texto> (55)
-        on left: 38
-        on right: 6
-    declaracaoInicio <texto> (56)
-        on left: 39
-        on right: 38
-    alteracaoElenco (57)
-        on left: 40
-        on right: 10
-    valor <inteiro> (58)
-        on left: 41 42 43 44
-        on right: 45 46 47 48 49
-    expressao <inteiro> (59)
-        on left: 45 46 47 48 49
-        on right: 50 54 55 56 57 58 59 65
-    if_sentenca <inteiro> (60)
-        on left: 50
-        on right: 11 61
-    if_bloco (61)
-        on left: 51
+    substituiCenario (56)
+        on left: 19
         on right: 12
-    while <inteiro> (62)
-        on left: 52 53
+    declaracaoQuestionamento (57)
+        on left: 20 21 22
+        on right: 10
+    texto <texto> (58)
+        on left: 23 24 25
+        on right: 17 18 19 20 21 22 24 25 44 45 46 50 56 57 60 62 71 72 73 74 75
+    palavra <texto> (59)
+        on left: 26 27 28 29 30 31 32 33 34 35 36
+        on right: 23 25
+    adjetivos <inteiro> (60)
+        on left: 37 38 39 40 41 42 43
+        on right: 40 41 42 43 72
+    declaracao <texto> (61)
+        on left: 44
+        on right: 8
+    declaracaoInicio <texto> (62)
+        on left: 45
+        on right: 44
+    alteracaoElenco (63)
+        on left: 46
         on right: 13
-    condicao <inteiro> (63)
-        on left: 54 55 56 57 58 59
-        on right: 50 51 52 53
-    dialogo <texto> (64)
-        on left: 60 61 62 63 65
+    valor <llmValueRef> (64)
+        on left: 47 48 49 50
+        on right: 51 52 53 54 55
+    expressao <llmValueRef> (65)
+        on left: 51 52 53 54 55
+        on right: 56 63 64 65 66 67 68
+    if_sentenca <inteiro> (66)
+        on left: 56
+        on right: 14 70
+    if_bloco (67)
+        on left: 57
+        on right: 15
+    while_aux <WhileBlocks> (68)
+        on left: 58
+        on right: 60
+    while <inteiro> (69)
+        on left: 60 62
+        on right: 16
+    $@1 (70)
+        on left: 59
+        on right: 60
+    $@2 (71)
+        on left: 61
+        on right: 62
+    condicao <llmValueRef> (72)
+        on left: 63 64 65 66 67 68
+        on right: 56 57 60 62
+    dialogo <texto> (73)
+        on left: 69 70 71 72 73 74
+        on right: 7
+    inicioDialogo <texto> (74)
+        on left: 75
+        on right: 69 70 71 72 73 74
+    ato <texto> (75)
+        on left: 76
         on right: 5
-    $@1 (65)
-        on left: 64
-        on right: 65
-    inicioDialogo <texto> (66)
-        on left: 66
-        on right: 60 61 62 63 65
-    ato <texto> (67)
-        on left: 67
-        on right: 3
-    cena <texto> (68)
-        on left: 68
->>>>>>> origin/Main_while
-        on right: 4
+    cena <texto> (76)
+        on left: 77
+        on right: 6
 
 
 State 0
@@ -441,47 +267,6 @@ State 1
     2 programa: programa • bloco
 
     $end                shift, and go to state 2
-<<<<<<< HEAD
-    MAIOR               shift, and go to state 3
-    MENOR               shift, and go to state 4
-    IGUAL               shift, and go to state 5
-    NAO                 shift, and go to state 6
-    FOR                 shift, and go to state 7
-    ENTAO               shift, and go to state 8
-    SE                  shift, and go to state 9
-    SAEM                shift, and go to state 10
-    ENTRAM              shift, and go to state 11
-    TODOS               shift, and go to state 12
-    SOMAR               shift, and go to state 13
-    ABRE_COLCHETES      shift, and go to state 14
-    ABRE_PARENTESES     shift, and go to state 15
-    TOKEN               shift, and go to state 16
-    ADJETIVO_POSITIVO   shift, and go to state 17
-    ADJETIVO_NEGATIVO   shift, and go to state 18
-    E                   shift, and go to state 19
-    ENTRE               shift, and go to state 20
-    ARTIGO              shift, and go to state 21
-    ADICIONAR_CENARIO   shift, and go to state 22
-    SUBSTITUIR_CENARIO  shift, and go to state 23
-    ATO                 shift, and go to state 24
-    CENA                shift, and go to state 25
-
-    bloco                     go to state 26
-    declaracaoCenario         go to state 27
-    concatenarCenario         go to state 28
-    substituiCenario          go to state 29
-    declaracaoQuestionamento  go to state 30
-    texto                     go to state 31
-    palavra                   go to state 32
-    declaracao                go to state 33
-    declaracaoInicio          go to state 34
-    alteracaoElenco           go to state 35
-    if_sentenca               go to state 36
-    dialogo                   go to state 37
-    inicioDialogo             go to state 38
-    ato                       go to state 39
-    cena                      go to state 40
-=======
     FACA                shift, and go to state 3
     ENQUANTO_COMECO     shift, and go to state 4
     ENTAO               shift, and go to state 5
@@ -503,23 +288,24 @@ State 1
     ATO                 shift, and go to state 21
     CENA                shift, and go to state 22
 
-    bloco              go to state 23
-    declaracaoCenario  go to state 24
-    concatenarCenario  go to state 25
-    substituiCenario   go to state 26
-    texto              go to state 27
-    palavra            go to state 28
-    declaracao         go to state 29
-    declaracaoInicio   go to state 30
-    alteracaoElenco    go to state 31
-    if_sentenca        go to state 32
-    if_bloco           go to state 33
-    while              go to state 34
-    dialogo            go to state 35
-    inicioDialogo      go to state 36
-    ato                go to state 37
-    cena               go to state 38
->>>>>>> origin/Main_while
+    bloco                     go to state 23
+    instrucao                 go to state 24
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 2
@@ -531,28 +317,34 @@ State 2
 
 State 3
 
-<<<<<<< HEAD
-   35 palavra: MAIOR •
+   62 while: FACA • VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-    $default  reduce using rule 35 (palavra)
-=======
-   53 while: FACA • VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
-
-    VIRGULA  shift, and go to state 39
->>>>>>> origin/Main_while
+    VIRGULA  shift, and go to state 41
 
 
 State 4
 
-<<<<<<< HEAD
-   36 palavra: MENOR •
+   60 while: ENQUANTO_COMECO • while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
+
+    $default  reduce using rule 58 (while_aux)
+
+    while_aux  go to state 42
+
+
+State 5
+
+   36 palavra: ENTAO •
 
     $default  reduce using rule 36 (palavra)
-=======
-   52 while: ENQUANTO_COMECO • condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM
+
+
+State 6
+
+   56 if_sentenca: SE • condicao VIRGULA texto expressao
+   57 if_bloco: SE • condicao VIRGULA texto INICIO bloco ENDIF
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -560,263 +352,50 @@ State 4
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 46
-    condicao   go to state 47
->>>>>>> origin/Main_while
-
-
-State 5
-
-<<<<<<< HEAD
-   37 palavra: IGUAL •
-
-    $default  reduce using rule 37 (palavra)
-
-
-State 6
-
-   33 palavra: NAO •
-
-    $default  reduce using rule 33 (palavra)
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 49
+    condicao   go to state 50
 
 
 State 7
 
-   34 palavra: FOR •
+   33 palavra: SAEM •
 
-    $default  reduce using rule 34 (palavra)
+    $default  reduce using rule 33 (palavra)
 
 
 State 8
 
-   32 palavra: ENTAO •
+   32 palavra: ENTRAM •
 
     $default  reduce using rule 32 (palavra)
 
 
 State 9
 
-   57 if_sentenca: SE • condicao VIRGULA ENTAO expressao
+   34 palavra: TODOS •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 47
-    condicao   go to state 48
+    $default  reduce using rule 34 (palavra)
 
 
 State 10
 
-   29 palavra: SAEM •
-
-    $default  reduce using rule 29 (palavra)
-
-
-State 11
-
-   28 palavra: ENTRAM •
-
-    $default  reduce using rule 28 (palavra)
-
-
-State 12
-
-   30 palavra: TODOS •
-=======
-   30 palavra: ENTAO •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 30 (palavra)
-
-
-<<<<<<< HEAD
-State 13
-
-   27 palavra: SOMAR •
-=======
-State 6
-
-   50 if_sentenca: SE • condicao VIRGULA texto expressao
-   51 if_bloco: SE • condicao VIRGULA texto INICIO bloco ENDIF
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 46
-    condicao   go to state 48
-
-
-State 7
-
-   27 palavra: SAEM •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 27 (palavra)
-
-
-<<<<<<< HEAD
-State 14
-
-   47 alteracaoElenco: ABRE_COLCHETES • texto FECHA_COLCHETES
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 49
-    palavra  go to state 32
-
-
-State 15
-
-   13 declaracaoCenario: ABRE_PARENTESES • texto VIRGULA texto FECHA_PARENTESES
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 50
-    palavra  go to state 32
-
-
-State 16
-
-   22 palavra: TOKEN •
-
-    $default  reduce using rule 22 (palavra)
-
-
-State 17
-
-   23 palavra: ADJETIVO_POSITIVO •
-
-    $default  reduce using rule 23 (palavra)
-
-
-State 18
-
-   24 palavra: ADJETIVO_NEGATIVO •
-
-    $default  reduce using rule 24 (palavra)
-
-
-State 19
-
-   31 palavra: E •
+   31 palavra: SOMAR •
 
     $default  reduce using rule 31 (palavra)
 
 
-State 20
-
-   26 palavra: ENTRE •
-=======
-State 8
-
-   26 palavra: ENTRAM •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 26 (palavra)
-
-
-<<<<<<< HEAD
-State 21
-
-   25 palavra: ARTIGO •
-=======
-State 9
-
-   28 palavra: TODOS •
-
-    $default  reduce using rule 28 (palavra)
-
-
-State 10
-
-   25 palavra: SOMAR •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 25 (palavra)
-
-
-<<<<<<< HEAD
-State 22
-
-   14 concatenarCenario: ADICIONAR_CENARIO • INICIO texto FIM
-=======
 State 11
 
-   40 alteracaoElenco: ABRE_COLCHETES • texto FECHA_COLCHETES
+   46 alteracaoElenco: ABRE_COLCHETES • texto FECHA_COLCHETES
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -830,13 +409,13 @@ State 11
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 49
-    palavra  go to state 28
+    texto    go to state 51
+    palavra  go to state 30
 
 
 State 12
 
-   14 declaracaoCenario: ABRE_PARENTESES • texto VIRGULA texto FECHA_PARENTESES
+   17 declaracaoCenario: ABRE_PARENTESES • texto VIRGULA texto FECHA_PARENTESES
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -850,105 +429,62 @@ State 12
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 50
-    palavra  go to state 28
+    texto    go to state 52
+    palavra  go to state 30
 
 
 State 13
 
-   20 palavra: TOKEN •
+   26 palavra: TOKEN •
 
-    $default  reduce using rule 20 (palavra)
+    $default  reduce using rule 26 (palavra)
 
 
 State 14
 
-   21 palavra: ADJETIVO_POSITIVO •
+   27 palavra: ADJETIVO_POSITIVO •
 
-    $default  reduce using rule 21 (palavra)
+    $default  reduce using rule 27 (palavra)
 
 
 State 15
 
-   22 palavra: ADJETIVO_NEGATIVO •
+   28 palavra: ADJETIVO_NEGATIVO •
 
-    $default  reduce using rule 22 (palavra)
+    $default  reduce using rule 28 (palavra)
 
 
 State 16
 
-   29 palavra: E •
+   35 palavra: E •
 
-    $default  reduce using rule 29 (palavra)
+    $default  reduce using rule 35 (palavra)
 
 
 State 17
 
-   24 palavra: ENTRE •
+   30 palavra: ENTRE •
 
-    $default  reduce using rule 24 (palavra)
+    $default  reduce using rule 30 (palavra)
 
 
 State 18
 
-   23 palavra: ARTIGO •
+   29 palavra: ARTIGO •
 
-    $default  reduce using rule 23 (palavra)
+    $default  reduce using rule 29 (palavra)
 
 
 State 19
 
-   15 concatenarCenario: ADICIONAR_CENARIO • INICIO texto FIM
->>>>>>> origin/Main_while
+   18 concatenarCenario: ADICIONAR_CENARIO • INICIO texto FIM
 
-    INICIO  shift, and go to state 51
-
-
-<<<<<<< HEAD
-State 23
-
-   15 substituiCenario: SUBSTITUIR_CENARIO • texto POR texto NO_CENARIO FIM
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 52
-    palavra  go to state 32
+    INICIO  shift, and go to state 53
 
 
-State 24
-
-   73 ato: ATO •
-
-    $default  reduce using rule 73 (ato)
-
-
-State 25
-
-   74 cena: CENA •
-
-    $default  reduce using rule 74 (cena)
-
-
-State 26
-=======
 State 20
 
-   16 substituiCenario: SUBSTITUIR_CENARIO • texto POR texto NO_CENARIO FIM
+   19 substituiCenario: SUBSTITUIR_CENARIO • texto POR texto NO_CENARIO FIM
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -962,350 +498,172 @@ State 20
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 52
-    palavra  go to state 28
+    texto    go to state 54
+    palavra  go to state 30
 
 
 State 21
 
-   67 ato: ATO •
+   76 ato: ATO •
 
-    $default  reduce using rule 67 (ato)
+    $default  reduce using rule 76 (ato)
 
 
 State 22
 
-   68 cena: CENA •
+   77 cena: CENA •
 
-    $default  reduce using rule 68 (cena)
+    $default  reduce using rule 77 (cena)
 
 
 State 23
->>>>>>> origin/Main_while
 
     2 programa: programa bloco •
+    4 bloco: bloco • instrucao
 
-    $default  reduce using rule 2 (programa)
+    FACA                shift, and go to state 3
+    ENQUANTO_COMECO     shift, and go to state 4
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
+
+    FACA                [reduce using rule 2 (programa)]
+    ENQUANTO_COMECO     [reduce using rule 2 (programa)]
+    ENTAO               [reduce using rule 2 (programa)]
+    SE                  [reduce using rule 2 (programa)]
+    SAEM                [reduce using rule 2 (programa)]
+    ENTRAM              [reduce using rule 2 (programa)]
+    TODOS               [reduce using rule 2 (programa)]
+    SOMAR               [reduce using rule 2 (programa)]
+    ABRE_COLCHETES      [reduce using rule 2 (programa)]
+    ABRE_PARENTESES     [reduce using rule 2 (programa)]
+    TOKEN               [reduce using rule 2 (programa)]
+    ADJETIVO_POSITIVO   [reduce using rule 2 (programa)]
+    ADJETIVO_NEGATIVO   [reduce using rule 2 (programa)]
+    E                   [reduce using rule 2 (programa)]
+    ENTRE               [reduce using rule 2 (programa)]
+    ARTIGO              [reduce using rule 2 (programa)]
+    ADICIONAR_CENARIO   [reduce using rule 2 (programa)]
+    SUBSTITUIR_CENARIO  [reduce using rule 2 (programa)]
+    ATO                 [reduce using rule 2 (programa)]
+    CENA                [reduce using rule 2 (programa)]
+    $default            reduce using rule 2 (programa)
+
+    instrucao                 go to state 55
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
-<<<<<<< HEAD
-State 27
-=======
 State 24
->>>>>>> origin/Main_while
 
-    7 bloco: declaracaoCenario •
-
-    $default  reduce using rule 7 (bloco)
-
-
-<<<<<<< HEAD
-State 28
-
-    9 bloco: concatenarCenario •
-
-    $default  reduce using rule 9 (bloco)
-
-
-State 29
-
-   10 bloco: substituiCenario •
-
-    $default  reduce using rule 10 (bloco)
-
-
-State 30
-
-    8 bloco: declaracaoQuestionamento •
-=======
-State 25
-
-    8 bloco: concatenarCenario •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 8 (bloco)
-
-
-<<<<<<< HEAD
-State 31
-
-   16 declaracaoQuestionamento: texto • INTERROGACAO NAO FIM
-   17                         | texto • INTERROGACAO SIM FIM
-   18                         | texto • INTERROGACAO
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-   46 declaracaoInicio: texto • VIRGULA
-   72 inicioDialogo: texto • INICIO
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    INICIO             shift, and go to state 53
-    INTERROGACAO       shift, and go to state 54
-    VIRGULA            shift, and go to state 55
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-
-
-State 32
-
-   19 texto: palavra •
-
-    $default  reduce using rule 19 (texto)
-
-
-State 33
-=======
-State 26
-
-    9 bloco: substituiCenario •
-
-    $default  reduce using rule 9 (bloco)
-
-
-State 27
-
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   39 declaracaoInicio: texto • VIRGULA
-   66 inicioDialogo: texto • INICIO
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    INICIO             shift, and go to state 53
-    VIRGULA            shift, and go to state 54
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
-
-
-State 28
-
-   17 texto: palavra •
-
-    $default  reduce using rule 17 (texto)
-
-
-State 29
->>>>>>> origin/Main_while
-
-    6 bloco: declaracao •
-
-    $default  reduce using rule 6 (bloco)
-
-
-<<<<<<< HEAD
-State 34
-
-   45 declaracao: declaracaoInicio • texto FIM
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 58
-    palavra  go to state 32
-
-
-State 35
-
-   11 bloco: alteracaoElenco •
-=======
-State 30
-
-   38 declaracao: declaracaoInicio • texto FIM
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-
-    texto    go to state 57
-    palavra  go to state 28
-
-
-State 31
-
-   10 bloco: alteracaoElenco •
-
-    $default  reduce using rule 10 (bloco)
-
-
-State 32
-
-   11 bloco: if_sentenca •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 11 (bloco)
-
-
-<<<<<<< HEAD
-State 36
-
-   12 bloco: if_sentenca •
-=======
-State 33
-
-   12 bloco: if_bloco •
->>>>>>> origin/Main_while
-
-    $default  reduce using rule 12 (bloco)
-
-
-<<<<<<< HEAD
-State 37
-=======
-State 34
-
-   13 bloco: while •
-
-    $default  reduce using rule 13 (bloco)
-
-
-State 35
->>>>>>> origin/Main_while
-
-    5 bloco: dialogo •
-
-    $default  reduce using rule 5 (bloco)
-
-
-<<<<<<< HEAD
-State 38
-
-   64 dialogo: inicioDialogo • MOSTRAR_CENARIO
-   65        | inicioDialogo • if_sentenca FIM
-   66        | inicioDialogo • texto FIM
-   67        | inicioDialogo • texto VIRGULA TU EH adjetivos FIM
-   69        | inicioDialogo • texto VIRGULA TU EH $@1 expressao FIM
-   70        | inicioDialogo • texto VIRGULA MOSTRA_VALOR FIM
-   71        | inicioDialogo • texto VIRGULA LE_VALOR FIM
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SE                 shift, and go to state 9
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    MOSTRAR_CENARIO    shift, and go to state 59
-
-    texto        go to state 60
-    palavra      go to state 32
-    if_sentenca  go to state 61
-
-
-State 39
-=======
-State 36
-
-   60 dialogo: inicioDialogo • MOSTRAR_CENARIO
-   61        | inicioDialogo • if_sentenca FIM
-   62        | inicioDialogo • texto FIM
-   63        | inicioDialogo • texto VIRGULA TU EH adjetivos FIM
-   65        | inicioDialogo • texto VIRGULA TU EH $@1 expressao FIM
-
-    ENTAO              shift, and go to state 5
-    SE                 shift, and go to state 58
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    MOSTRAR_CENARIO    shift, and go to state 59
-
-    texto        go to state 60
-    palavra      go to state 28
-    if_sentenca  go to state 61
-
-
-State 37
->>>>>>> origin/Main_while
-
-    3 bloco: ato •
+    3 bloco: instrucao •
 
     $default  reduce using rule 3 (bloco)
 
 
-<<<<<<< HEAD
-State 40
-=======
-State 38
->>>>>>> origin/Main_while
+State 25
 
-    4 bloco: cena •
+    9 instrucao: declaracaoCenario •
 
-    $default  reduce using rule 4 (bloco)
+    $default  reduce using rule 9 (instrucao)
 
 
-<<<<<<< HEAD
-State 41
+State 26
 
-   50 valor: EU •
+   11 instrucao: concatenarCenario •
 
-    $default  reduce using rule 50 (valor)
-=======
-State 39
+    $default  reduce using rule 11 (instrucao)
 
-   53 while: FACA VIRGULA • texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
+
+State 27
+
+   12 instrucao: substituiCenario •
+
+    $default  reduce using rule 12 (instrucao)
+
+
+State 28
+
+   10 instrucao: declaracaoQuestionamento •
+
+    $default  reduce using rule 10 (instrucao)
+
+
+State 29
+
+   20 declaracaoQuestionamento: texto • INTERROGACAO NAO FIM
+   21                         | texto • INTERROGACAO SIM FIM
+   22                         | texto • INTERROGACAO
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   45 declaracaoInicio: texto • VIRGULA
+   75 inicioDialogo: texto • INICIO
+
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    INICIO             shift, and go to state 56
+    INTERROGACAO       shift, and go to state 57
+    VIRGULA            shift, and go to state 58
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+
+    palavra  go to state 60
+
+
+State 30
+
+   23 texto: palavra •
+
+    $default  reduce using rule 23 (texto)
+
+
+State 31
+
+    8 instrucao: declaracao •
+
+    $default  reduce using rule 8 (instrucao)
+
+
+State 32
+
+   44 declaracao: declaracaoInicio • texto FIM
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -1319,952 +677,549 @@ State 39
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 62
-    palavra  go to state 28
+    texto    go to state 61
+    palavra  go to state 30
+
+
+State 33
+
+   13 instrucao: alteracaoElenco •
+
+    $default  reduce using rule 13 (instrucao)
+
+
+State 34
+
+   14 instrucao: if_sentenca •
+
+    $default  reduce using rule 14 (instrucao)
+
+
+State 35
+
+   15 instrucao: if_bloco •
+
+    $default  reduce using rule 15 (instrucao)
+
+
+State 36
+
+   16 instrucao: while •
+
+    $default  reduce using rule 16 (instrucao)
+
+
+State 37
+
+    7 instrucao: dialogo •
+
+    $default  reduce using rule 7 (instrucao)
+
+
+State 38
+
+   69 dialogo: inicioDialogo • MOSTRAR_CENARIO
+   70        | inicioDialogo • if_sentenca FIM
+   71        | inicioDialogo • texto FIM
+   72        | inicioDialogo • texto VIRGULA TU EH adjetivos FIM
+   73        | inicioDialogo • texto VIRGULA MOSTRA_VALOR FIM
+   74        | inicioDialogo • texto VIRGULA LE_VALOR FIM
+
+    ENTAO              shift, and go to state 5
+    SE                 shift, and go to state 62
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    MOSTRAR_CENARIO    shift, and go to state 63
+
+    texto        go to state 64
+    palavra      go to state 30
+    if_sentenca  go to state 65
+
+
+State 39
+
+    5 instrucao: ato •
+
+    $default  reduce using rule 5 (instrucao)
 
 
 State 40
 
-   43 valor: EU •
+    6 instrucao: cena •
 
-    $default  reduce using rule 43 (valor)
+    $default  reduce using rule 6 (instrucao)
 
 
 State 41
 
-   42 valor: TU • MESMO
+   62 while: FACA VIRGULA • texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-    MESMO  shift, and go to state 63
->>>>>>> origin/Main_while
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+
+    texto    go to state 66
+    palavra  go to state 30
 
 
 State 42
 
-<<<<<<< HEAD
-   49 valor: TU • MESMO
+   60 while: ENQUANTO_COMECO while_aux • condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
-    MESMO  shift, and go to state 62
-=======
-   23 palavra: ARTIGO •
-   46 expressao: ARTIGO • SOMAR ENTRE valor E valor
-   47          | ARTIGO • SUBTRAIR ENTRE valor E valor
-   48          | ARTIGO • MULTIPLICAR ENTRE valor E valor
-   49          | ARTIGO • DIVIDIR ENTRE valor E valor
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    SOMAR        shift, and go to state 64
-    SUBTRAIR     shift, and go to state 65
-    DIVIDIR      shift, and go to state 66
-    MULTIPLICAR  shift, and go to state 67
-
-    SOMAR     [reduce using rule 23 (palavra)]
-    $default  reduce using rule 23 (palavra)
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 49
+    condicao   go to state 67
 
 
 State 43
 
-<<<<<<< HEAD
-   25 palavra: ARTIGO •
-   53 expressao: ARTIGO • SOMAR ENTRE valor E valor
-   54          | ARTIGO • SUBTRAIR ENTRE valor E valor
-   55          | ARTIGO • MULTIPLICAR ENTRE valor E valor
-   56          | ARTIGO • DIVIDIR ENTRE valor E valor
+   49 valor: EU •
 
-    SOMAR        shift, and go to state 63
-    SUBTRAIR     shift, and go to state 64
-    DIVIDIR      shift, and go to state 65
-    MULTIPLICAR  shift, and go to state 66
-
-    SOMAR     [reduce using rule 25 (palavra)]
-    $default  reduce using rule 25 (palavra)
-=======
-   41 valor: NUMERO •
-
-    $default  reduce using rule 41 (valor)
->>>>>>> origin/Main_while
+    $default  reduce using rule 49 (valor)
 
 
 State 44
 
-<<<<<<< HEAD
-   48 valor: NUMERO •
+   48 valor: TU • MESMO
 
-    $default  reduce using rule 48 (valor)
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   44 valor: texto •
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    ENTAO              [reduce using rule 44 (valor)]
-    SAEM               [reduce using rule 44 (valor)]
-    ENTRAM             [reduce using rule 44 (valor)]
-    TODOS              [reduce using rule 44 (valor)]
-    SOMAR              [reduce using rule 44 (valor)]
-    TOKEN              [reduce using rule 44 (valor)]
-    ADJETIVO_POSITIVO  [reduce using rule 44 (valor)]
-    ADJETIVO_NEGATIVO  [reduce using rule 44 (valor)]
-    E                  [reduce using rule 44 (valor)]
-    ENTRE              [reduce using rule 44 (valor)]
-    ARTIGO             [reduce using rule 44 (valor)]
-    $default           reduce using rule 44 (valor)
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    MESMO  shift, and go to state 68
 
 
 State 45
 
-<<<<<<< HEAD
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-   51 valor: texto •
+   29 palavra: ARTIGO •
+   52 expressao: ARTIGO • SOMAR ENTRE valor E valor
+   53          | ARTIGO • SUBTRAIR ENTRE valor E valor
+   54          | ARTIGO • MULTIPLICAR ENTRE valor E valor
+   55          | ARTIGO • DIVIDIR ENTRE valor E valor
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
+    SOMAR        shift, and go to state 69
+    SUBTRAIR     shift, and go to state 70
+    DIVIDIR      shift, and go to state 71
+    MULTIPLICAR  shift, and go to state 72
 
-    MAIOR              [reduce using rule 51 (valor)]
-    MENOR              [reduce using rule 51 (valor)]
-    IGUAL              [reduce using rule 51 (valor)]
-    NAO                [reduce using rule 51 (valor)]
-    FOR                [reduce using rule 51 (valor)]
-    ENTAO              [reduce using rule 51 (valor)]
-    SAEM               [reduce using rule 51 (valor)]
-    ENTRAM             [reduce using rule 51 (valor)]
-    TODOS              [reduce using rule 51 (valor)]
-    SOMAR              [reduce using rule 51 (valor)]
-    TOKEN              [reduce using rule 51 (valor)]
-    ADJETIVO_POSITIVO  [reduce using rule 51 (valor)]
-    ADJETIVO_NEGATIVO  [reduce using rule 51 (valor)]
-    E                  [reduce using rule 51 (valor)]
-    ENTRE              [reduce using rule 51 (valor)]
-    ARTIGO             [reduce using rule 51 (valor)]
-    $default           reduce using rule 51 (valor)
-
-    palavra  go to state 57
-=======
-   45 expressao: valor •
-
-    $default  reduce using rule 45 (expressao)
->>>>>>> origin/Main_while
+    SOMAR     [reduce using rule 29 (palavra)]
+    $default  reduce using rule 29 (palavra)
 
 
 State 46
 
-<<<<<<< HEAD
-   52 expressao: valor •
+   47 valor: NUMERO •
 
-    $default  reduce using rule 52 (expressao)
-=======
-   54 condicao: expressao • FOR MAIOR expressao
-   55         | expressao • FOR MENOR expressao
-   56         | expressao • FOR IGUAL expressao
-   57         | expressao • NAO FOR MENOR expressao
-   58         | expressao • NAO FOR MAIOR expressao
-   59         | expressao • NAO FOR IGUAL expressao
-
-    NAO  shift, and go to state 68
-    FOR  shift, and go to state 69
->>>>>>> origin/Main_while
+    $default  reduce using rule 47 (valor)
 
 
 State 47
 
-<<<<<<< HEAD
-   58 condicao: expressao • FOR MAIOR expressao
-   59         | expressao • FOR MENOR expressao
-   60         | expressao • FOR IGUAL expressao
-   61         | expressao • NAO FOR MENOR expressao
-   62         | expressao • NAO FOR MAIOR expressao
-   63         | expressao • NAO FOR IGUAL expressao
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   50 valor: texto •
 
-    NAO  shift, and go to state 67
-    FOR  shift, and go to state 68
-=======
-   52 while: ENQUANTO_COMECO condicao • VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    VIRGULA  shift, and go to state 70
->>>>>>> origin/Main_while
+    ENTAO              [reduce using rule 50 (valor)]
+    SAEM               [reduce using rule 50 (valor)]
+    ENTRAM             [reduce using rule 50 (valor)]
+    TODOS              [reduce using rule 50 (valor)]
+    SOMAR              [reduce using rule 50 (valor)]
+    TOKEN              [reduce using rule 50 (valor)]
+    ADJETIVO_POSITIVO  [reduce using rule 50 (valor)]
+    ADJETIVO_NEGATIVO  [reduce using rule 50 (valor)]
+    E                  [reduce using rule 50 (valor)]
+    ENTRE              [reduce using rule 50 (valor)]
+    ARTIGO             [reduce using rule 50 (valor)]
+    $default           reduce using rule 50 (valor)
+
+    palavra  go to state 60
 
 
 State 48
 
-<<<<<<< HEAD
-   57 if_sentenca: SE condicao • VIRGULA ENTAO expressao
+   51 expressao: valor •
 
-    VIRGULA  shift, and go to state 69
-=======
-   50 if_sentenca: SE condicao • VIRGULA texto expressao
-   51 if_bloco: SE condicao • VIRGULA texto INICIO bloco ENDIF
-
-    VIRGULA  shift, and go to state 71
->>>>>>> origin/Main_while
+    $default  reduce using rule 51 (expressao)
 
 
 State 49
 
-<<<<<<< HEAD
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-   47 alteracaoElenco: ABRE_COLCHETES texto • FECHA_COLCHETES
+   63 condicao: expressao • FOR MAIOR expressao
+   64         | expressao • FOR MENOR expressao
+   65         | expressao • FOR IGUAL expressao
+   66         | expressao • NAO FOR MENOR expressao
+   67         | expressao • NAO FOR MAIOR expressao
+   68         | expressao • NAO FOR IGUAL expressao
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    FECHA_COLCHETES    shift, and go to state 70
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   40 alteracaoElenco: ABRE_COLCHETES texto • FECHA_COLCHETES
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    FECHA_COLCHETES    shift, and go to state 72
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    NAO  shift, and go to state 73
+    FOR  shift, and go to state 74
 
 
 State 50
 
-<<<<<<< HEAD
-   13 declaracaoCenario: ABRE_PARENTESES texto • VIRGULA texto FECHA_PARENTESES
-   20 texto: texto • NUMERO
-   21      | texto • palavra
+   56 if_sentenca: SE condicao • VIRGULA texto expressao
+   57 if_bloco: SE condicao • VIRGULA texto INICIO bloco ENDIF
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    VIRGULA            shift, and go to state 71
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   14 declaracaoCenario: ABRE_PARENTESES texto • VIRGULA texto FECHA_PARENTESES
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    VIRGULA            shift, and go to state 73
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    VIRGULA  shift, and go to state 75
 
 
 State 51
 
-<<<<<<< HEAD
-   14 concatenarCenario: ADICIONAR_CENARIO INICIO • texto FIM
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 72
-    palavra  go to state 32
-=======
-   15 concatenarCenario: ADICIONAR_CENARIO INICIO • texto FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   46 alteracaoElenco: ABRE_COLCHETES texto • FECHA_COLCHETES
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
+    FECHA_COLCHETES    shift, and go to state 76
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    texto    go to state 74
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 52
 
-<<<<<<< HEAD
-   15 substituiCenario: SUBSTITUIR_CENARIO texto • POR texto NO_CENARIO FIM
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-    POR                shift, and go to state 73
-
-    palavra  go to state 57
-=======
-   16 substituiCenario: SUBSTITUIR_CENARIO texto • POR texto NO_CENARIO FIM
-   18 texto: texto • NUMERO
-   19      | texto • palavra
+   17 declaracaoCenario: ABRE_PARENTESES texto • VIRGULA texto FECHA_PARENTESES
+   24 texto: texto • NUMERO
+   25      | texto • palavra
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
+    VIRGULA            shift, and go to state 77
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-    POR                shift, and go to state 75
+    NUMERO             shift, and go to state 59
 
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 53
 
-<<<<<<< HEAD
-   72 inicioDialogo: texto INICIO •
+   18 concatenarCenario: ADICIONAR_CENARIO INICIO • texto FIM
 
-    $default  reduce using rule 72 (inicioDialogo)
-=======
-   66 inicioDialogo: texto INICIO •
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
 
-    $default  reduce using rule 66 (inicioDialogo)
->>>>>>> origin/Main_while
+    texto    go to state 78
+    palavra  go to state 30
 
 
 State 54
 
-<<<<<<< HEAD
-   16 declaracaoQuestionamento: texto INTERROGACAO • NAO FIM
-   17                         | texto INTERROGACAO • SIM FIM
-   18                         | texto INTERROGACAO •
+   19 substituiCenario: SUBSTITUIR_CENARIO texto • POR texto NO_CENARIO FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
 
-    NAO  shift, and go to state 74
-    SIM  shift, and go to state 75
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+    POR                shift, and go to state 79
 
-    NAO       [reduce using rule 18 (declaracaoQuestionamento)]
-    $default  reduce using rule 18 (declaracaoQuestionamento)
-=======
-   39 declaracaoInicio: texto VIRGULA •
-
-    $default  reduce using rule 39 (declaracaoInicio)
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 55
 
-<<<<<<< HEAD
-   46 declaracaoInicio: texto VIRGULA •
+    4 bloco: bloco instrucao •
 
-    $default  reduce using rule 46 (declaracaoInicio)
-=======
-   18 texto: texto NUMERO •
-
-    $default  reduce using rule 18 (texto)
->>>>>>> origin/Main_while
+    $default  reduce using rule 4 (bloco)
 
 
 State 56
 
-<<<<<<< HEAD
-   20 texto: texto NUMERO •
+   75 inicioDialogo: texto INICIO •
 
-    $default  reduce using rule 20 (texto)
-=======
-   19 texto: texto palavra •
-
-    $default  reduce using rule 19 (texto)
->>>>>>> origin/Main_while
+    $default  reduce using rule 75 (inicioDialogo)
 
 
 State 57
 
-<<<<<<< HEAD
-   21 texto: texto palavra •
+   20 declaracaoQuestionamento: texto INTERROGACAO • NAO FIM
+   21                         | texto INTERROGACAO • SIM FIM
+   22                         | texto INTERROGACAO •
 
-    $default  reduce using rule 21 (texto)
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   38 declaracao: declaracaoInicio texto • FIM
+    NAO  shift, and go to state 80
+    SIM  shift, and go to state 81
 
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    FIM                shift, and go to state 76
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    $default  reduce using rule 22 (declaracaoQuestionamento)
 
 
 State 58
 
-<<<<<<< HEAD
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-   45 declaracao: declaracaoInicio texto • FIM
+   45 declaracaoInicio: texto VIRGULA •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    FIM                shift, and go to state 76
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   50 if_sentenca: SE • condicao VIRGULA texto expressao
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 46
-    condicao   go to state 77
->>>>>>> origin/Main_while
+    $default  reduce using rule 45 (declaracaoInicio)
 
 
 State 59
 
-<<<<<<< HEAD
-   64 dialogo: inicioDialogo MOSTRAR_CENARIO •
+   24 texto: texto NUMERO •
 
-    $default  reduce using rule 64 (dialogo)
-=======
-   60 dialogo: inicioDialogo MOSTRAR_CENARIO •
-
-    $default  reduce using rule 60 (dialogo)
->>>>>>> origin/Main_while
+    $default  reduce using rule 24 (texto)
 
 
 State 60
 
-<<<<<<< HEAD
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-   66 dialogo: inicioDialogo texto • FIM
-   67        | inicioDialogo texto • VIRGULA TU EH adjetivos FIM
-   69        | inicioDialogo texto • VIRGULA TU EH $@1 expressao FIM
-   70        | inicioDialogo texto • VIRGULA MOSTRA_VALOR FIM
-   71        | inicioDialogo texto • VIRGULA LE_VALOR FIM
+   25 texto: texto palavra •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    FIM                shift, and go to state 77
-    VIRGULA            shift, and go to state 78
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   62 dialogo: inicioDialogo texto • FIM
-   63        | inicioDialogo texto • VIRGULA TU EH adjetivos FIM
-   65        | inicioDialogo texto • VIRGULA TU EH $@1 expressao FIM
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    FIM                shift, and go to state 78
-    VIRGULA            shift, and go to state 79
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    $default  reduce using rule 25 (texto)
 
 
 State 61
 
-<<<<<<< HEAD
-   65 dialogo: inicioDialogo if_sentenca • FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   44 declaracao: declaracaoInicio texto • FIM
 
-    FIM  shift, and go to state 79
-=======
-   61 dialogo: inicioDialogo if_sentenca • FIM
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    FIM                shift, and go to state 82
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    FIM  shift, and go to state 80
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 62
 
-<<<<<<< HEAD
-   49 valor: TU MESMO •
-
-    $default  reduce using rule 49 (valor)
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   53 while: FACA VIRGULA texto • INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
+   56 if_sentenca: SE • condicao VIRGULA texto expressao
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    INICIO             shift, and go to state 81
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 49
+    condicao   go to state 83
 
 
 State 63
 
-<<<<<<< HEAD
-   53 expressao: ARTIGO SOMAR • ENTRE valor E valor
+   69 dialogo: inicioDialogo MOSTRAR_CENARIO •
 
-    ENTRE  shift, and go to state 80
-=======
-   42 valor: TU MESMO •
-
-    $default  reduce using rule 42 (valor)
->>>>>>> origin/Main_while
+    $default  reduce using rule 69 (dialogo)
 
 
 State 64
 
-<<<<<<< HEAD
-   54 expressao: ARTIGO SUBTRAIR • ENTRE valor E valor
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   71 dialogo: inicioDialogo texto • FIM
+   72        | inicioDialogo texto • VIRGULA TU EH adjetivos FIM
+   73        | inicioDialogo texto • VIRGULA MOSTRA_VALOR FIM
+   74        | inicioDialogo texto • VIRGULA LE_VALOR FIM
 
-    ENTRE  shift, and go to state 81
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    FIM                shift, and go to state 84
+    VIRGULA            shift, and go to state 85
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+
+    palavra  go to state 60
 
 
 State 65
 
-   56 expressao: ARTIGO DIVIDIR • ENTRE valor E valor
-=======
-   46 expressao: ARTIGO SOMAR • ENTRE valor E valor
->>>>>>> origin/Main_while
+   70 dialogo: inicioDialogo if_sentenca • FIM
 
-    ENTRE  shift, and go to state 82
+    FIM  shift, and go to state 86
 
 
-<<<<<<< HEAD
 State 66
 
-   55 expressao: ARTIGO MULTIPLICAR • ENTRE valor E valor
-=======
-State 65
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   62 while: FACA VIRGULA texto • INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-   47 expressao: ARTIGO SUBTRAIR • ENTRE valor E valor
->>>>>>> origin/Main_while
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    INICIO             shift, and go to state 87
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    ENTRE  shift, and go to state 83
-
-
-<<<<<<< HEAD
-State 67
-
-   61 condicao: expressao NAO • FOR MENOR expressao
-   62         | expressao NAO • FOR MAIOR expressao
-   63         | expressao NAO • FOR IGUAL expressao
-
-    FOR  shift, and go to state 84
-=======
-State 66
-
-   49 expressao: ARTIGO DIVIDIR • ENTRE valor E valor
-
-    ENTRE  shift, and go to state 84
+    palavra  go to state 60
 
 
 State 67
 
-   48 expressao: ARTIGO MULTIPLICAR • ENTRE valor E valor
+   60 while: ENQUANTO_COMECO while_aux condicao • VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
-    ENTRE  shift, and go to state 85
->>>>>>> origin/Main_while
+    VIRGULA  shift, and go to state 88
 
 
 State 68
 
-<<<<<<< HEAD
-   58 condicao: expressao FOR • MAIOR expressao
-   59         | expressao FOR • MENOR expressao
-   60         | expressao FOR • IGUAL expressao
+   48 valor: TU MESMO •
 
-    MAIOR  shift, and go to state 85
-    MENOR  shift, and go to state 86
-    IGUAL  shift, and go to state 87
-=======
-   57 condicao: expressao NAO • FOR MENOR expressao
-   58         | expressao NAO • FOR MAIOR expressao
-   59         | expressao NAO • FOR IGUAL expressao
-
-    FOR  shift, and go to state 86
->>>>>>> origin/Main_while
+    $default  reduce using rule 48 (valor)
 
 
 State 69
 
-<<<<<<< HEAD
-   57 if_sentenca: SE condicao VIRGULA • ENTAO expressao
+   52 expressao: ARTIGO SOMAR • ENTRE valor E valor
 
-    ENTAO  shift, and go to state 88
-=======
-   54 condicao: expressao FOR • MAIOR expressao
-   55         | expressao FOR • MENOR expressao
-   56         | expressao FOR • IGUAL expressao
-
-    MAIOR  shift, and go to state 87
-    MENOR  shift, and go to state 88
-    IGUAL  shift, and go to state 89
->>>>>>> origin/Main_while
+    ENTRE  shift, and go to state 89
 
 
 State 70
 
-<<<<<<< HEAD
-   47 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES •
+   53 expressao: ARTIGO SUBTRAIR • ENTRE valor E valor
 
-    $default  reduce using rule 47 (alteracaoElenco)
-=======
-   52 while: ENQUANTO_COMECO condicao VIRGULA • texto INICIO bloco texto ENQUANTO_FIM FIM
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-
-    texto    go to state 90
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    ENTRE  shift, and go to state 90
 
 
 State 71
 
-<<<<<<< HEAD
-   13 declaracaoCenario: ABRE_PARENTESES texto VIRGULA • texto FECHA_PARENTESES
+   55 expressao: ARTIGO DIVIDIR • ENTRE valor E valor
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 89
-    palavra  go to state 32
-=======
-   50 if_sentenca: SE condicao VIRGULA • texto expressao
-   51 if_bloco: SE condicao VIRGULA • texto INICIO bloco ENDIF
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-
-    texto    go to state 91
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    ENTRE  shift, and go to state 91
 
 
 State 72
 
-<<<<<<< HEAD
-   14 concatenarCenario: ADICIONAR_CENARIO INICIO texto • FIM
-   20 texto: texto • NUMERO
-   21      | texto • palavra
+   54 expressao: ARTIGO MULTIPLICAR • ENTRE valor E valor
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    FIM                shift, and go to state 90
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   40 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES •
-
-    $default  reduce using rule 40 (alteracaoElenco)
->>>>>>> origin/Main_while
+    ENTRE  shift, and go to state 92
 
 
 State 73
 
-<<<<<<< HEAD
-   15 substituiCenario: SUBSTITUIR_CENARIO texto POR • texto NO_CENARIO FIM
+   66 condicao: expressao NAO • FOR MENOR expressao
+   67         | expressao NAO • FOR MAIOR expressao
+   68         | expressao NAO • FOR IGUAL expressao
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-
-    texto    go to state 91
-    palavra  go to state 32
-=======
-   14 declaracaoCenario: ABRE_PARENTESES texto VIRGULA • texto FECHA_PARENTESES
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-
-    texto    go to state 92
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    FOR  shift, and go to state 93
 
 
 State 74
 
-<<<<<<< HEAD
-   16 declaracaoQuestionamento: texto INTERROGACAO NAO • FIM
+   63 condicao: expressao FOR • MAIOR expressao
+   64         | expressao FOR • MENOR expressao
+   65         | expressao FOR • IGUAL expressao
 
-    FIM  shift, and go to state 92
-=======
-   15 concatenarCenario: ADICIONAR_CENARIO INICIO texto • FIM
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    FIM                shift, and go to state 93
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    MAIOR  shift, and go to state 94
+    MENOR  shift, and go to state 95
+    IGUAL  shift, and go to state 96
 
 
 State 75
 
-<<<<<<< HEAD
-   17 declaracaoQuestionamento: texto INTERROGACAO SIM • FIM
-
-    FIM  shift, and go to state 93
-=======
-   16 substituiCenario: SUBSTITUIR_CENARIO texto POR • texto NO_CENARIO FIM
+   56 if_sentenca: SE condicao VIRGULA • texto expressao
+   57 if_bloco: SE condicao VIRGULA • texto INICIO bloco ENDIF
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -2278,494 +1233,147 @@ State 75
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 94
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    texto    go to state 97
+    palavra  go to state 30
 
 
 State 76
 
-<<<<<<< HEAD
-   45 declaracao: declaracaoInicio texto FIM •
+   46 alteracaoElenco: ABRE_COLCHETES texto FECHA_COLCHETES •
 
-    $default  reduce using rule 45 (declaracao)
-=======
-   38 declaracao: declaracaoInicio texto FIM •
-
-    $default  reduce using rule 38 (declaracao)
->>>>>>> origin/Main_while
+    $default  reduce using rule 46 (alteracaoElenco)
 
 
 State 77
 
-<<<<<<< HEAD
-   66 dialogo: inicioDialogo texto FIM •
+   17 declaracaoCenario: ABRE_PARENTESES texto VIRGULA • texto FECHA_PARENTESES
 
-    $default  reduce using rule 66 (dialogo)
-=======
-   50 if_sentenca: SE condicao • VIRGULA texto expressao
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
 
-    VIRGULA  shift, and go to state 95
->>>>>>> origin/Main_while
+    texto    go to state 98
+    palavra  go to state 30
 
 
 State 78
 
-<<<<<<< HEAD
-   67 dialogo: inicioDialogo texto VIRGULA • TU EH adjetivos FIM
-   69        | inicioDialogo texto VIRGULA • TU EH $@1 expressao FIM
-   70        | inicioDialogo texto VIRGULA • MOSTRA_VALOR FIM
-   71        | inicioDialogo texto VIRGULA • LE_VALOR FIM
+   18 concatenarCenario: ADICIONAR_CENARIO INICIO texto • FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
 
-    TU            shift, and go to state 94
-    MOSTRA_VALOR  shift, and go to state 95
-    LE_VALOR      shift, and go to state 96
-=======
-   62 dialogo: inicioDialogo texto FIM •
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    FIM                shift, and go to state 99
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    $default  reduce using rule 62 (dialogo)
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 79
 
-<<<<<<< HEAD
-   65 dialogo: inicioDialogo if_sentenca FIM •
+   19 substituiCenario: SUBSTITUIR_CENARIO texto POR • texto NO_CENARIO FIM
 
-    $default  reduce using rule 65 (dialogo)
-=======
-   63 dialogo: inicioDialogo texto VIRGULA • TU EH adjetivos FIM
-   65        | inicioDialogo texto VIRGULA • TU EH $@1 expressao FIM
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
 
-    TU  shift, and go to state 96
->>>>>>> origin/Main_while
+    texto    go to state 100
+    palavra  go to state 30
 
 
 State 80
 
-<<<<<<< HEAD
-   53 expressao: ARTIGO SOMAR ENTRE • valor E valor
+   20 declaracaoQuestionamento: texto INTERROGACAO NAO • FIM
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 97
-=======
-   61 dialogo: inicioDialogo if_sentenca FIM •
-
-    $default  reduce using rule 61 (dialogo)
->>>>>>> origin/Main_while
+    FIM  shift, and go to state 101
 
 
 State 81
 
-<<<<<<< HEAD
-   54 expressao: ARTIGO SUBTRAIR ENTRE • valor E valor
+   21 declaracaoQuestionamento: texto INTERROGACAO SIM • FIM
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 98
-=======
-   53 while: FACA VIRGULA texto INICIO • bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
-
-    FACA                shift, and go to state 3
-    ENQUANTO_COMECO     shift, and go to state 4
-    ENTAO               shift, and go to state 5
-    SE                  shift, and go to state 6
-    SAEM                shift, and go to state 7
-    ENTRAM              shift, and go to state 8
-    TODOS               shift, and go to state 9
-    SOMAR               shift, and go to state 10
-    ABRE_COLCHETES      shift, and go to state 11
-    ABRE_PARENTESES     shift, and go to state 12
-    TOKEN               shift, and go to state 13
-    ADJETIVO_POSITIVO   shift, and go to state 14
-    ADJETIVO_NEGATIVO   shift, and go to state 15
-    E                   shift, and go to state 16
-    ENTRE               shift, and go to state 17
-    ARTIGO              shift, and go to state 18
-    ADICIONAR_CENARIO   shift, and go to state 19
-    SUBSTITUIR_CENARIO  shift, and go to state 20
-    ATO                 shift, and go to state 21
-    CENA                shift, and go to state 22
-
-    bloco              go to state 97
-    declaracaoCenario  go to state 24
-    concatenarCenario  go to state 25
-    substituiCenario   go to state 26
-    texto              go to state 27
-    palavra            go to state 28
-    declaracao         go to state 29
-    declaracaoInicio   go to state 30
-    alteracaoElenco    go to state 31
-    if_sentenca        go to state 32
-    if_bloco           go to state 33
-    while              go to state 34
-    dialogo            go to state 35
-    inicioDialogo      go to state 36
-    ato                go to state 37
-    cena               go to state 38
->>>>>>> origin/Main_while
+    FIM  shift, and go to state 102
 
 
 State 82
 
-<<<<<<< HEAD
-   56 expressao: ARTIGO DIVIDIR ENTRE • valor E valor
+   44 declaracao: declaracaoInicio texto FIM •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 99
-=======
-   46 expressao: ARTIGO SOMAR ENTRE • valor E valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 98
->>>>>>> origin/Main_while
+    $default  reduce using rule 44 (declaracao)
 
 
 State 83
 
-<<<<<<< HEAD
-   55 expressao: ARTIGO MULTIPLICAR ENTRE • valor E valor
+   56 if_sentenca: SE condicao • VIRGULA texto expressao
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 100
-=======
-   47 expressao: ARTIGO SUBTRAIR ENTRE • valor E valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 99
->>>>>>> origin/Main_while
+    VIRGULA  shift, and go to state 103
 
 
 State 84
 
-<<<<<<< HEAD
-   61 condicao: expressao NAO FOR • MENOR expressao
-   62         | expressao NAO FOR • MAIOR expressao
-   63         | expressao NAO FOR • IGUAL expressao
+   71 dialogo: inicioDialogo texto FIM •
 
-    MAIOR  shift, and go to state 101
-    MENOR  shift, and go to state 102
-    IGUAL  shift, and go to state 103
-=======
-   49 expressao: ARTIGO DIVIDIR ENTRE • valor E valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 100
->>>>>>> origin/Main_while
+    $default  reduce using rule 71 (dialogo)
 
 
 State 85
 
-<<<<<<< HEAD
-   58 condicao: expressao FOR MAIOR • expressao
+   72 dialogo: inicioDialogo texto VIRGULA • TU EH adjetivos FIM
+   73        | inicioDialogo texto VIRGULA • MOSTRA_VALOR FIM
+   74        | inicioDialogo texto VIRGULA • LE_VALOR FIM
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 104
-=======
-   48 expressao: ARTIGO MULTIPLICAR ENTRE • valor E valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 101
->>>>>>> origin/Main_while
+    TU            shift, and go to state 104
+    MOSTRA_VALOR  shift, and go to state 105
+    LE_VALOR      shift, and go to state 106
 
 
 State 86
 
-<<<<<<< HEAD
-   59 condicao: expressao FOR MENOR • expressao
+   70 dialogo: inicioDialogo if_sentenca FIM •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 105
-=======
-   57 condicao: expressao NAO FOR • MENOR expressao
-   58         | expressao NAO FOR • MAIOR expressao
-   59         | expressao NAO FOR • IGUAL expressao
-
-    MAIOR  shift, and go to state 102
-    MENOR  shift, and go to state 103
-    IGUAL  shift, and go to state 104
->>>>>>> origin/Main_while
+    $default  reduce using rule 70 (dialogo)
 
 
 State 87
 
-<<<<<<< HEAD
-   60 condicao: expressao FOR IGUAL • expressao
+   62 while: FACA VIRGULA texto INICIO • $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
+    $default  reduce using rule 61 ($@2)
 
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 106
-=======
-   54 condicao: expressao FOR MAIOR • expressao
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 105
->>>>>>> origin/Main_while
+    $@2  go to state 107
 
 
 State 88
 
-<<<<<<< HEAD
-   57 if_sentenca: SE condicao VIRGULA ENTAO • expressao
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 107
-=======
-   55 condicao: expressao FOR MENOR • expressao
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA • texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -2773,51 +1381,20 @@ State 88
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
+    ARTIGO             shift, and go to state 18
 
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 106
->>>>>>> origin/Main_while
+    texto    go to state 108
+    palavra  go to state 30
 
 
 State 89
 
-<<<<<<< HEAD
-   13 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto • FECHA_PARENTESES
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    FECHA_PARENTESES   shift, and go to state 108
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-
-    palavra  go to state 57
-=======
-   56 condicao: expressao FOR IGUAL • expressao
+   52 expressao: ARTIGO SOMAR ENTRE • valor E valor
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -2825,159 +1402,106 @@ State 89
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 107
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 109
 
 
 State 90
 
-<<<<<<< HEAD
-   14 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM •
-
-    $default  reduce using rule 14 (concatenarCenario)
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto • INICIO bloco texto ENQUANTO_FIM FIM
+   53 expressao: ARTIGO SUBTRAIR ENTRE • valor E valor
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    INICIO             shift, and go to state 108
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
+    NUMERO             shift, and go to state 46
 
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 110
 
 
 State 91
 
-<<<<<<< HEAD
-   15 substituiCenario: SUBSTITUIR_CENARIO texto POR texto • NO_CENARIO FIM
-   20 texto: texto • NUMERO
-   21      | texto • palavra
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 56
-    NO_CENARIO         shift, and go to state 109
-
-    palavra  go to state 57
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   50 if_sentenca: SE condicao VIRGULA texto • expressao
-   51 if_bloco: SE condicao VIRGULA texto • INICIO bloco ENDIF
+   55 expressao: ARTIGO DIVIDIR ENTRE • valor E valor
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    INICIO             shift, and go to state 109
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 110
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    texto      go to state 44
-    palavra    go to state 111
-    valor      go to state 45
-    expressao  go to state 112
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 111
 
 
 State 92
 
-<<<<<<< HEAD
-   16 declaracaoQuestionamento: texto INTERROGACAO NAO FIM •
-
-    $default  reduce using rule 16 (declaracaoQuestionamento)
-=======
-   14 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto • FECHA_PARENTESES
-   18 texto: texto • NUMERO
-   19      | texto • palavra
+   54 expressao: ARTIGO MULTIPLICAR ENTRE • valor E valor
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    FECHA_PARENTESES   shift, and go to state 113
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
+    NUMERO             shift, and go to state 46
 
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 112
 
 
 State 93
 
-<<<<<<< HEAD
-   17 declaracaoQuestionamento: texto INTERROGACAO SIM FIM •
+   66 condicao: expressao NAO FOR • MENOR expressao
+   67         | expressao NAO FOR • MAIOR expressao
+   68         | expressao NAO FOR • IGUAL expressao
 
-    $default  reduce using rule 17 (declaracaoQuestionamento)
-=======
-   15 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM •
-
-    $default  reduce using rule 15 (concatenarCenario)
->>>>>>> origin/Main_while
+    MAIOR  shift, and go to state 113
+    MENOR  shift, and go to state 114
+    IGUAL  shift, and go to state 115
 
 
 State 94
 
-<<<<<<< HEAD
-   67 dialogo: inicioDialogo texto VIRGULA TU • EH adjetivos FIM
-   69        | inicioDialogo texto VIRGULA TU • EH $@1 expressao FIM
-
-    EH  shift, and go to state 110
-=======
-   16 substituiCenario: SUBSTITUIR_CENARIO texto POR texto • NO_CENARIO FIM
-   18 texto: texto • NUMERO
-   19      | texto • palavra
+   63 condicao: expressao FOR MAIOR • expressao
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -2985,26 +1509,24 @@ State 94
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
-    NO_CENARIO         shift, and go to state 114
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    palavra  go to state 56
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 116
 
 
 State 95
 
-<<<<<<< HEAD
-   70 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR • FIM
-
-    FIM  shift, and go to state 111
-=======
-   50 if_sentenca: SE condicao VIRGULA • texto expressao
+   64 condicao: expressao FOR MENOR • expressao
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -3012,205 +1534,144 @@ State 95
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    texto    go to state 115
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 117
 
 
 State 96
 
-<<<<<<< HEAD
-   71 dialogo: inicioDialogo texto VIRGULA LE_VALOR • FIM
+   65 condicao: expressao FOR IGUAL • expressao
 
-    FIM  shift, and go to state 112
-=======
-   63 dialogo: inicioDialogo texto VIRGULA TU • EH adjetivos FIM
-   65        | inicioDialogo texto VIRGULA TU • EH $@1 expressao FIM
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
-    EH  shift, and go to state 116
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 118
 
 
 State 97
 
-<<<<<<< HEAD
-   53 expressao: ARTIGO SOMAR ENTRE valor • E valor
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   56 if_sentenca: SE condicao VIRGULA texto • expressao
+   57 if_bloco: SE condicao VIRGULA texto • INICIO bloco ENDIF
 
-    E  shift, and go to state 113
-=======
-   53 while: FACA VIRGULA texto INICIO bloco • ENQUANTO_COMECO condicao VIRGULA texto FIM
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    INICIO             shift, and go to state 119
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 120
 
-    ENQUANTO_COMECO  shift, and go to state 117
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 121
+    valor      go to state 48
+    expressao  go to state 122
 
 
 State 98
 
-<<<<<<< HEAD
-   54 expressao: ARTIGO SUBTRAIR ENTRE valor • E valor
+   17 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto • FECHA_PARENTESES
+   24 texto: texto • NUMERO
+   25      | texto • palavra
 
-    E  shift, and go to state 114
-=======
-   46 expressao: ARTIGO SOMAR ENTRE valor • E valor
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    FECHA_PARENTESES   shift, and go to state 123
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    E  shift, and go to state 118
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 99
 
-<<<<<<< HEAD
-   56 expressao: ARTIGO DIVIDIR ENTRE valor • E valor
+   18 concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM •
 
-    E  shift, and go to state 115
-=======
-   47 expressao: ARTIGO SUBTRAIR ENTRE valor • E valor
-
-    E  shift, and go to state 119
->>>>>>> origin/Main_while
+    $default  reduce using rule 18 (concatenarCenario)
 
 
 State 100
 
-<<<<<<< HEAD
-   55 expressao: ARTIGO MULTIPLICAR ENTRE valor • E valor
+   19 substituiCenario: SUBSTITUIR_CENARIO texto POR texto • NO_CENARIO FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
 
-    E  shift, and go to state 116
-=======
-   49 expressao: ARTIGO DIVIDIR ENTRE valor • E valor
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+    NO_CENARIO         shift, and go to state 124
 
-    E  shift, and go to state 120
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 101
 
-<<<<<<< HEAD
-   62 condicao: expressao NAO FOR MAIOR • expressao
+   20 declaracaoQuestionamento: texto INTERROGACAO NAO FIM •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 117
-=======
-   48 expressao: ARTIGO MULTIPLICAR ENTRE valor • E valor
-
-    E  shift, and go to state 121
->>>>>>> origin/Main_while
+    $default  reduce using rule 20 (declaracaoQuestionamento)
 
 
 State 102
 
-<<<<<<< HEAD
-   61 condicao: expressao NAO FOR MENOR • expressao
+   21 declaracaoQuestionamento: texto INTERROGACAO SIM FIM •
 
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 118
-=======
-   58 condicao: expressao NAO FOR MAIOR • expressao
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 122
->>>>>>> origin/Main_while
+    $default  reduce using rule 21 (declaracaoQuestionamento)
 
 
 State 103
 
-<<<<<<< HEAD
-   63 condicao: expressao NAO FOR IGUAL • expressao
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 119
-=======
-   57 condicao: expressao NAO FOR MENOR • expressao
+   56 if_sentenca: SE condicao VIRGULA • texto expressao
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -3218,146 +1679,230 @@ State 103
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
+    ARTIGO             shift, and go to state 18
 
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 123
->>>>>>> origin/Main_while
+    texto    go to state 125
+    palavra  go to state 30
 
 
 State 104
 
-<<<<<<< HEAD
-   58 condicao: expressao FOR MAIOR expressao •
+   72 dialogo: inicioDialogo texto VIRGULA TU • EH adjetivos FIM
 
-    $default  reduce using rule 58 (condicao)
-=======
-   59 condicao: expressao NAO FOR IGUAL • expressao
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 124
->>>>>>> origin/Main_while
+    EH  shift, and go to state 126
 
 
 State 105
 
-<<<<<<< HEAD
-   59 condicao: expressao FOR MENOR expressao •
+   73 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR • FIM
 
-    $default  reduce using rule 59 (condicao)
-=======
-   54 condicao: expressao FOR MAIOR expressao •
-
-    $default  reduce using rule 54 (condicao)
->>>>>>> origin/Main_while
+    FIM  shift, and go to state 127
 
 
 State 106
 
-<<<<<<< HEAD
-   60 condicao: expressao FOR IGUAL expressao •
+   74 dialogo: inicioDialogo texto VIRGULA LE_VALOR • FIM
 
-    $default  reduce using rule 60 (condicao)
-=======
-   55 condicao: expressao FOR MENOR expressao •
-
-    $default  reduce using rule 55 (condicao)
->>>>>>> origin/Main_while
+    FIM  shift, and go to state 128
 
 
 State 107
 
-<<<<<<< HEAD
-   57 if_sentenca: SE condicao VIRGULA ENTAO expressao •
+   62 while: FACA VIRGULA texto INICIO $@2 • bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-    $default  reduce using rule 57 (if_sentenca)
-=======
-   56 condicao: expressao FOR IGUAL expressao •
+    FACA                shift, and go to state 3
+    ENQUANTO_COMECO     shift, and go to state 4
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
 
-    $default  reduce using rule 56 (condicao)
->>>>>>> origin/Main_while
+    bloco                     go to state 129
+    instrucao                 go to state 24
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 108
 
-<<<<<<< HEAD
-   13 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES •
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto • INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
-    $default  reduce using rule 13 (declaracaoCenario)
-=======
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO • bloco texto ENQUANTO_FIM FIM
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    INICIO             shift, and go to state 130
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
 
-    FACA                shift, and go to state 3
-    ENQUANTO_COMECO     shift, and go to state 4
-    ENTAO               shift, and go to state 5
-    SE                  shift, and go to state 6
-    SAEM                shift, and go to state 7
-    ENTRAM              shift, and go to state 8
-    TODOS               shift, and go to state 9
-    SOMAR               shift, and go to state 10
-    ABRE_COLCHETES      shift, and go to state 11
-    ABRE_PARENTESES     shift, and go to state 12
-    TOKEN               shift, and go to state 13
-    ADJETIVO_POSITIVO   shift, and go to state 14
-    ADJETIVO_NEGATIVO   shift, and go to state 15
-    E                   shift, and go to state 16
-    ENTRE               shift, and go to state 17
-    ARTIGO              shift, and go to state 18
-    ADICIONAR_CENARIO   shift, and go to state 19
-    SUBSTITUIR_CENARIO  shift, and go to state 20
-    ATO                 shift, and go to state 21
-    CENA                shift, and go to state 22
-
-    bloco              go to state 125
-    declaracaoCenario  go to state 24
-    concatenarCenario  go to state 25
-    substituiCenario   go to state 26
-    texto              go to state 27
-    palavra            go to state 28
-    declaracao         go to state 29
-    declaracaoInicio   go to state 30
-    alteracaoElenco    go to state 31
-    if_sentenca        go to state 32
-    if_bloco           go to state 33
-    while              go to state 34
-    dialogo            go to state 35
-    inicioDialogo      go to state 36
-    ato                go to state 37
-    cena               go to state 38
->>>>>>> origin/Main_while
+    palavra  go to state 60
 
 
 State 109
 
-<<<<<<< HEAD
-   15 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO • FIM
+   52 expressao: ARTIGO SOMAR ENTRE valor • E valor
 
-    FIM  shift, and go to state 120
-=======
-   51 if_bloco: SE condicao VIRGULA texto INICIO • bloco ENDIF
+    E  shift, and go to state 131
+
+
+State 110
+
+   53 expressao: ARTIGO SUBTRAIR ENTRE valor • E valor
+
+    E  shift, and go to state 132
+
+
+State 111
+
+   55 expressao: ARTIGO DIVIDIR ENTRE valor • E valor
+
+    E  shift, and go to state 133
+
+
+State 112
+
+   54 expressao: ARTIGO MULTIPLICAR ENTRE valor • E valor
+
+    E  shift, and go to state 134
+
+
+State 113
+
+   67 condicao: expressao NAO FOR MAIOR • expressao
+
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
+
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 135
+
+
+State 114
+
+   66 condicao: expressao NAO FOR MENOR • expressao
+
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
+
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 136
+
+
+State 115
+
+   68 condicao: expressao NAO FOR IGUAL • expressao
+
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
+
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 137
+
+
+State 116
+
+   63 condicao: expressao FOR MAIOR expressao •
+
+    $default  reduce using rule 63 (condicao)
+
+
+State 117
+
+   64 condicao: expressao FOR MENOR expressao •
+
+    $default  reduce using rule 64 (condicao)
+
+
+State 118
+
+   65 condicao: expressao FOR IGUAL expressao •
+
+    $default  reduce using rule 65 (condicao)
+
+
+State 119
+
+   57 if_bloco: SE condicao VIRGULA texto INICIO • bloco ENDIF
 
     FACA                shift, and go to state 3
     ENQUANTO_COMECO     shift, and go to state 4
@@ -3380,541 +1925,132 @@ State 109
     ATO                 shift, and go to state 21
     CENA                shift, and go to state 22
 
-    bloco              go to state 126
-    declaracaoCenario  go to state 24
-    concatenarCenario  go to state 25
-    substituiCenario   go to state 26
-    texto              go to state 27
-    palavra            go to state 28
-    declaracao         go to state 29
-    declaracaoInicio   go to state 30
-    alteracaoElenco    go to state 31
-    if_sentenca        go to state 32
-    if_bloco           go to state 33
-    while              go to state 34
-    dialogo            go to state 35
-    inicioDialogo      go to state 36
-    ato                go to state 37
-    cena               go to state 38
->>>>>>> origin/Main_while
-
-
-State 110
-
-<<<<<<< HEAD
-   67 dialogo: inicioDialogo texto VIRGULA TU EH • adjetivos FIM
-   69        | inicioDialogo texto VIRGULA TU EH • $@1 expressao FIM
-
-    TOKEN              shift, and go to state 121
-    ADJETIVO_POSITIVO  shift, and go to state 122
-    ADJETIVO_NEGATIVO  shift, and go to state 123
-
-    TOKEN              [reduce using rule 68 ($@1)]
-    ADJETIVO_POSITIVO  [reduce using rule 68 ($@1)]
-    ADJETIVO_NEGATIVO  [reduce using rule 68 ($@1)]
-    $default           reduce using rule 68 ($@1)
-
-    adjetivos  go to state 124
-    $@1        go to state 125
-=======
-   18 texto: texto NUMERO •
-   41 valor: NUMERO •
-
-    $end                reduce using rule 41 (valor)
-    FACA                reduce using rule 41 (valor)
-    ENDIF               reduce using rule 41 (valor)
-    ENQUANTO_COMECO     reduce using rule 41 (valor)
-    ENTAO               reduce using rule 18 (texto)
-    ENTAO               [reduce using rule 41 (valor)]
-    SE                  reduce using rule 41 (valor)
-    SAEM                reduce using rule 18 (texto)
-    SAEM                [reduce using rule 41 (valor)]
-    ENTRAM              reduce using rule 18 (texto)
-    ENTRAM              [reduce using rule 41 (valor)]
-    TODOS               reduce using rule 18 (texto)
-    TODOS               [reduce using rule 41 (valor)]
-    SOMAR               reduce using rule 18 (texto)
-    SOMAR               [reduce using rule 41 (valor)]
-    FIM                 reduce using rule 41 (valor)
-    ABRE_COLCHETES      reduce using rule 41 (valor)
-    ABRE_PARENTESES     reduce using rule 41 (valor)
-    TOKEN               reduce using rule 18 (texto)
-    TOKEN               [reduce using rule 41 (valor)]
-    ADJETIVO_POSITIVO   reduce using rule 18 (texto)
-    ADJETIVO_POSITIVO   [reduce using rule 41 (valor)]
-    ADJETIVO_NEGATIVO   reduce using rule 18 (texto)
-    ADJETIVO_NEGATIVO   [reduce using rule 41 (valor)]
-    E                   reduce using rule 18 (texto)
-    E                   [reduce using rule 41 (valor)]
-    ENTRE               reduce using rule 18 (texto)
-    ENTRE               [reduce using rule 41 (valor)]
-    ARTIGO              reduce using rule 18 (texto)
-    ARTIGO              [reduce using rule 41 (valor)]
-    ADICIONAR_CENARIO   reduce using rule 41 (valor)
-    SUBSTITUIR_CENARIO  reduce using rule 41 (valor)
-    ATO                 reduce using rule 41 (valor)
-    CENA                reduce using rule 41 (valor)
-    $default            reduce using rule 18 (texto)
->>>>>>> origin/Main_while
-
-
-State 111
-
-<<<<<<< HEAD
-   70 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM •
-
-    $default  reduce using rule 70 (dialogo)
-=======
-   17 texto: palavra •
-   19      | texto palavra •
-
-    ENTAO              reduce using rule 17 (texto)
-    ENTAO              [reduce using rule 19 (texto)]
-    EU                 reduce using rule 19 (texto)
-    SAEM               reduce using rule 17 (texto)
-    SAEM               [reduce using rule 19 (texto)]
-    ENTRAM             reduce using rule 17 (texto)
-    ENTRAM             [reduce using rule 19 (texto)]
-    TODOS              reduce using rule 17 (texto)
-    TODOS              [reduce using rule 19 (texto)]
-    SOMAR              reduce using rule 17 (texto)
-    SOMAR              [reduce using rule 19 (texto)]
-    INICIO             reduce using rule 19 (texto)
-    TOKEN              reduce using rule 17 (texto)
-    TOKEN              [reduce using rule 19 (texto)]
-    ADJETIVO_POSITIVO  reduce using rule 17 (texto)
-    ADJETIVO_POSITIVO  [reduce using rule 19 (texto)]
-    ADJETIVO_NEGATIVO  reduce using rule 17 (texto)
-    ADJETIVO_NEGATIVO  [reduce using rule 19 (texto)]
-    TU                 reduce using rule 19 (texto)
-    E                  reduce using rule 17 (texto)
-    E                  [reduce using rule 19 (texto)]
-    ENTRE              reduce using rule 17 (texto)
-    ENTRE              [reduce using rule 19 (texto)]
-    ARTIGO             reduce using rule 17 (texto)
-    ARTIGO             [reduce using rule 19 (texto)]
-    NUMERO             reduce using rule 17 (texto)
-    NUMERO             [reduce using rule 19 (texto)]
-    $default           reduce using rule 17 (texto)
->>>>>>> origin/Main_while
-
-
-State 112
-
-<<<<<<< HEAD
-   71 dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM •
-
-    $default  reduce using rule 71 (dialogo)
-=======
-   50 if_sentenca: SE condicao VIRGULA texto expressao •
-
-    $default  reduce using rule 50 (if_sentenca)
->>>>>>> origin/Main_while
-
-
-State 113
-
-<<<<<<< HEAD
-   53 expressao: ARTIGO SOMAR ENTRE valor E • valor
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 126
-=======
-   14 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES •
-
-    $default  reduce using rule 14 (declaracaoCenario)
->>>>>>> origin/Main_while
-
-
-State 114
-
-<<<<<<< HEAD
-   54 expressao: ARTIGO SUBTRAIR ENTRE valor E • valor
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 127
-=======
-   16 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO • FIM
-
-    FIM  shift, and go to state 127
->>>>>>> origin/Main_while
-
-
-State 115
-
-<<<<<<< HEAD
-   56 expressao: ARTIGO DIVIDIR ENTRE valor E • valor
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 128
-=======
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   50 if_sentenca: SE condicao VIRGULA texto • expressao
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 110
-
-    texto      go to state 44
-    palavra    go to state 111
-    valor      go to state 45
-    expressao  go to state 112
->>>>>>> origin/Main_while
-
-
-State 116
-
-<<<<<<< HEAD
-   55 expressao: ARTIGO MULTIPLICAR ENTRE valor E • valor
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 21
-    NUMERO             shift, and go to state 44
-
-    texto    go to state 45
-    palavra  go to state 32
-    valor    go to state 129
-=======
-   63 dialogo: inicioDialogo texto VIRGULA TU EH • adjetivos FIM
-   65        | inicioDialogo texto VIRGULA TU EH • $@1 expressao FIM
-
-    TOKEN              shift, and go to state 128
-    ADJETIVO_POSITIVO  shift, and go to state 129
-    ADJETIVO_NEGATIVO  shift, and go to state 130
-
-    TOKEN              [reduce using rule 64 ($@1)]
-    ADJETIVO_POSITIVO  [reduce using rule 64 ($@1)]
-    ADJETIVO_NEGATIVO  [reduce using rule 64 ($@1)]
-    $default           reduce using rule 64 ($@1)
-
-    adjetivos  go to state 131
-    $@1        go to state 132
->>>>>>> origin/Main_while
-
-
-State 117
-
-<<<<<<< HEAD
-   62 condicao: expressao NAO FOR MAIOR expressao •
-
-    $default  reduce using rule 62 (condicao)
-=======
-   53 while: FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO • condicao VIRGULA texto FIM
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
-
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 46
-    condicao   go to state 133
->>>>>>> origin/Main_while
-
-
-State 118
-
-<<<<<<< HEAD
-   61 condicao: expressao NAO FOR MENOR expressao •
-
-    $default  reduce using rule 61 (condicao)
-=======
-   46 expressao: ARTIGO SOMAR ENTRE valor E • valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 134
->>>>>>> origin/Main_while
-
-
-State 119
-
-<<<<<<< HEAD
-   63 condicao: expressao NAO FOR IGUAL expressao •
-
-    $default  reduce using rule 63 (condicao)
-=======
-   47 expressao: ARTIGO SUBTRAIR ENTRE valor E • valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 135
->>>>>>> origin/Main_while
+    bloco                     go to state 138
+    instrucao                 go to state 24
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 120
 
-<<<<<<< HEAD
-   15 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM •
+   24 texto: texto NUMERO •
+   47 valor: NUMERO •
 
-    $default  reduce using rule 15 (substituiCenario)
-=======
-   49 expressao: ARTIGO DIVIDIR ENTRE valor E • valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 136
->>>>>>> origin/Main_while
+    $end                reduce using rule 47 (valor)
+    FACA                reduce using rule 47 (valor)
+    ENDIF               reduce using rule 47 (valor)
+    ENQUANTO_COMECO     reduce using rule 47 (valor)
+    ENTAO               reduce using rule 24 (texto)
+    ENTAO               [reduce using rule 47 (valor)]
+    SE                  reduce using rule 47 (valor)
+    SAEM                reduce using rule 24 (texto)
+    SAEM                [reduce using rule 47 (valor)]
+    ENTRAM              reduce using rule 24 (texto)
+    ENTRAM              [reduce using rule 47 (valor)]
+    TODOS               reduce using rule 24 (texto)
+    TODOS               [reduce using rule 47 (valor)]
+    SOMAR               reduce using rule 24 (texto)
+    SOMAR               [reduce using rule 47 (valor)]
+    FIM                 reduce using rule 47 (valor)
+    ABRE_COLCHETES      reduce using rule 47 (valor)
+    ABRE_PARENTESES     reduce using rule 47 (valor)
+    TOKEN               reduce using rule 24 (texto)
+    TOKEN               [reduce using rule 47 (valor)]
+    ADJETIVO_POSITIVO   reduce using rule 24 (texto)
+    ADJETIVO_POSITIVO   [reduce using rule 47 (valor)]
+    ADJETIVO_NEGATIVO   reduce using rule 24 (texto)
+    ADJETIVO_NEGATIVO   [reduce using rule 47 (valor)]
+    E                   reduce using rule 24 (texto)
+    E                   [reduce using rule 47 (valor)]
+    ENTRE               reduce using rule 24 (texto)
+    ENTRE               [reduce using rule 47 (valor)]
+    ARTIGO              reduce using rule 24 (texto)
+    ARTIGO              [reduce using rule 47 (valor)]
+    ADICIONAR_CENARIO   reduce using rule 47 (valor)
+    SUBSTITUIR_CENARIO  reduce using rule 47 (valor)
+    ATO                 reduce using rule 47 (valor)
+    CENA                reduce using rule 47 (valor)
+    $default            reduce using rule 24 (texto)
 
 
 State 121
 
-<<<<<<< HEAD
-   40 adjetivos: TOKEN •
+   23 texto: palavra •
+   25      | texto palavra •
 
-    $default  reduce using rule 40 (adjetivos)
-=======
-   48 expressao: ARTIGO MULTIPLICAR ENTRE valor E • valor
-
-    ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 43
-
-    texto    go to state 44
-    palavra  go to state 28
-    valor    go to state 137
->>>>>>> origin/Main_while
+    ENTAO              reduce using rule 23 (texto)
+    ENTAO              [reduce using rule 25 (texto)]
+    EU                 reduce using rule 25 (texto)
+    SAEM               reduce using rule 23 (texto)
+    SAEM               [reduce using rule 25 (texto)]
+    ENTRAM             reduce using rule 23 (texto)
+    ENTRAM             [reduce using rule 25 (texto)]
+    TODOS              reduce using rule 23 (texto)
+    TODOS              [reduce using rule 25 (texto)]
+    SOMAR              reduce using rule 23 (texto)
+    SOMAR              [reduce using rule 25 (texto)]
+    INICIO             reduce using rule 25 (texto)
+    TOKEN              reduce using rule 23 (texto)
+    TOKEN              [reduce using rule 25 (texto)]
+    ADJETIVO_POSITIVO  reduce using rule 23 (texto)
+    ADJETIVO_POSITIVO  [reduce using rule 25 (texto)]
+    ADJETIVO_NEGATIVO  reduce using rule 23 (texto)
+    ADJETIVO_NEGATIVO  [reduce using rule 25 (texto)]
+    TU                 reduce using rule 25 (texto)
+    E                  reduce using rule 23 (texto)
+    E                  [reduce using rule 25 (texto)]
+    ENTRE              reduce using rule 23 (texto)
+    ENTRE              [reduce using rule 25 (texto)]
+    ARTIGO             reduce using rule 23 (texto)
+    ARTIGO             [reduce using rule 25 (texto)]
+    NUMERO             reduce using rule 23 (texto)
+    NUMERO             [reduce using rule 25 (texto)]
+    $default           reduce using rule 23 (texto)
 
 
 State 122
 
-<<<<<<< HEAD
-   38 adjetivos: ADJETIVO_POSITIVO •
+   56 if_sentenca: SE condicao VIRGULA texto expressao •
 
-    $default  reduce using rule 38 (adjetivos)
-=======
-   58 condicao: expressao NAO FOR MAIOR expressao •
-
-    $default  reduce using rule 58 (condicao)
->>>>>>> origin/Main_while
+    $default  reduce using rule 56 (if_sentenca)
 
 
 State 123
 
-<<<<<<< HEAD
-   39 adjetivos: ADJETIVO_NEGATIVO •
+   17 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES •
 
-    $default  reduce using rule 39 (adjetivos)
-=======
-   57 condicao: expressao NAO FOR MENOR expressao •
-
-    $default  reduce using rule 57 (condicao)
->>>>>>> origin/Main_while
+    $default  reduce using rule 17 (declaracaoCenario)
 
 
 State 124
 
-<<<<<<< HEAD
-   41 adjetivos: adjetivos • ADJETIVO_POSITIVO
-   42          | adjetivos • ADJETIVO_NEGATIVO
-   43          | adjetivos • TOKEN
-   44          | adjetivos • ENTRE
-   67 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
+   19 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO • FIM
 
-    FIM                shift, and go to state 130
-    TOKEN              shift, and go to state 131
-    ADJETIVO_POSITIVO  shift, and go to state 132
-    ADJETIVO_NEGATIVO  shift, and go to state 133
-    ENTRE              shift, and go to state 134
-=======
-   59 condicao: expressao NAO FOR IGUAL expressao •
-
-    $default  reduce using rule 59 (condicao)
->>>>>>> origin/Main_while
+    FIM  shift, and go to state 139
 
 
 State 125
 
-<<<<<<< HEAD
-   69 dialogo: inicioDialogo texto VIRGULA TU EH $@1 • expressao FIM
-
-    MAIOR              shift, and go to state 3
-    MENOR              shift, and go to state 4
-    IGUAL              shift, and go to state 5
-    NAO                shift, and go to state 6
-    FOR                shift, and go to state 7
-    ENTAO              shift, and go to state 8
-    EU                 shift, and go to state 41
-    SAEM               shift, and go to state 10
-    ENTRAM             shift, and go to state 11
-    TODOS              shift, and go to state 12
-    SOMAR              shift, and go to state 13
-    TOKEN              shift, and go to state 16
-    ADJETIVO_POSITIVO  shift, and go to state 17
-    ADJETIVO_NEGATIVO  shift, and go to state 18
-    TU                 shift, and go to state 42
-    E                  shift, and go to state 19
-    ENTRE              shift, and go to state 20
-    ARTIGO             shift, and go to state 43
-    NUMERO             shift, and go to state 44
-
-    texto      go to state 45
-    palavra    go to state 32
-    valor      go to state 46
-    expressao  go to state 135
-=======
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco • texto ENQUANTO_FIM FIM
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   56 if_sentenca: SE condicao VIRGULA texto • expressao
 
     ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -3922,112 +2058,127 @@ State 125
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 120
 
-    texto    go to state 138
-    palavra  go to state 28
->>>>>>> origin/Main_while
+    texto      go to state 47
+    palavra    go to state 121
+    valor      go to state 48
+    expressao  go to state 122
 
 
 State 126
 
-<<<<<<< HEAD
-   53 expressao: ARTIGO SOMAR ENTRE valor E valor •
+   72 dialogo: inicioDialogo texto VIRGULA TU EH • adjetivos FIM
 
-    $default  reduce using rule 53 (expressao)
-=======
-   51 if_bloco: SE condicao VIRGULA texto INICIO bloco • ENDIF
+    TOKEN              shift, and go to state 140
+    ADJETIVO_POSITIVO  shift, and go to state 141
+    ADJETIVO_NEGATIVO  shift, and go to state 142
 
-    ENDIF  shift, and go to state 139
->>>>>>> origin/Main_while
+    adjetivos  go to state 143
 
 
 State 127
 
-<<<<<<< HEAD
-   54 expressao: ARTIGO SUBTRAIR ENTRE valor E valor •
+   73 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM •
 
-    $default  reduce using rule 54 (expressao)
-=======
-   16 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM •
-
-    $default  reduce using rule 16 (substituiCenario)
->>>>>>> origin/Main_while
+    $default  reduce using rule 73 (dialogo)
 
 
 State 128
 
-<<<<<<< HEAD
-   56 expressao: ARTIGO DIVIDIR ENTRE valor E valor •
+   74 dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM •
 
-    $default  reduce using rule 56 (expressao)
-=======
-   33 adjetivos: TOKEN •
-
-    $default  reduce using rule 33 (adjetivos)
->>>>>>> origin/Main_while
+    $default  reduce using rule 74 (dialogo)
 
 
 State 129
 
-<<<<<<< HEAD
-   55 expressao: ARTIGO MULTIPLICAR ENTRE valor E valor •
+    4 bloco: bloco • instrucao
+   62 while: FACA VIRGULA texto INICIO $@2 bloco • ENQUANTO_COMECO condicao VIRGULA texto FIM
 
-    $default  reduce using rule 55 (expressao)
-=======
-   31 adjetivos: ADJETIVO_POSITIVO •
+    FACA                shift, and go to state 3
+    ENQUANTO_COMECO     shift, and go to state 144
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
 
-    $default  reduce using rule 31 (adjetivos)
->>>>>>> origin/Main_while
+    instrucao                 go to state 55
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 130
 
-<<<<<<< HEAD
-   67 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO • $@1 bloco texto ENQUANTO_FIM FIM
 
-    $default  reduce using rule 67 (dialogo)
-=======
-   32 adjetivos: ADJETIVO_NEGATIVO •
+    $default  reduce using rule 59 ($@1)
 
-    $default  reduce using rule 32 (adjetivos)
->>>>>>> origin/Main_while
+    $@1  go to state 145
 
 
 State 131
 
-<<<<<<< HEAD
-   43 adjetivos: adjetivos TOKEN •
+   52 expressao: ARTIGO SOMAR ENTRE valor E • valor
 
-    $default  reduce using rule 43 (adjetivos)
-=======
-   34 adjetivos: adjetivos • ADJETIVO_POSITIVO
-   35          | adjetivos • ADJETIVO_NEGATIVO
-   36          | adjetivos • TOKEN
-   37          | adjetivos • ENTRE
-   63 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    FIM                shift, and go to state 140
-    TOKEN              shift, and go to state 141
-    ADJETIVO_POSITIVO  shift, and go to state 142
-    ADJETIVO_NEGATIVO  shift, and go to state 143
-    ENTRE              shift, and go to state 144
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 146
 
 
 State 132
 
-<<<<<<< HEAD
-   41 adjetivos: adjetivos ADJETIVO_POSITIVO •
-
-    $default  reduce using rule 41 (adjetivos)
-=======
-   65 dialogo: inicioDialogo texto VIRGULA TU EH $@1 • expressao FIM
+   53 expressao: ARTIGO SUBTRAIR ENTRE valor E • valor
 
     ENTAO              shift, and go to state 5
-    EU                 shift, and go to state 40
+    EU                 shift, and go to state 43
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
@@ -4035,216 +2186,475 @@ State 132
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
-    TU                 shift, and go to state 41
+    TU                 shift, and go to state 44
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 42
-    NUMERO             shift, and go to state 43
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    texto      go to state 44
-    palavra    go to state 28
-    valor      go to state 45
-    expressao  go to state 145
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 147
 
 
 State 133
 
-<<<<<<< HEAD
-   42 adjetivos: adjetivos ADJETIVO_NEGATIVO •
+   55 expressao: ARTIGO DIVIDIR ENTRE valor E • valor
 
-    $default  reduce using rule 42 (adjetivos)
-=======
-   53 while: FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao • VIRGULA texto FIM
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    VIRGULA  shift, and go to state 146
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 148
 
 
 State 134
 
-<<<<<<< HEAD
-   44 adjetivos: adjetivos ENTRE •
+   54 expressao: ARTIGO MULTIPLICAR ENTRE valor E • valor
 
-    $default  reduce using rule 44 (adjetivos)
-=======
-   46 expressao: ARTIGO SOMAR ENTRE valor E valor •
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 46
 
-    $default  reduce using rule 46 (expressao)
->>>>>>> origin/Main_while
+    texto    go to state 47
+    palavra  go to state 30
+    valor    go to state 149
 
 
 State 135
 
-<<<<<<< HEAD
-   69 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao • FIM
+   67 condicao: expressao NAO FOR MAIOR expressao •
 
-    FIM  shift, and go to state 136
-=======
-   47 expressao: ARTIGO SUBTRAIR ENTRE valor E valor •
-
-    $default  reduce using rule 47 (expressao)
->>>>>>> origin/Main_while
+    $default  reduce using rule 67 (condicao)
 
 
 State 136
 
-<<<<<<< HEAD
-   69 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM •
+   66 condicao: expressao NAO FOR MENOR expressao •
 
-    $default  reduce using rule 69 (dialogo)
-=======
-   49 expressao: ARTIGO DIVIDIR ENTRE valor E valor •
-
-    $default  reduce using rule 49 (expressao)
+    $default  reduce using rule 66 (condicao)
 
 
 State 137
 
-   48 expressao: ARTIGO MULTIPLICAR ENTRE valor E valor •
+   68 condicao: expressao NAO FOR IGUAL expressao •
 
-    $default  reduce using rule 48 (expressao)
+    $default  reduce using rule 68 (condicao)
 
 
 State 138
 
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto • ENQUANTO_FIM FIM
+    4 bloco: bloco • instrucao
+   57 if_bloco: SE condicao VIRGULA texto INICIO bloco • ENDIF
 
-    ENQUANTO_FIM       shift, and go to state 147
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
+    FACA                shift, and go to state 3
+    ENDIF               shift, and go to state 150
+    ENQUANTO_COMECO     shift, and go to state 4
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
 
-    palavra  go to state 56
+    instrucao                 go to state 55
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 139
 
-   51 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF •
+   19 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM •
 
-    $default  reduce using rule 51 (if_bloco)
+    $default  reduce using rule 19 (substituiCenario)
 
 
 State 140
 
-   63 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
+   39 adjetivos: TOKEN •
 
-    $default  reduce using rule 63 (dialogo)
+    $default  reduce using rule 39 (adjetivos)
 
 
 State 141
 
-   36 adjetivos: adjetivos TOKEN •
-
-    $default  reduce using rule 36 (adjetivos)
-
-
-State 142
-
-   34 adjetivos: adjetivos ADJETIVO_POSITIVO •
-
-    $default  reduce using rule 34 (adjetivos)
-
-
-State 143
-
-   35 adjetivos: adjetivos ADJETIVO_NEGATIVO •
-
-    $default  reduce using rule 35 (adjetivos)
-
-
-State 144
-
-   37 adjetivos: adjetivos ENTRE •
+   37 adjetivos: ADJETIVO_POSITIVO •
 
     $default  reduce using rule 37 (adjetivos)
 
 
+State 142
+
+   38 adjetivos: ADJETIVO_NEGATIVO •
+
+    $default  reduce using rule 38 (adjetivos)
+
+
+State 143
+
+   40 adjetivos: adjetivos • ADJETIVO_POSITIVO
+   41          | adjetivos • ADJETIVO_NEGATIVO
+   42          | adjetivos • TOKEN
+   43          | adjetivos • ENTRE
+   72 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
+
+    FIM                shift, and go to state 151
+    TOKEN              shift, and go to state 152
+    ADJETIVO_POSITIVO  shift, and go to state 153
+    ADJETIVO_NEGATIVO  shift, and go to state 154
+    ENTRE              shift, and go to state 155
+
+
+State 144
+
+   60 while: ENQUANTO_COMECO • while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
+   62      | FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO • condicao VIRGULA texto FIM
+
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
+
+    ENTAO              [reduce using rule 58 (while_aux)]
+    EU                 [reduce using rule 58 (while_aux)]
+    SAEM               [reduce using rule 58 (while_aux)]
+    ENTRAM             [reduce using rule 58 (while_aux)]
+    TODOS              [reduce using rule 58 (while_aux)]
+    SOMAR              [reduce using rule 58 (while_aux)]
+    TOKEN              [reduce using rule 58 (while_aux)]
+    ADJETIVO_POSITIVO  [reduce using rule 58 (while_aux)]
+    ADJETIVO_NEGATIVO  [reduce using rule 58 (while_aux)]
+    TU                 [reduce using rule 58 (while_aux)]
+    E                  [reduce using rule 58 (while_aux)]
+    ENTRE              [reduce using rule 58 (while_aux)]
+    ARTIGO             [reduce using rule 58 (while_aux)]
+    NUMERO             [reduce using rule 58 (while_aux)]
+
+    texto      go to state 47
+    palavra    go to state 30
+    valor      go to state 48
+    expressao  go to state 49
+    while_aux  go to state 42
+    condicao   go to state 156
+
+
 State 145
 
-   65 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao • FIM
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 • bloco texto ENQUANTO_FIM FIM
 
-    FIM  shift, and go to state 148
+    FACA                shift, and go to state 3
+    ENQUANTO_COMECO     shift, and go to state 4
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
+
+    bloco                     go to state 157
+    instrucao                 go to state 24
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 29
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
 
 
 State 146
 
-   53 while: FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA • texto FIM
+   52 expressao: ARTIGO SOMAR ENTRE valor E valor •
 
-    ENTAO              shift, and go to state 5
-    SAEM               shift, and go to state 7
-    ENTRAM             shift, and go to state 8
-    TODOS              shift, and go to state 9
-    SOMAR              shift, and go to state 10
-    TOKEN              shift, and go to state 13
-    ADJETIVO_POSITIVO  shift, and go to state 14
-    ADJETIVO_NEGATIVO  shift, and go to state 15
-    E                  shift, and go to state 16
-    ENTRE              shift, and go to state 17
-    ARTIGO             shift, and go to state 18
-
-    texto    go to state 149
-    palavra  go to state 28
+    $default  reduce using rule 52 (expressao)
 
 
 State 147
 
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM • FIM
+   53 expressao: ARTIGO SUBTRAIR ENTRE valor E valor •
 
-    FIM  shift, and go to state 150
+    $default  reduce using rule 53 (expressao)
 
 
 State 148
 
-   65 dialogo: inicioDialogo texto VIRGULA TU EH $@1 expressao FIM •
+   55 expressao: ARTIGO DIVIDIR ENTRE valor E valor •
 
-    $default  reduce using rule 65 (dialogo)
+    $default  reduce using rule 55 (expressao)
 
 
 State 149
 
-   18 texto: texto • NUMERO
-   19      | texto • palavra
-   53 while: FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto • FIM
+   54 expressao: ARTIGO MULTIPLICAR ENTRE valor E valor •
+
+    $default  reduce using rule 54 (expressao)
+
+
+State 150
+
+   57 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF •
+
+    $default  reduce using rule 57 (if_bloco)
+
+
+State 151
+
+   72 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
+
+    $default  reduce using rule 72 (dialogo)
+
+
+State 152
+
+   42 adjetivos: adjetivos TOKEN •
+
+    $default  reduce using rule 42 (adjetivos)
+
+
+State 153
+
+   40 adjetivos: adjetivos ADJETIVO_POSITIVO •
+
+    $default  reduce using rule 40 (adjetivos)
+
+
+State 154
+
+   41 adjetivos: adjetivos ADJETIVO_NEGATIVO •
+
+    $default  reduce using rule 41 (adjetivos)
+
+
+State 155
+
+   43 adjetivos: adjetivos ENTRE •
+
+    $default  reduce using rule 43 (adjetivos)
+
+
+State 156
+
+   62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao • VIRGULA texto FIM
+
+    VIRGULA  shift, and go to state 158
+
+
+State 157
+
+    4 bloco: bloco • instrucao
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco • texto ENQUANTO_FIM FIM
+
+    FACA                shift, and go to state 3
+    ENQUANTO_COMECO     shift, and go to state 4
+    ENTAO               shift, and go to state 5
+    SE                  shift, and go to state 6
+    SAEM                shift, and go to state 7
+    ENTRAM              shift, and go to state 8
+    TODOS               shift, and go to state 9
+    SOMAR               shift, and go to state 10
+    ABRE_COLCHETES      shift, and go to state 11
+    ABRE_PARENTESES     shift, and go to state 12
+    TOKEN               shift, and go to state 13
+    ADJETIVO_POSITIVO   shift, and go to state 14
+    ADJETIVO_NEGATIVO   shift, and go to state 15
+    E                   shift, and go to state 16
+    ENTRE               shift, and go to state 17
+    ARTIGO              shift, and go to state 18
+    ADICIONAR_CENARIO   shift, and go to state 19
+    SUBSTITUIR_CENARIO  shift, and go to state 20
+    ATO                 shift, and go to state 21
+    CENA                shift, and go to state 22
+
+    instrucao                 go to state 55
+    declaracaoCenario         go to state 25
+    concatenarCenario         go to state 26
+    substituiCenario          go to state 27
+    declaracaoQuestionamento  go to state 28
+    texto                     go to state 159
+    palavra                   go to state 30
+    declaracao                go to state 31
+    declaracaoInicio          go to state 32
+    alteracaoElenco           go to state 33
+    if_sentenca               go to state 34
+    if_bloco                  go to state 35
+    while                     go to state 36
+    dialogo                   go to state 37
+    inicioDialogo             go to state 38
+    ato                       go to state 39
+    cena                      go to state 40
+
+
+State 158
+
+   62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA • texto FIM
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    FIM                shift, and go to state 151
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
     E                  shift, and go to state 16
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
-    NUMERO             shift, and go to state 55
 
-    palavra  go to state 56
-
-
-State 150
-
-   52 while: ENQUANTO_COMECO condicao VIRGULA texto INICIO bloco texto ENQUANTO_FIM FIM •
-
-    $default  reduce using rule 52 (while)
+    texto    go to state 160
+    palavra  go to state 30
 
 
-State 151
+State 159
 
-   53 while: FACA VIRGULA texto INICIO bloco ENQUANTO_COMECO condicao VIRGULA texto FIM •
+   20 declaracaoQuestionamento: texto • INTERROGACAO NAO FIM
+   21                         | texto • INTERROGACAO SIM FIM
+   22                         | texto • INTERROGACAO
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   45 declaracaoInicio: texto • VIRGULA
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto • ENQUANTO_FIM FIM
+   75 inicioDialogo: texto • INICIO
 
-    $default  reduce using rule 53 (while)
->>>>>>> origin/Main_while
+    ENQUANTO_FIM       shift, and go to state 161
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    INICIO             shift, and go to state 56
+    INTERROGACAO       shift, and go to state 57
+    VIRGULA            shift, and go to state 58
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+
+    palavra  go to state 60
+
+
+State 160
+
+   24 texto: texto • NUMERO
+   25      | texto • palavra
+   62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto • FIM
+
+    ENTAO              shift, and go to state 5
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
+    FIM                shift, and go to state 162
+    TOKEN              shift, and go to state 13
+    ADJETIVO_POSITIVO  shift, and go to state 14
+    ADJETIVO_NEGATIVO  shift, and go to state 15
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 18
+    NUMERO             shift, and go to state 59
+
+    palavra  go to state 60
+
+
+State 161
+
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM • FIM
+
+    FIM  shift, and go to state 163
+
+
+State 162
+
+   62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM •
+
+    $default  reduce using rule 62 (while)
+
+
+State 163
+
+   60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM •
+
+    $default  reduce using rule 60 (while)

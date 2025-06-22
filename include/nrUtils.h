@@ -72,4 +72,22 @@ char* substituir_ocorrencias(const char* original, const char* alvo, const char*
 char* trim(char* str);
 char* concatena(char* a, char* b);
 
+#define MAX_WHILE_NESTING 64
+
+typedef struct {
+    LLVMBasicBlockRef cond_bb;
+    LLVMBasicBlockRef body_bb;
+    LLVMBasicBlockRef after_bb;
+} WhileBlocks;
+
+ extern WhileBlocks while_stack[MAX_WHILE_NESTING];
+
+void push_while_blocks(LLVMBasicBlockRef cond, LLVMBasicBlockRef body, LLVMBasicBlockRef after);
+
+WhileBlocks pop_while_blocks();
+
+WhileBlocks *peek_while_blocks();
+
+
+void set_value_from_llvm(const char *name, LLVMValueRef val);
 #endif // NR_UTILS_H
