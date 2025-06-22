@@ -478,6 +478,34 @@ dialogo:
             }
         }
     }
+    | inicioDialogo texto VIRGULA TU EH expressao FIM {
+        personagemDialogo = strdup($2);
+
+        if (DEBUG_BISON) {
+            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
+        }
+
+        Symbol *sym = get_symbol(personagemDialogo);
+        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            yyerror("Variável inteira inválida ou não declarada");
+        } else {
+            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+            LLVMValueRef incremento = $6;
+            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
+            LLVMBuildStore(builder, soma, sym->llvm_ref);
+        }
+
+        // Atualiza na tabela de valores também (se precisar)
+        // int novoValor = get_int_value(personagemDialogo) + $6;
+        // set_int_value(personagemDialogo, novoValor);
+
+        if (DEBUG_BISON) {
+            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+        }
+
+        free(personagemDialogo);
+        personagemDialogo = NULL;
+    }
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         personagemDialogo = strdup($2);
 
@@ -520,6 +548,7 @@ dialogo:
         gerar_print_int($2);
     }
     | inicioDialogo texto VIRGULA LE_VALOR FIM {
+        // Scanf
         if (DEBUG_BISON) {
             printf("Lendo valor de %s\n", $2);
         }

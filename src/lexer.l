@@ -3,7 +3,7 @@
     #include <string.h> 
     #include "parser.tab.h"
 
-    int DEBUG_LEX = 0;
+    int DEBUG_LEX = 1;
     
     // Função auxiliar para converter números romanos para inteiros
     int romano_para_inteiro(const char *romano) {
@@ -316,7 +316,7 @@
     return NUMERO;
 }
 
-(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela)|(?i:code)|(?i:pudim)|(?i:doce) {
+(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela)|(?i:doce) {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ADJETIVO_POSITIVO;

@@ -1,9 +1,19 @@
+Rules useless in parser due to conflicts
+
+   37 adjetivos: ADJETIVO_POSITIVO
+   38          | ADJETIVO_NEGATIVO
+   39          | TOKEN
+
+
 State 23 conflicts: 20 shift/reduce
 State 45 conflicts: 1 shift/reduce
 State 47 conflicts: 11 shift/reduce
 State 120 conflicts: 11 reduce/reduce
 State 121 conflicts: 12 reduce/reduce
-State 144 conflicts: 14 shift/reduce
+State 140 conflicts: 5 reduce/reduce
+State 141 conflicts: 5 reduce/reduce
+State 142 conflicts: 5 reduce/reduce
+State 145 conflicts: 14 shift/reduce
 
 
 Grammar
@@ -104,15 +114,16 @@ Grammar
    69 dialogo: inicioDialogo MOSTRAR_CENARIO
    70        | inicioDialogo if_sentenca FIM
    71        | inicioDialogo texto FIM
-   72        | inicioDialogo texto VIRGULA TU EH adjetivos FIM
-   73        | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM
-   74        | inicioDialogo texto VIRGULA LE_VALOR FIM
+   72        | inicioDialogo texto VIRGULA TU EH expressao FIM
+   73        | inicioDialogo texto VIRGULA TU EH adjetivos FIM
+   74        | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM
+   75        | inicioDialogo texto VIRGULA LE_VALOR FIM
 
-   75 inicioDialogo: texto INICIO
+   76 inicioDialogo: texto INICIO
 
-   76 ato: ATO
+   77 ato: ATO
 
-   77 cena: CENA
+   78 cena: CENA
 
 
 Terminals, with rules where they appear
@@ -138,20 +149,20 @@ Terminals, with rules where they appear
     SUBTRAIR <texto> (274) 53
     DIVIDIR <texto> (275) 55
     MULTIPLICAR <texto> (276) 54
-    INICIO <texto> (277) 18 57 60 62 75
-    FIM <texto> (278) 18 19 20 21 44 60 62 70 71 72 73 74
+    INICIO <texto> (277) 18 57 60 62 76
+    FIM <texto> (278) 18 19 20 21 44 60 62 70 71 72 73 74 75
     SIM <texto> (279) 21
     INTERROGACAO <texto> (280) 20 21 22
     ABRE_COLCHETES <texto> (281) 46
     FECHA_COLCHETES <texto> (282) 46
     ABRE_PARENTESES <texto> (283) 17
     FECHA_PARENTESES <texto> (284) 17
-    VIRGULA <texto> (285) 17 45 56 57 60 62 72 73 74
+    VIRGULA <texto> (285) 17 45 56 57 60 62 72 73 74 75
     TOKEN <texto> (286) 26 39 42
     ADJETIVO_POSITIVO <texto> (287) 27 37 40
     ADJETIVO_NEGATIVO <texto> (288) 28 38 41
-    TU <texto> (289) 48 72
-    EH <texto> (290) 72
+    TU <texto> (289) 48 72 73
+    EH <texto> (290) 72 73
     E <texto> (291) 35 52 53 54 55
     ENTRE <texto> (292) 30 43 52 53 54 55
     ARTIGO <texto> (293) 29 52 53 54 55
@@ -162,10 +173,10 @@ Terminals, with rules where they appear
     POR <texto> (298) 19
     NO_CENARIO <texto> (299) 19
     MOSTRAR_CENARIO <texto> (300) 69
-    MOSTRA_VALOR <texto> (301) 73
-    LE_VALOR <texto> (302) 74
-    ATO <inteiro> (303) 76
-    CENA <inteiro> (304) 77
+    MOSTRA_VALOR <texto> (301) 74
+    LE_VALOR <texto> (302) 75
+    ATO <inteiro> (303) 77
+    CENA <inteiro> (304) 78
 
 
 Nonterminals, with rules where they appear
@@ -195,13 +206,13 @@ Nonterminals, with rules where they appear
         on right: 10
     texto <texto> (58)
         on left: 23 24 25
-        on right: 17 18 19 20 21 22 24 25 44 45 46 50 56 57 60 62 71 72 73 74 75
+        on right: 17 18 19 20 21 22 24 25 44 45 46 50 56 57 60 62 71 72 73 74 75 76
     palavra <texto> (59)
         on left: 26 27 28 29 30 31 32 33 34 35 36
         on right: 23 25
     adjetivos <inteiro> (60)
         on left: 37 38 39 40 41 42 43
-        on right: 40 41 42 43 72
+        on right: 40 41 42 43 73
     declaracao <texto> (61)
         on left: 44
         on right: 8
@@ -216,7 +227,7 @@ Nonterminals, with rules where they appear
         on right: 51 52 53 54 55
     expressao <llmValueRef> (65)
         on left: 51 52 53 54 55
-        on right: 56 63 64 65 66 67 68
+        on right: 56 63 64 65 66 67 68 72
     if_sentenca <inteiro> (66)
         on left: 56
         on right: 14 70
@@ -239,16 +250,16 @@ Nonterminals, with rules where they appear
         on left: 63 64 65 66 67 68
         on right: 56 57 60 62
     dialogo <texto> (73)
-        on left: 69 70 71 72 73 74
+        on left: 69 70 71 72 73 74 75
         on right: 7
     inicioDialogo <texto> (74)
-        on left: 75
-        on right: 69 70 71 72 73 74
-    ato <texto> (75)
         on left: 76
+        on right: 69 70 71 72 73 74 75
+    ato <texto> (75)
+        on left: 77
         on right: 5
     cena <texto> (76)
-        on left: 77
+        on left: 78
         on right: 6
 
 
@@ -504,16 +515,16 @@ State 20
 
 State 21
 
-   76 ato: ATO •
+   77 ato: ATO •
 
-    $default  reduce using rule 76 (ato)
+    $default  reduce using rule 77 (ato)
 
 
 State 22
 
-   77 cena: CENA •
+   78 cena: CENA •
 
-    $default  reduce using rule 77 (cena)
+    $default  reduce using rule 78 (cena)
 
 
 State 23
@@ -626,7 +637,7 @@ State 29
    24 texto: texto • NUMERO
    25      | texto • palavra
    45 declaracaoInicio: texto • VIRGULA
-   75 inicioDialogo: texto • INICIO
+   76 inicioDialogo: texto • INICIO
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -721,9 +732,10 @@ State 38
    69 dialogo: inicioDialogo • MOSTRAR_CENARIO
    70        | inicioDialogo • if_sentenca FIM
    71        | inicioDialogo • texto FIM
-   72        | inicioDialogo • texto VIRGULA TU EH adjetivos FIM
-   73        | inicioDialogo • texto VIRGULA MOSTRA_VALOR FIM
-   74        | inicioDialogo • texto VIRGULA LE_VALOR FIM
+   72        | inicioDialogo • texto VIRGULA TU EH expressao FIM
+   73        | inicioDialogo • texto VIRGULA TU EH adjetivos FIM
+   74        | inicioDialogo • texto VIRGULA MOSTRA_VALOR FIM
+   75        | inicioDialogo • texto VIRGULA LE_VALOR FIM
 
     ENTAO              shift, and go to state 5
     SE                 shift, and go to state 62
@@ -1003,9 +1015,9 @@ State 55
 
 State 56
 
-   75 inicioDialogo: texto INICIO •
+   76 inicioDialogo: texto INICIO •
 
-    $default  reduce using rule 75 (inicioDialogo)
+    $default  reduce using rule 76 (inicioDialogo)
 
 
 State 57
@@ -1102,9 +1114,10 @@ State 64
    24 texto: texto • NUMERO
    25      | texto • palavra
    71 dialogo: inicioDialogo texto • FIM
-   72        | inicioDialogo texto • VIRGULA TU EH adjetivos FIM
-   73        | inicioDialogo texto • VIRGULA MOSTRA_VALOR FIM
-   74        | inicioDialogo texto • VIRGULA LE_VALOR FIM
+   72        | inicioDialogo texto • VIRGULA TU EH expressao FIM
+   73        | inicioDialogo texto • VIRGULA TU EH adjetivos FIM
+   74        | inicioDialogo texto • VIRGULA MOSTRA_VALOR FIM
+   75        | inicioDialogo texto • VIRGULA LE_VALOR FIM
 
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
@@ -1344,9 +1357,10 @@ State 84
 
 State 85
 
-   72 dialogo: inicioDialogo texto VIRGULA • TU EH adjetivos FIM
-   73        | inicioDialogo texto VIRGULA • MOSTRA_VALOR FIM
-   74        | inicioDialogo texto VIRGULA • LE_VALOR FIM
+   72 dialogo: inicioDialogo texto VIRGULA • TU EH expressao FIM
+   73        | inicioDialogo texto VIRGULA • TU EH adjetivos FIM
+   74        | inicioDialogo texto VIRGULA • MOSTRA_VALOR FIM
+   75        | inicioDialogo texto VIRGULA • LE_VALOR FIM
 
     TU            shift, and go to state 104
     MOSTRA_VALOR  shift, and go to state 105
@@ -1689,21 +1703,22 @@ State 103
 
 State 104
 
-   72 dialogo: inicioDialogo texto VIRGULA TU • EH adjetivos FIM
+   72 dialogo: inicioDialogo texto VIRGULA TU • EH expressao FIM
+   73        | inicioDialogo texto VIRGULA TU • EH adjetivos FIM
 
     EH  shift, and go to state 126
 
 
 State 105
 
-   73 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR • FIM
+   74 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR • FIM
 
     FIM  shift, and go to state 127
 
 
 State 106
 
-   74 dialogo: inicioDialogo texto VIRGULA LE_VALOR • FIM
+   75 dialogo: inicioDialogo texto VIRGULA LE_VALOR • FIM
 
     FIM  shift, and go to state 128
 
@@ -2072,27 +2087,43 @@ State 125
 
 State 126
 
-   72 dialogo: inicioDialogo texto VIRGULA TU EH • adjetivos FIM
+   72 dialogo: inicioDialogo texto VIRGULA TU EH • expressao FIM
+   73        | inicioDialogo texto VIRGULA TU EH • adjetivos FIM
 
+    ENTAO              shift, and go to state 5
+    EU                 shift, and go to state 43
+    SAEM               shift, and go to state 7
+    ENTRAM             shift, and go to state 8
+    TODOS              shift, and go to state 9
+    SOMAR              shift, and go to state 10
     TOKEN              shift, and go to state 140
     ADJETIVO_POSITIVO  shift, and go to state 141
     ADJETIVO_NEGATIVO  shift, and go to state 142
+    TU                 shift, and go to state 44
+    E                  shift, and go to state 16
+    ENTRE              shift, and go to state 17
+    ARTIGO             shift, and go to state 45
+    NUMERO             shift, and go to state 46
 
+    texto      go to state 47
+    palavra    go to state 30
     adjetivos  go to state 143
+    valor      go to state 48
+    expressao  go to state 144
 
 
 State 127
 
-   73 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM •
+   74 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM •
 
-    $default  reduce using rule 73 (dialogo)
+    $default  reduce using rule 74 (dialogo)
 
 
 State 128
 
-   74 dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM •
+   75 dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM •
 
-    $default  reduce using rule 74 (dialogo)
+    $default  reduce using rule 75 (dialogo)
 
 
 State 129
@@ -2101,7 +2132,7 @@ State 129
    62 while: FACA VIRGULA texto INICIO $@2 bloco • ENQUANTO_COMECO condicao VIRGULA texto FIM
 
     FACA                shift, and go to state 3
-    ENQUANTO_COMECO     shift, and go to state 144
+    ENQUANTO_COMECO     shift, and go to state 145
     ENTAO               shift, and go to state 5
     SE                  shift, and go to state 6
     SAEM                shift, and go to state 7
@@ -2146,7 +2177,7 @@ State 130
 
     $default  reduce using rule 59 ($@1)
 
-    $@1  go to state 145
+    $@1  go to state 146
 
 
 State 131
@@ -2170,7 +2201,7 @@ State 131
 
     texto    go to state 47
     palavra  go to state 30
-    valor    go to state 146
+    valor    go to state 147
 
 
 State 132
@@ -2194,7 +2225,7 @@ State 132
 
     texto    go to state 47
     palavra  go to state 30
-    valor    go to state 147
+    valor    go to state 148
 
 
 State 133
@@ -2218,7 +2249,7 @@ State 133
 
     texto    go to state 47
     palavra  go to state 30
-    valor    go to state 148
+    valor    go to state 149
 
 
 State 134
@@ -2242,7 +2273,7 @@ State 134
 
     texto    go to state 47
     palavra  go to state 30
-    valor    go to state 149
+    valor    go to state 150
 
 
 State 135
@@ -2272,7 +2303,7 @@ State 138
    57 if_bloco: SE condicao VIRGULA texto INICIO bloco • ENDIF
 
     FACA                shift, and go to state 3
-    ENDIF               shift, and go to state 150
+    ENDIF               shift, and go to state 151
     ENQUANTO_COMECO     shift, and go to state 4
     ENTAO               shift, and go to state 5
     SE                  shift, and go to state 6
@@ -2321,23 +2352,56 @@ State 139
 
 State 140
 
+   26 palavra: TOKEN •
    39 adjetivos: TOKEN •
 
-    $default  reduce using rule 39 (adjetivos)
+    FIM                reduce using rule 26 (palavra)
+    FIM                [reduce using rule 39 (adjetivos)]
+    TOKEN              reduce using rule 26 (palavra)
+    TOKEN              [reduce using rule 39 (adjetivos)]
+    ADJETIVO_POSITIVO  reduce using rule 26 (palavra)
+    ADJETIVO_POSITIVO  [reduce using rule 39 (adjetivos)]
+    ADJETIVO_NEGATIVO  reduce using rule 26 (palavra)
+    ADJETIVO_NEGATIVO  [reduce using rule 39 (adjetivos)]
+    ENTRE              reduce using rule 26 (palavra)
+    ENTRE              [reduce using rule 39 (adjetivos)]
+    $default           reduce using rule 26 (palavra)
 
 
 State 141
 
+   27 palavra: ADJETIVO_POSITIVO •
    37 adjetivos: ADJETIVO_POSITIVO •
 
-    $default  reduce using rule 37 (adjetivos)
+    FIM                reduce using rule 27 (palavra)
+    FIM                [reduce using rule 37 (adjetivos)]
+    TOKEN              reduce using rule 27 (palavra)
+    TOKEN              [reduce using rule 37 (adjetivos)]
+    ADJETIVO_POSITIVO  reduce using rule 27 (palavra)
+    ADJETIVO_POSITIVO  [reduce using rule 37 (adjetivos)]
+    ADJETIVO_NEGATIVO  reduce using rule 27 (palavra)
+    ADJETIVO_NEGATIVO  [reduce using rule 37 (adjetivos)]
+    ENTRE              reduce using rule 27 (palavra)
+    ENTRE              [reduce using rule 37 (adjetivos)]
+    $default           reduce using rule 27 (palavra)
 
 
 State 142
 
+   28 palavra: ADJETIVO_NEGATIVO •
    38 adjetivos: ADJETIVO_NEGATIVO •
 
-    $default  reduce using rule 38 (adjetivos)
+    FIM                reduce using rule 28 (palavra)
+    FIM                [reduce using rule 38 (adjetivos)]
+    TOKEN              reduce using rule 28 (palavra)
+    TOKEN              [reduce using rule 38 (adjetivos)]
+    ADJETIVO_POSITIVO  reduce using rule 28 (palavra)
+    ADJETIVO_POSITIVO  [reduce using rule 38 (adjetivos)]
+    ADJETIVO_NEGATIVO  reduce using rule 28 (palavra)
+    ADJETIVO_NEGATIVO  [reduce using rule 38 (adjetivos)]
+    ENTRE              reduce using rule 28 (palavra)
+    ENTRE              [reduce using rule 38 (adjetivos)]
+    $default           reduce using rule 28 (palavra)
 
 
 State 143
@@ -2346,16 +2410,23 @@ State 143
    41          | adjetivos • ADJETIVO_NEGATIVO
    42          | adjetivos • TOKEN
    43          | adjetivos • ENTRE
-   72 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
+   73 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
 
-    FIM                shift, and go to state 151
-    TOKEN              shift, and go to state 152
-    ADJETIVO_POSITIVO  shift, and go to state 153
-    ADJETIVO_NEGATIVO  shift, and go to state 154
-    ENTRE              shift, and go to state 155
+    FIM                shift, and go to state 152
+    TOKEN              shift, and go to state 153
+    ADJETIVO_POSITIVO  shift, and go to state 154
+    ADJETIVO_NEGATIVO  shift, and go to state 155
+    ENTRE              shift, and go to state 156
 
 
 State 144
+
+   72 dialogo: inicioDialogo texto VIRGULA TU EH expressao • FIM
+
+    FIM  shift, and go to state 157
+
+
+State 145
 
    60 while: ENQUANTO_COMECO • while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
    62      | FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO • condicao VIRGULA texto FIM
@@ -2395,10 +2466,10 @@ State 144
     valor      go to state 48
     expressao  go to state 49
     while_aux  go to state 42
-    condicao   go to state 156
+    condicao   go to state 158
 
 
-State 145
+State 146
 
    60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 • bloco texto ENQUANTO_FIM FIM
 
@@ -2423,7 +2494,7 @@ State 145
     ATO                 shift, and go to state 21
     CENA                shift, and go to state 22
 
-    bloco                     go to state 157
+    bloco                     go to state 159
     instrucao                 go to state 24
     declaracaoCenario         go to state 25
     concatenarCenario         go to state 26
@@ -2443,84 +2514,91 @@ State 145
     cena                      go to state 40
 
 
-State 146
+State 147
 
    52 expressao: ARTIGO SOMAR ENTRE valor E valor •
 
     $default  reduce using rule 52 (expressao)
 
 
-State 147
+State 148
 
    53 expressao: ARTIGO SUBTRAIR ENTRE valor E valor •
 
     $default  reduce using rule 53 (expressao)
 
 
-State 148
+State 149
 
    55 expressao: ARTIGO DIVIDIR ENTRE valor E valor •
 
     $default  reduce using rule 55 (expressao)
 
 
-State 149
+State 150
 
    54 expressao: ARTIGO MULTIPLICAR ENTRE valor E valor •
 
     $default  reduce using rule 54 (expressao)
 
 
-State 150
+State 151
 
    57 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF •
 
     $default  reduce using rule 57 (if_bloco)
 
 
-State 151
-
-   72 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
-
-    $default  reduce using rule 72 (dialogo)
-
-
 State 152
+
+   73 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
+
+    $default  reduce using rule 73 (dialogo)
+
+
+State 153
 
    42 adjetivos: adjetivos TOKEN •
 
     $default  reduce using rule 42 (adjetivos)
 
 
-State 153
+State 154
 
    40 adjetivos: adjetivos ADJETIVO_POSITIVO •
 
     $default  reduce using rule 40 (adjetivos)
 
 
-State 154
+State 155
 
    41 adjetivos: adjetivos ADJETIVO_NEGATIVO •
 
     $default  reduce using rule 41 (adjetivos)
 
 
-State 155
+State 156
 
    43 adjetivos: adjetivos ENTRE •
 
     $default  reduce using rule 43 (adjetivos)
 
 
-State 156
+State 157
+
+   72 dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM •
+
+    $default  reduce using rule 72 (dialogo)
+
+
+State 158
 
    62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao • VIRGULA texto FIM
 
-    VIRGULA  shift, and go to state 158
+    VIRGULA  shift, and go to state 160
 
 
-State 157
+State 159
 
     4 bloco: bloco • instrucao
    60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco • texto ENQUANTO_FIM FIM
@@ -2551,7 +2629,7 @@ State 157
     concatenarCenario         go to state 26
     substituiCenario          go to state 27
     declaracaoQuestionamento  go to state 28
-    texto                     go to state 159
+    texto                     go to state 161
     palavra                   go to state 30
     declaracao                go to state 31
     declaracaoInicio          go to state 32
@@ -2565,7 +2643,7 @@ State 157
     cena                      go to state 40
 
 
-State 158
+State 160
 
    62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA • texto FIM
 
@@ -2581,11 +2659,11 @@ State 158
     ENTRE              shift, and go to state 17
     ARTIGO             shift, and go to state 18
 
-    texto    go to state 160
+    texto    go to state 162
     palavra  go to state 30
 
 
-State 159
+State 161
 
    20 declaracaoQuestionamento: texto • INTERROGACAO NAO FIM
    21                         | texto • INTERROGACAO SIM FIM
@@ -2594,9 +2672,9 @@ State 159
    25      | texto • palavra
    45 declaracaoInicio: texto • VIRGULA
    60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto • ENQUANTO_FIM FIM
-   75 inicioDialogo: texto • INICIO
+   76 inicioDialogo: texto • INICIO
 
-    ENQUANTO_FIM       shift, and go to state 161
+    ENQUANTO_FIM       shift, and go to state 163
     ENTAO              shift, and go to state 5
     SAEM               shift, and go to state 7
     ENTRAM             shift, and go to state 8
@@ -2616,7 +2694,7 @@ State 159
     palavra  go to state 60
 
 
-State 160
+State 162
 
    24 texto: texto • NUMERO
    25      | texto • palavra
@@ -2627,7 +2705,7 @@ State 160
     ENTRAM             shift, and go to state 8
     TODOS              shift, and go to state 9
     SOMAR              shift, and go to state 10
-    FIM                shift, and go to state 162
+    FIM                shift, and go to state 164
     TOKEN              shift, and go to state 13
     ADJETIVO_POSITIVO  shift, and go to state 14
     ADJETIVO_NEGATIVO  shift, and go to state 15
@@ -2639,21 +2717,21 @@ State 160
     palavra  go to state 60
 
 
-State 161
+State 163
 
    60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM • FIM
 
-    FIM  shift, and go to state 163
+    FIM  shift, and go to state 165
 
 
-State 162
+State 164
 
    62 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM •
 
     $default  reduce using rule 62 (while)
 
 
-State 163
+State 165
 
    60 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM •
 

@@ -1,36 +1,29 @@
 Um titulo: uma descricao.
 
 Jose Dirceu, um cara muito bacana.
-Maria Roberta, a mulher mais pura da rua Aurora.
+Maria Roberta, a mulher que dá inicio.
+Joaozinho, um delimitador.
+Robertinha, um iterador.
 (Avenida Copacabana, luxuria e confusao)  
 Esta chovendo? Sim!
 ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
-		[Entra Jose Dirceu e Maria Roberta] 
-		Jose Dirceu: Maria Roberta, você é doce como um pudim de padaria numa tarde de domingo! # Maria += 2 #
-		Maria Roberta: Jose Dirceu, tu és podre como um canalha sem vergonha na cara! # Jose -= 3 #
-		Jose Dirceu: Maria Roberta, abre teu coracao mizeravel.
-
-	Se Maria Roberta for maior que Jose Dirceu, entao:
-    	Jose Dirceu: Maria Roberta, tu és podre!
-	Assim se cala o destino!
-		Jose Dirceu: Maria Roberta, abre teu coracao mizeravel.
-		Maria Roberta: Jose Dirceu, abre teu coracao mizeravel.
-
-	Enquanto Maria Roberta for maior que Jose Dirceu, o sofrimento vai continuar:
-		Jose Dirceu: Maria Roberta, abre teu coracao mizeravel.
-		Jose Dirceu: Maria Roberta, tu és podre!
-		Jose Dirceu: Jose Dirceu, abre teu coracao mizeravel.
+		[Entra Jose Dirceu e Robertinha] # Ajustar no futuro #
+		Robertinha: Maria Roberta, abre teu coracao mizeravel.
+		Jose Dirceu: Maria Roberta, você é doce como um pudim! # Maria += 1 #
+		Joaozinho: Jose Dirceu, tu és belo como um cachorro!
+		Jose Dirceu: Joazinho, escuta teu coracao mizeravel.
+		Robertinha: Maria Roberta, abre teu coracao mizeravel.
+		Robertinha: Jose Dirceu, abre teu coracao mizeravel.
+		Maria Roberta: Robertinha, tu és a soma de Jose Dirceu e 0!
+	Equanto Jose Dirceu for menor que Joaozinho, o sofrimento vai continuar: # Loop #
+		Robertinha: Jose Dirceu, você é a soma tu mesmo e Robertinha!
+		Maria Roberta: Robertinha, tu és a soma de Jose Dirceu e 0!
+		Robertinha: Jose Dirceu, abre teu coracao mizeravel.
 	o sofrimento acaba!
-	#
-	Primeiro, o sofrimento começa:
-    	Jose Dirceu: Maria Roberta, tu és podre!
-	Enquanto Maria Roberta for maior que Jose Dirceu, o sofrimento persiste!
-	Jose Dirceu: Maria Roberta, abre teu coracao mizeravel.
-	#
 
-	[Sai Jose Dirceu]
-	[Todos saem]
+		[Sai Jose Dirceu]
+		[Todos saem]
 
 
 # Um comentário qualquer #
