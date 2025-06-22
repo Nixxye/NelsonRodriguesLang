@@ -216,12 +216,12 @@
     return MENOR;
 }
 
-(?i:abre)[ ](?i:teu)[ ](?i:coracao)[ ](?i:mizeravel) {
+(?i:abre)[ ](?i:teu)[ ](?i:coracao)[ ](?i:miseravel) {
     if (DEBUG_LEX) printf("TOKEN: MOSTRA_VALOR\n");
     yylval.texto = strdup(yytext);
     return MOSTRA_VALOR;
 }
-(?i:escuta)[ ](?i:teu)[ ](?i:coracao)[ ](?i:mizeravel) {
+(?i:escuta)[ ](?i:teu)[ ](?i:coracao)[ ](?i:miseravel) {
     if (DEBUG_LEX) printf("TOKEN: LE_VALOR\n");
     yylval.texto = strdup(yytext);
     return LE_VALOR;
