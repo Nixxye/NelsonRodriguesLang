@@ -16,7 +16,13 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
 		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
-		
+	#
+	ENQUANTO Jose Dirceu FOR MENOR QUE Joaozinho, O SOFRIMENTO VAI CONTINUAR: # Loop #
+		Robertinha: Jose Dirceu, VOCÊ É A SOMA DE TU MESMO E Robertinha!
+		Maria Roberta: Robertinha, TU ÉS A SOMA DE José Dirceu e 0!
+		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
+	O SOFRIMENTO ACABA!
+	#
 		[Sai Jose Dirceu]
 		[Todos saem]
 

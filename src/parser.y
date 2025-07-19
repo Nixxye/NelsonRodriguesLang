@@ -203,16 +203,6 @@ texto:
 
 palavra:
     TOKEN { $$ = strdup($1); }
-    | ADJETIVO_POSITIVO { $$ = strdup($1); }
-    | ADJETIVO_NEGATIVO { $$ = strdup($1); }
-    | ARTIGO { $$ = strdup($1); }
-    | ENTRE { $$ = strdup($1); }
-    | SOMAR { $$ = strdup($1); }
-    | ENTRAM { $$ = strdup($1); }
-    | SAEM { $$ = strdup($1); }
-    | TODOS { $$ = strdup($1); }
-    | E { $$ = strdup($1); }
-    | ENTAO { $$ = strdup($1); }
     ;
 
 adjetivos:
@@ -268,7 +258,7 @@ alteracaoElenco:
             if (DEBUG_BISON) {
                 printf("Alteração de elenco: %s\n", $2);
             }
-        } if (estado == E_DIALOGO) {
+        } else if (estado == E_DIALOGO) {
             if (DEBUG_BISON) {
                 printf("Alteração de elenco: %s\n", $2);
             }

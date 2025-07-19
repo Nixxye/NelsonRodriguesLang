@@ -36,7 +36,7 @@
     }
 %}
 %%
-"#"([^\n#]|(\n))*"#"   { /* comentário multilinha */ }
+"#"([^\n#]|(\n))*"#"      { /* comentário multilinha */ }
 
 ^ATO[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?[:].+\. {
     char romano[16];
@@ -55,120 +55,117 @@
     yylval.inteiro = numero;
     return CENA;
 }
-(^|[ \t])[eE]([ \t]|[.,?!]) {
+(^|[ \t])E([ \t]|[.,?!]) {
     if (DEBUG_LEX) printf("TOKEN: E\n");
     yylval.texto = strdup(yytext);
     return E;
 }
 
-(?i:[o|a|os|as|um|uma|uns|umas])[ ] {
+(O|A|OS|AS|UM|UMA|UNS|UMAS)[ ] {
     if (DEBUG_LEX) printf("TOKEN: ARTIGO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ARTIGO;
 }
 
-(?i:onde[ ]estamos\?)|(?i:onde[ ]estou\?) {
+"ONDE ESTAMOS?"|"ONDE ESTOU?" {
     if (DEBUG_LEX) printf("TOKEN: ONDE_ESTAMOS\n");
     yylval.texto = strdup(yytext);
     return MOSTRAR_CENARIO;
 }
 
-[aA][dD][iI][cC][iI][oO][nN][eE][ ][aA][oO][ ][cC][eE][nN][aA][rR][iI][oO] {
-    // Adicione ao cenário
+ADICIONE[ ]AO[ ]CENARIO {
     if (DEBUG_LEX) printf("TOKEN: ADICIONAR_CENARIO\n");
     yylval.texto = strdup(yytext);
     return ADICIONAR_CENARIO;
 }
 
-[Ss][Uu][Bb][Ss][Tt][Ii][Tt][Uu][Aa] {
+SUBSTITUIR[ ]CENARIO {
     if (DEBUG_LEX) printf("TOKEN: SUBSTITUIR_CENARIO\n");
     yylval.texto = strdup(yytext);
     return SUBSTITUIR_CENARIO;
 }
 
-[Pp][Oo][Rr] {
+POR {
     if (DEBUG_LEX) printf("TOKEN: POR\n");
     yylval.texto = strdup(yytext);
     return POR;
 }
 
-[Nn][Oo][ ][Cc][Ee][Nn][Aa][Rr][Ii][Oo] {
+NO[ ]CENARIO {
     if (DEBUG_LEX) printf("TOKEN: NO_CENARIO\n");
     yylval.texto = strdup(yytext);
     return NO_CENARIO;
 }
 
-(?i:se) {
+SE {
     if (DEBUG_LEX) printf("TOKEN: SE\n");
     yylval.texto = strdup(yytext);
     return SE;
 }
 
-[Ss][Ii][Mm] {
+SIM {
     if (DEBUG_LEX) printf("TOKEN: SIM\n");
     yylval.texto = strdup(yytext);
     return SIM;
 }
 
-(?i:nao) {
+NAO {
     if (DEBUG_LEX) printf("TOKEN: NAO\n");
     yylval.texto = strdup(yytext);
     return NAO;
 }
 
-
-
-(?i:eu) {
+EU {
     if (DEBUG_LEX) printf("TOKEN: EU\n");
     yylval.texto = strdup(yytext);
     return EU;
 }
 
-(?i:entao) {
+ENTAO {
     if (DEBUG_LEX) printf("TOKEN: ENTAO\n");
     yylval.texto = strdup(yytext);
     return ENTAO;
 }
 
-(?i:for) {
+FOR {
     if (DEBUG_LEX) printf("TOKEN: FOR\n");
     yylval.texto = strdup(yytext);
     return FOR;
 }
  
-(?i:entre)|(?i:de) {
+(ENTRE)|(DE) {
     if (DEBUG_LEX) printf("TOKEN: ENTRE\n");
     yylval.texto = strdup(yytext);
     return ENTRE;
 }
-(?:mesma)|(?i:mesmo)|(?i:mesmas)|(?i:mesmos) {
+(MESMA|MESMO|MESMAS|MESMOS) {
     if (DEBUG_LEX) printf("TOKEN: MESMO\n");
     yylval.texto = strdup(yytext);
     return MESMO;
 }
-(?i:tu)|(?i:você) {
+(TU|VOCÊ) {
     if (DEBUG_LEX) printf("TOKEN: TU\n");
     yylval.texto = strdup(yytext);
     return TU;
 }
-(?i:é)|(?i:és) { // acentuação depois
+(É|ÉS) {
     if (DEBUG_LEX) printf("TOKEN: É\n");
     yylval.texto = strdup(yytext);
     return EH;
 }
-(?i:saem)|(?i:sai) {
+(SAEM|SAI) {
     if (DEBUG_LEX) printf("TOKEN: SAEM\n");
     yylval.texto = strdup(yytext);
     return SAEM;
 }
 
-(?i:todos) {
+TODOS {
     if (DEBUG_LEX) printf("TOKEN: TODOS\n");
     yylval.texto = strdup(yytext);
     return TODOS;
 }
 
-(?i:entram)|(?i:entra) {
+(ENTRAM|ENTRA) {
     if (DEBUG_LEX) printf("TOKEN: ENTRAM\n");
     yylval.texto = strdup(yytext);
     return ENTRAM;
@@ -178,99 +175,90 @@
     if (DEBUG_LEX) printf("TOKEN: VIRGULA\n");
     return VIRGULA;
 }
-(?i:soma) {
+SOMA {
     if (DEBUG_LEX) printf("TOKEN: SOMA\n");
     yylval.texto = strdup(yytext);
     return SOMAR;
 }
 
-(?i:subtração) {
+SUBTRAÇÃO {
     if (DEBUG_LEX) printf("TOKEN: SUBTRAÇÃO\n");
     yylval.texto = strdup(yytext);
     return SUBTRAIR;
 }
 
-(?i:divisão) {
+DIVISÃO {
     if (DEBUG_LEX) printf("TOKEN: DIVISÃO\n");
     yylval.texto = strdup(yytext);
     return DIVIDIR;
 }
 
-(?i:multiplicação) {
+MULTIPLICAÇÃO {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAÇÃO\n");
     yylval.texto = strdup(yytext);
     return MULTIPLICAR;
 }
 
-([Mm][Aa][Ii][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Aa][Ii][Oo][Rr][ \t]+[Qq][Uu][Ee])  {
-    // mais que
+(MAIS[ \t]+QUE)|(MAIOR[ \t]+QUE)   {
     if (DEBUG_LEX) printf("TOKEN: MAIOR\n");
     yylval.texto = strdup(yytext);
     return MAIOR;
 }
 
-([Mm][Ee][Nn][Oo][Ss][ \t]+[Qq][Uu][Ee])|([Mm][Ee][Nn][Oo][Rr][ \t]+[Qq][Uu][Ee]) {
-    // menos que
+(MENOS[ \t]+QUE)|(MENOR[ \t]+QUE) {
     if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
     return MENOR;
 }
 
-(?i:abre)[ ](?i:teu)[ ](?i:coracao)[ ](?i:miseravel) {
+ABRE[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     if (DEBUG_LEX) printf("TOKEN: MOSTRA_VALOR\n");
     yylval.texto = strdup(yytext);
     return MOSTRA_VALOR;
 }
-(?i:escuta)[ ](?i:teu)[ ](?i:coracao)[ ](?i:miseravel) {
+ESCUTA[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     if (DEBUG_LEX) printf("TOKEN: LE_VALOR\n");
     yylval.texto = strdup(yytext);
     return LE_VALOR;
 }
 
-[Ii][Gg][Uu][Aa][Ll][ \t]+[Qq][Uu][Ee] {
-    //igual que
+IGUAL[ \t]+QUE {
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
     yylval.texto = strdup(yytext);
     return IGUAL;
 }
 
-(?i:nao) {
-    if (DEBUG_LEX) printf("TOKEN: NAO\n");
-    yylval.texto = strdup(yytext);
-    return NAO;
-}
-
-(?i:enquanto) {
+ENQUANTO {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_COMECO\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_COMECO;
 }
 
-(?i:acaba) {
+ACABA {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_FIM\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_FIM;
 }
 
-"Assim se cala o destino!"|"E tudo se encerra!"|"Fim das ilusões!"|"A verdade se recolhe!"|"A sentença finda!" {
+"ASSIM SE CALA O DESTINO!"|"E TUDO SE ENCERRA!"|"FIM DAS ILUSÕES!"|"A VERDADE SE RECOLHE!"|"A SENTENÇA FINDA!" {
     if (DEBUG_LEX) printf("TOKEN: ENDIF\n");
     yylval.texto = strdup(yytext);
     return ENDIF;
 }
 
-"Primeiro" {
+PRIMEIRO {
     if (DEBUG_LEX) printf("TOKEN: FACA\n");
     yylval.texto = strdup(yytext);
     return FACA;
 }
 
-(?i:razão) {
+RAZÃO {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);
     return DIVIDIR;
 }
 
-(?i:produto) {
+PRODUTO {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
     yylval.texto = strdup(yytext);
     return MULTIPLICAR;
@@ -285,7 +273,7 @@
     if (DEBUG_LEX) printf("TOKEN: FIM\n");
     return FIM;
 }
-[?] {
+\? {
     if (DEBUG_LEX) printf("TOKEN: INTERROGACAO\n");
     return INTERROGACAO;
 }
@@ -316,24 +304,24 @@
     return NUMERO;
 }
 
-(?i:bacana)|(?i:legal)|(?i:belo)|(?i:bela)|(?i:doce) {
+(BACANA|LEGAL|BELO|BELA|DOCE) {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ADJETIVO_POSITIVO;
 }
-(?i:podre)|(?i:canalha) {
+(PODRE|CANALHA) {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ADJETIVO_NEGATIVO;
 }
 [A-Za-z]+ {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
-    yylval.texto = strdup(yytext);   // <-- AQUI ATRIBUI O VALOR
+    yylval.texto = strdup(yytext);
     return TOKEN;
 }
 
 
-.|\n                            { /* ignora tudo o resto */ }
+.|\n                                { /* ignora tudo o resto */ }
 
 %%
 
