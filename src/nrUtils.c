@@ -78,7 +78,7 @@ void add_symbol(const char *name, VarType type) {
 // Adiciona valor inteiro
 void set_int_value(const char *name, int value) {
     // LLVM:
-        Symbol *sym = get_symbol(name);
+    Symbol *sym = get_symbol(name);
     if (!sym) {
         fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
         exit(EXIT_FAILURE);
@@ -313,6 +313,17 @@ void print_values(void) {
         }
     }
     printf("\n");
+}
+void desativar_todos_personagens(void) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Symbol *symbol = symbolTable[i];
+        while (symbol) {
+            if (symbol->type == INT_VAR) {
+                symbol->active = 0; // Desativa o personagem
+            }
+            symbol = symbol->next;
+        }
+    }
 }
 
 const char* vartype_to_string(VarType type) {

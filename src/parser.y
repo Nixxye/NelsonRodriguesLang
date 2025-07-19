@@ -82,6 +82,7 @@ instrucao:
     | if_sentenca 
     | if_bloco
     | while
+    | personagensEntrando
     ;
 
 
@@ -252,8 +253,77 @@ declaracaoInicio:
         $$ = $1;
     }
 
+personagensEntrando:
+    texto {
+        Symbol *sym = get_symbol($1);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $1);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 1;
+    } 
+    | personagensEntrando VIRGULA texto {
+        Symbol *sym = get_symbol($3);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $3);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 1;
+    }
+    | personagensEntrando E texto {
+        Symbol *sym = get_symbol($3);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $3);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 1;
+    }
+personagensSaindo:
+    texto {
+        Symbol *sym = get_symbol($1);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $1);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 0;
+    } 
+    | personagensSaindo VIRGULA texto {
+        Symbol *sym = get_symbol($3);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $3);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 0;
+    }
+    | personagensSaindo E texto {
+        Symbol *sym = get_symbol($3);
+        if (!sym) {
+            printf("Personagem não declarado: %s", $3);
+            YYABORT;
+        } else if (sym->type != INT_VAR) {
+            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
+            YYABORT;
+        }
+        sym->active = 0;
+    }
+
 alteracaoElenco:
-    ABRE_COLCHETES texto FECHA_COLCHETES {
+    ABRE_COLCHETES ENTRAM personagensEntrando FECHA_COLCHETES {
         if (estado == E_CENA) {
             if (DEBUG_BISON) {
                 printf("Alteração de elenco: %s\n", $2);
@@ -265,6 +335,26 @@ alteracaoElenco:
         } else {
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
+    }
+    | ABRE_COLCHETES SAEM personagensSaindo FECHA_COLCHETES {
+        if (estado == E_CENA) {
+            if (DEBUG_BISON) {
+                printf("Alteração de elenco: %s\n", $2);
+            }
+        } else if (estado == E_DIALOGO) {
+            if (DEBUG_BISON) {
+                printf("Alteração de elenco: %s\n", $2);
+            }
+        } else {
+            printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
+        }
+    }
+    | ABRE_COLCHETES TODOS SAEM FECHA_COLCHETES {
+        if (DEBUG_BISON) {
+            printf("Todos os personagens estão inativos\n");
+        }
+        // Ativa todos os personagens
+        desativar_todos_personagens();
     }
 
 valor:
@@ -478,6 +568,10 @@ dialogo:
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
             yyerror("Variável inteira inválida ou não declarada");
+            YYABORT;
+        }  else if (!sym->active) {
+            printf("Variável %s não está ativa\n", personagemDialogo);
+            YYABORT;
         } else {
             LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
             LLVMValueRef incremento = $6;
@@ -507,6 +601,10 @@ dialogo:
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
             yyerror("Variável inteira inválida ou não declarada");
+            YYABORT;
+        }  else if (!sym->active) {
+            printf("Variável %s não está ativa\n", personagemDialogo);
+            YYABORT;
         } else {
             LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
             LLVMValueRef incremento = LLVMConstInt(LLVMInt32Type(), $6, 0);
@@ -535,7 +633,14 @@ dialogo:
             //     printf("Valor de %s: %d\n", $2, val);
             // }
         }
-
+        Symbol *sym = get_symbol($2);
+        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            yyerror("Variável inteira inválida ou não declarada");
+            YYABORT;
+        }  else if (!sym->active) {
+            printf("Variável %s não está ativa\n", sym->name);
+            YYABORT;
+        }
         gerar_print_int($2);
 
     }
@@ -543,6 +648,14 @@ dialogo:
         // Scanf
         if (DEBUG_BISON) {
             printf("Lendo valor de %s\n", $2);
+        }
+        Symbol *sym = get_symbol($2);
+        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            yyerror("Variável inteira inválida ou não declarada");
+            YYABORT;
+        }  else if (!sym->active) {
+            printf("Variável %s não está ativa\n", sym->name);
+            YYABORT;
         }
         gerar_leitura_inteiro($2);
     }
@@ -560,8 +673,16 @@ inicioDialogo:
         } 
         else if (estado == E_DIALOGO) {
             if (DEBUG_BISON) {
-                printf("Apenas um texto\n");
-            }    
+                printf("Início do diálogo\n");
+            }   
+            Symbol *sym = get_symbol($1);
+            if (!sym) {
+                yyerror("Personagem não declarado");
+                YYABORT;
+            } else if (!sym->active) {
+                yyerror("Personagem não está ativo");
+                YYABORT;
+            } 
         } else if (estado == E_CENA) {
             if (DEBUG_BISON) {
                 printf("Início do diálogo: %s\n", $1);

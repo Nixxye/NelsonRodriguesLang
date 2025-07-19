@@ -8,7 +8,7 @@ Robertinha, um iterador.
 Esta chovendo? SIM!
 ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
-		[Entra Jose Dirceu e Robertinha] # Ajustar no futuro #
+		[ENTRAM Jose Dirceu, Robertinha, Joaozinho E Maria Roberta] # Ajustar no futuro #
 		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
 		Jose Dirceu: Maria Roberta, VOCÊ É DOCE como um pudim! # Maria += 1 #
 		Joaozinho: Jose Dirceu, TU ÉS BELO como um cachorro!
@@ -17,8 +17,8 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
 		
-		[Sai Jose Dirceu]
-		[Todos saem]
+		[SAI Jose Dirceu]
+		[TODOS SAEM]
 
 
 # Um comentário qualquer #
