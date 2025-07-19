@@ -442,19 +442,34 @@ void gerar_print_int(const char *nome) {
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
 
     // Cria string global para formato "%d\n"
-    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%d\n", "fmt");
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s: Sou %d!\n", "fmt_str");
 
-    // Carrega o valor inteiro da variável
+    // 2. Cria uma string global com o nome da variável para usar no printf
+    LLVMValueRef nome_str = LLVMBuildGlobalStringPtr(builder, nome, "var_name_str");
+
+    // 3. Carrega o valor inteiro da variável
     LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMInt32TypeInContext(contexto), sym->llvm_ref, "tmpint");
 
-    // Chamada para printf
-    LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
+    // 4. Define os argumentos para a chamada: formato, nome e valor
+    LLVMValueRef args[] = { fmt, nome_str, valor };
+
+    // 5. Gera a chamada para printf com 3 argumentos
+    LLVMBuildCall2(builder, printf_type, printf_func, args, 3, "");
 }
 
 void gerar_leitura_inteiro(const char *nome) {
     Symbol *sym = get_symbol(nome);
-    if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-        fprintf(stderr, "Erro: variável inteira '%s' inválida ou não declarada\n", nome);
+    if (!sym) {
+        fprintf(stderr, "Erro: A variável '%s' não foi declarada.\n", nome);
+        print_symbols();
+        return;
+    }
+    if (sym->type != INT_VAR) {
+        fprintf(stderr, "Erro: A variável '%s' não é do tipo inteiro.\n", nome);
+        return;
+    }
+    if (!sym->llvm_ref) {
+        fprintf(stderr, "Erro: Referência de memória para a variável '%s' é inválida.\n", nome);
         return;
     }
 
@@ -466,7 +481,7 @@ void gerar_leitura_inteiro(const char *nome) {
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
 
     char msg[256];
-    snprintf(msg, sizeof(msg), "Digite valor de %s: ", nome);
+    snprintf(msg, sizeof(msg), "Digite o valor de %s: ", nome);
     LLVMValueRef prompt = LLVMBuildGlobalStringPtr(builder, msg, "prompt");
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ prompt }, 1, "");
 

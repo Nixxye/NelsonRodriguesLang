@@ -595,7 +595,7 @@ static const yytype_int16 yyrline[] =
      215,   218,   224,   230,   233,   238,   245,   256,   271,   277,
      294,   311,   326,   329,   333,   337,   341,   350,   359,   366,
      384,   383,   397,   396,   425,   428,   431,   434,   437,   440,
-     446,   452,   457,   471,   499,   529,   540,   551,   576,   590
+     446,   452,   457,   471,   499,   529,   542,   553,   578,   592
 };
 #endif
 
@@ -1917,13 +1917,15 @@ yyreduce:
             //     printf("Valor de %s: %d\n", $2, val);
             // }
         }
+
         gerar_print_int((yyvsp[-3].texto));
+
     }
-#line 1923 "src/parser.tab.c"
+#line 1925 "src/parser.tab.c"
     break;
 
   case 66: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 540 "src/parser.y"
+#line 542 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -1931,11 +1933,11 @@ yyreduce:
         }
         gerar_leitura_inteiro((yyvsp[-3].texto));
     }
-#line 1935 "src/parser.tab.c"
+#line 1937 "src/parser.tab.c"
     break;
 
   case 67: /* inicioDialogo: texto INICIO  */
-#line 551 "src/parser.y"
+#line 553 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -1959,11 +1961,11 @@ yyreduce:
             }        
         }
     }
-#line 1963 "src/parser.tab.c"
+#line 1965 "src/parser.tab.c"
     break;
 
   case 68: /* ato: ATO  */
-#line 576 "src/parser.y"
+#line 578 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -1976,11 +1978,11 @@ yyreduce:
             }
         }
     }
-#line 1980 "src/parser.tab.c"
+#line 1982 "src/parser.tab.c"
     break;
 
   case 69: /* cena: CENA  */
-#line 590 "src/parser.y"
+#line 592 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -1993,11 +1995,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 1997 "src/parser.tab.c"
+#line 1999 "src/parser.tab.c"
     break;
 
 
-#line 2001 "src/parser.tab.c"
+#line 2003 "src/parser.tab.c"
 
       default: break;
     }
@@ -2190,7 +2192,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 604 "src/parser.y"
+#line 606 "src/parser.y"
 
 
 int main() {

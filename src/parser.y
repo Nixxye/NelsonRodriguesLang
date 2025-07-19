@@ -535,7 +535,9 @@ dialogo:
             //     printf("Valor de %s: %d\n", $2, val);
             // }
         }
+
         gerar_print_int($2);
+
     }
     | inicioDialogo texto VIRGULA LE_VALOR FIM {
         // Scanf
