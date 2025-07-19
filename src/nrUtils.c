@@ -444,16 +444,16 @@ void gerar_print_int(const char *nome) {
     // Cria string global para formato "%d\n"
     LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s: Sou %d!\n", "fmt_str");
 
-    // 2. Cria uma string global com o nome da variável para usar no printf
+    // Cria uma string global com o nome da variável para usar no printf
     LLVMValueRef nome_str = LLVMBuildGlobalStringPtr(builder, nome, "var_name_str");
 
-    // 3. Carrega o valor inteiro da variável
+    // Carrega o valor inteiro da variável
     LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMInt32TypeInContext(contexto), sym->llvm_ref, "tmpint");
 
-    // 4. Define os argumentos para a chamada: formato, nome e valor
+    // Define os argumentos para a chamada: formato, nome e valor
     LLVMValueRef args[] = { fmt, nome_str, valor };
 
-    // 5. Gera a chamada para printf com 3 argumentos
+    // Gera a chamada para printf com 3 argumentos
     LLVMBuildCall2(builder, printf_type, printf_func, args, 3, "");
 }
 
