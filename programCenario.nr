@@ -19,6 +19,7 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
         Robertinha: VOLTEMOS AO Cenario 2.
         Joaozinho: VAMOS A Avenida Copacabana!
+        Jose Dirceu: VOLTEMOS A cenario que não existe.
 		
 		[SAI Jose Dirceu]
 		[TODOS SAEM]

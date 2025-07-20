@@ -61,7 +61,7 @@
     return E;
 }
 
-(O|A|OS|AS|UM|UMA|UNS|UMAS)[ ] {
+(O|A|AO|OS|AS|UM|UMA|UNS|UMAS)[ ] {
     if (DEBUG_LEX) printf("TOKEN: ARTIGO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ARTIGO;
@@ -313,6 +313,11 @@ PRODUTO {
     if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return ADJETIVO_NEGATIVO;
+}
+(VAMOS|VOLTEMOS) {
+    if (DEBUG_LEX) printf("TOKEN: VOLTAR CENÁRIO\n");
+    yylval.texto = strdup(yytext);
+    return VOLTAR_CENARIO;
 }
 [A-Za-z]+ {
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);

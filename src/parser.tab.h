@@ -86,28 +86,29 @@ extern int yydebug;
     INTERROGACAO = 280,            /* INTERROGACAO  */
     ABRE_COLCHETES = 281,          /* ABRE_COLCHETES  */
     FECHA_COLCHETES = 282,         /* FECHA_COLCHETES  */
-    ABRE_PARENTESES = 283,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 284,        /* FECHA_PARENTESES  */
-    VIRGULA = 285,                 /* VIRGULA  */
-    TOKEN = 286,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 287,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 288,       /* ADJETIVO_NEGATIVO  */
-    TU = 289,                      /* TU  */
-    EH = 290,                      /* EH  */
-    E = 291,                       /* E  */
-    ENTRE = 292,                   /* ENTRE  */
-    ARTIGO = 293,                  /* ARTIGO  */
-    MESMO = 294,                   /* MESMO  */
-    NUMERO = 295,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 296,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 297,      /* SUBSTITUIR_CENARIO  */
-    POR = 298,                     /* POR  */
-    NO_CENARIO = 299,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 300,         /* MOSTRAR_CENARIO  */
-    MOSTRA_VALOR = 301,            /* MOSTRA_VALOR  */
-    LE_VALOR = 302,                /* LE_VALOR  */
-    ATO = 303,                     /* ATO  */
-    CENA = 304                     /* CENA  */
+    VOLTAR_CENARIO = 283,          /* VOLTAR_CENARIO  */
+    ABRE_PARENTESES = 284,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 285,        /* FECHA_PARENTESES  */
+    VIRGULA = 286,                 /* VIRGULA  */
+    TOKEN = 287,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 288,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 289,       /* ADJETIVO_NEGATIVO  */
+    TU = 290,                      /* TU  */
+    EH = 291,                      /* EH  */
+    E = 292,                       /* E  */
+    ENTRE = 293,                   /* ENTRE  */
+    ARTIGO = 294,                  /* ARTIGO  */
+    MESMO = 295,                   /* MESMO  */
+    NUMERO = 296,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 297,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 298,      /* SUBSTITUIR_CENARIO  */
+    POR = 299,                     /* POR  */
+    NO_CENARIO = 300,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 301,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 302,            /* MOSTRA_VALOR  */
+    LE_VALOR = 303,                /* LE_VALOR  */
+    ATO = 304,                     /* ATO  */
+    CENA = 305                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -116,7 +117,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 35 "src/parser.y"
+#line 36 "src/parser.y"
 
     // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
 
@@ -129,7 +130,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 133 "src/parser.tab.h"
+#line 134 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

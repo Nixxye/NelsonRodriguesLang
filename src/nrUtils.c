@@ -325,6 +325,22 @@ void desativar_todos_personagens(void) {
         }
     }
 }
+// Ativa o cenário atual e desativa todos os outros
+void ativar_cenario(const char *nome) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Symbol *symbol = symbolTable[i];
+        while (symbol) {
+            if (symbol->type == STRING_VAR) {
+                if (strcmp(symbol->name, nome) == 0) {
+                    symbol->active = 1; // Ativa o cenário
+                } else {
+                    symbol->active = 0; // Desativa outros personagens
+                }
+            }
+            symbol = symbol->next;
+        }
+    }
+}
 
 const char* vartype_to_string(VarType type) {
     switch (type) {

@@ -29,6 +29,7 @@
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
     int result = 0; // guarda o resultado do if
+    // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
 %}
 
@@ -47,7 +48,7 @@
 
 /* Declaração dos tokens */
 %token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
-%token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES
+%token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR
 %token <inteiro> ATO CENA 
@@ -78,6 +79,7 @@ instrucao:
     | declaracaoQuestionamento
     | concatenarCenario
     | substituiCenario
+    | trocarCenario
     | alteracaoElenco
     | if_sentenca 
     | if_bloco
@@ -97,6 +99,7 @@ declaracaoCenario:
                 printf("Cenário adicionado: %s = %s\n", $2, $4);
             }
             cenarioAtual = strdup($2);
+            ativar_cenario(cenarioAtual);
         } else {
             yyerror("Declaração de cenário fora de contexto");
         }
@@ -139,8 +142,27 @@ substituiCenario:
             yyerror("Substituição de cenário fora de contexto");
         }
     }
-
 /* Booleanos - operações lógicas */
+
+trocarCenario: 
+    inicioDialogo VOLTAR_CENARIO ARTIGO texto FIM {
+        if (estado == E_DECLARACOES) {
+            yyerror("Troca de cenário fora de contexto");
+            YYABORT;
+        } else {
+            if (DEBUG_BISON) {
+                printf("Trocando cenário para: %s\n", $4);
+            }
+            char *novoCenario = get_string_value($4);
+            if (novoCenario == NULL) {
+                yyerror("Cenário não declarado");
+                YYABORT;
+            } else {
+                cenarioAtual = strdup($4);
+                ativar_cenario(cenarioAtual);
+            }
+        }
+    }
 declaracaoQuestionamento:
     texto INTERROGACAO NAO FIM {
         if (DEBUG_BISON) {

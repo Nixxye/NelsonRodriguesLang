@@ -68,6 +68,7 @@ void gerar_print_string(const char *nome);
 void gerar_print_int(const char *nome);
 void gerar_leitura_inteiro(const char *nome);
 void desativar_todos_personagens(void);
+void ativar_cenario(const char *nome);
 // Funções utilitárias de manipulação de strings
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);
 char* trim(char* str);
