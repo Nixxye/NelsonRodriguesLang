@@ -601,8 +601,8 @@ static const yytype_int16 yyrline[] =
      279,   290,   301,   313,   324,   335,   348,   361,   374,   383,
      389,   406,   423,   438,   441,   445,   449,   453,   462,   471,
      478,   496,   495,   509,   508,   537,   540,   543,   546,   549,
-     552,   558,   564,   569,   583,   615,   649,   669,   688,   721,
-     735
+     552,   558,   564,   569,   583,   615,   646,   666,   685,   718,
+     732
 };
 #endif
 
@@ -2068,10 +2068,7 @@ yyreduce:
             printf("Variável %s não está ativa\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
-            LLVMValueRef incremento = LLVMConstInt(LLVMInt32Type(), (yyvsp[-1].inteiro), 0);
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
+            gerar_set_topo_pilha_llvm(module, builder, personagemDialogo, LLVMConstInt(LLVMInt32Type(), (yyvsp[-1].inteiro), 0));
         }
 
         // Atualiza na tabela de valores também
@@ -2085,11 +2082,11 @@ yyreduce:
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
-#line 2089 "src/parser.tab.c"
+#line 2086 "src/parser.tab.c"
     break;
 
   case 76: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 649 "src/parser.y"
+#line 646 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2110,11 +2107,11 @@ yyreduce:
         gerar_print_int((yyvsp[-3].texto));
 
     }
-#line 2114 "src/parser.tab.c"
+#line 2111 "src/parser.tab.c"
     break;
 
   case 77: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 669 "src/parser.y"
+#line 666 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2130,11 +2127,11 @@ yyreduce:
         }
         gerar_leitura_inteiro((yyvsp[-3].texto));
     }
-#line 2134 "src/parser.tab.c"
+#line 2131 "src/parser.tab.c"
     break;
 
   case 78: /* inicioDialogo: texto INICIO  */
-#line 688 "src/parser.y"
+#line 685 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2166,11 +2163,11 @@ yyreduce:
             }        
         }
     }
-#line 2170 "src/parser.tab.c"
+#line 2167 "src/parser.tab.c"
     break;
 
   case 79: /* ato: ATO  */
-#line 721 "src/parser.y"
+#line 718 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2183,11 +2180,11 @@ yyreduce:
             }
         }
     }
-#line 2187 "src/parser.tab.c"
+#line 2184 "src/parser.tab.c"
     break;
 
   case 80: /* cena: CENA  */
-#line 735 "src/parser.y"
+#line 732 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2200,11 +2197,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2204 "src/parser.tab.c"
+#line 2201 "src/parser.tab.c"
     break;
 
 
-#line 2208 "src/parser.tab.c"
+#line 2205 "src/parser.tab.c"
 
       default: break;
     }
@@ -2397,7 +2394,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 749 "src/parser.y"
+#line 746 "src/parser.y"
 
 
 int main() {

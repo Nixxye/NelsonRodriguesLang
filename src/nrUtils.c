@@ -74,42 +74,124 @@ void add_symbol(const char *name, VarType type) {
             break;
     }
 }
-
-// Adiciona valor inteiro
-void set_int_value(const char *name, int value) {
-    // LLVM:
-    Symbol *sym = get_symbol(name);
-    if (!sym) {
-        fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
-        exit(EXIT_FAILURE);
-    }
-    if (sym->type != INT_VAR) {
-        fprintf(stderr, "Erro: tipo incompatível ao atribuir a '%s'!\n", name);
-        exit(EXIT_FAILURE);
-    }
-    if (!sym->llvm_ref) {
-        fprintf(stderr, "Erro: variável '%s' não tem referência LLVM!\n", name);
-        exit(EXIT_FAILURE);
-    }
-
-    LLVMValueRef valConst = LLVMConstInt(LLVMInt32Type(), value, 0);
-    LLVMBuildStore(builder, valConst, sym->llvm_ref);
-    // Tabela de valores inteiros:
+// Função auxiliar para encontrar ou criar um IntValue
+IntValue* get_or_create_int_value(const char* name) {
     unsigned int index = hash(name);
-    //add_symbol(name, INT_VAR);
-    IntValue *val = intTable[index];
+    IntValue* val = intTable[index];
     while (val) {
         if (strcmp(val->name, name) == 0) {
-            val->value = value;
-            return;
+            return val;
         }
         val = val->next;
     }
-    IntValue *newValue = (IntValue *) malloc(sizeof(IntValue));
+
+    // Se não encontrou, cria um novo
+    IntValue* newValue = (IntValue*)malloc(sizeof(IntValue));
+    if (!newValue) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
     newValue->name = strdup(name);
-    newValue->value = value;
+    newValue->head = NULL; // A pilha começa vazia
     newValue->next = intTable[index];
     intTable[index] = newValue;
+    return newValue;
+}
+
+// Adiciona um valor ao topo da pilha de uma variável
+void push_int_value(const char* name, int value) {
+    IntValue* iv = get_or_create_int_value(name);
+
+    // Cria um novo nó para a lista ligada
+    node* newNode = (node*)malloc(sizeof(node));
+    if (!newNode) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+    newNode->value = value;
+    newNode->next = iv->head; // O novo nó aponta para o antigo topo
+    iv->head = newNode;      // O topo agora é o novo nó
+}
+
+// Remove e retorna o valor do topo da pilha
+int pop_int_value(const char* name) {
+    IntValue* iv = get_or_create_int_value(name);
+    if (iv->head == NULL) {
+        fprintf(stderr, "Erro: Tentativa de pop na pilha vazia '%s'.\n", name);
+        exit(EXIT_FAILURE);
+    }
+
+    node* top = iv->head;
+    int value = top->value;
+    iv->head = top->next; // Atualiza o topo para o próximo elemento
+    free(top);            // Libera o nó removido
+
+    return value;
+}
+
+// Retorna o valor do topo sem remover
+int peek_int_value(const char* name) {
+    IntValue* iv = get_or_create_int_value(name);
+    if (iv->head == NULL) {
+        fprintf(stderr, "Erro: Tentativa de peek na pilha vazia '%s'.\n", name);
+        exit(EXIT_FAILURE);
+    }
+    return iv->head->value;
+}
+
+// Verifica se a pilha está vazia
+int is_empty_int_stack(const char* name) {
+    IntValue* iv = get_or_create_int_value(name);
+    return (iv->head == NULL);
+}
+
+// Retorna o tamanho da pilha
+int get_int_stack_size(const char* name) {
+    IntValue* iv = get_or_create_int_value(name);
+    int count = 0;
+    node* current = iv->head;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+// Em nrUtils.c (ou onde suas funções de runtime estão)
+
+// Função auxiliar para encontrar ou criar um IntValue (da resposta anterior)
+IntValue* get_or_create_int_value(const char* name) {
+    unsigned int index = hash(name);
+    IntValue* val = intTable[index];
+    while (val) {
+        if (strcmp(val->name, name) == 0) {
+            return val;
+        }
+        val = val->next;
+    }
+    // Se não encontrou, cria um novo
+    IntValue* newValue = (IntValue*)malloc(sizeof(IntValue));
+    if (!newValue) { perror("malloc failed"); exit(EXIT_FAILURE); }
+
+    newValue->name = strdup(name);
+    newValue->head = NULL; // A pilha começa vazia
+    newValue->next = intTable[index];
+    intTable[index] = newValue;
+    return newValue;
+}
+
+void set_int_value(const char* name, int value) {
+    // 1. Encontra a estrutura da pilha para a variável
+    IntValue* iv = get_or_create_int_value(name);
+
+    // 2. Verifica se a pilha está vazia
+    if (iv->head != NULL) {
+        // Se não estiver vazia, apenas atualiza o valor do topo
+        iv->head->value = value;
+    } else {
+        // Se estiver vazia, empilha o valor.
+        // Ele se tornará o novo topo.
+        push_int_value(name, value);
+    }
 }
 
 

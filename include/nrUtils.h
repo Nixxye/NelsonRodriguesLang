@@ -24,9 +24,14 @@ typedef struct Symbol {
     LLVMTypeRef llvm_type;        // tipo LLVM (ex: LLVMInt32Type())
 } Symbol;
 
+typedef struct node {
+    struct node *next;
+    int value;
+} node;
+
 typedef struct IntValue {
     char *name;
-    int value;
+    node *head;
     struct IntValue *next;
 } IntValue;
 
@@ -73,6 +78,13 @@ void ativar_cenario(const char *nome);
 char* substituir_ocorrencias(const char* original, const char* alvo, const char* substituto);
 char* trim(char* str);
 char* concatena(char* a, char* b);
+
+void push_int_value(const char *name, int value);
+int pop_int_value(const char *name);
+int peek_int_value(const char *name);
+int is_empty_int_stack(const char *name);
+int get_int_stack_size(const char *name);
+
 
 #define MAX_WHILE_NESTING 64
 

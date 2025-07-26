@@ -628,10 +628,7 @@ dialogo:
             printf("Variável %s não está ativa\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
-            LLVMValueRef incremento = LLVMConstInt(LLVMInt32Type(), $6, 0);
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
+            gerar_set_topo_pilha_llvm(module, builder, personagemDialogo, LLVMConstInt(LLVMInt32Type(), $6, 0));
         }
 
         // Atualiza na tabela de valores também
