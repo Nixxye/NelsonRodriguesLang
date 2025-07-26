@@ -46,7 +46,8 @@ run: $(EXEC) $(INPUT)
 
 # Gera e executa o LLVM IR via clang
 run-llvm: run
-	clang nrLLVM.ll -o $(LLVM_EXEC)
+	$(CC) nrLLVM.ll $(UTILS) $(CODEGEN) -o $(LLVM_EXEC) $(LLVMFLAGS)
+
 
 # Limpeza
 clean:

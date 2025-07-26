@@ -2068,7 +2068,7 @@ yyreduce:
             printf("Variável %s não está ativa\n", personagemDialogo);
             YYABORT;
         } else {
-            gerar_set_topo_pilha_llvm(module, builder, personagemDialogo, LLVMConstInt(LLVMInt32Type(), (yyvsp[-1].inteiro), 0));
+            gerar_set_topo_pilha_llvm(modulo, builder, personagemDialogo, LLVMConstInt(LLVMInt32Type(), (yyvsp[-1].inteiro), 0));
         }
 
         // Atualiza na tabela de valores também

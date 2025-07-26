@@ -158,27 +158,6 @@ int get_int_stack_size(const char* name) {
 }
 // Em nrUtils.c (ou onde suas funções de runtime estão)
 
-// Função auxiliar para encontrar ou criar um IntValue (da resposta anterior)
-IntValue* get_or_create_int_value(const char* name) {
-    unsigned int index = hash(name);
-    IntValue* val = intTable[index];
-    while (val) {
-        if (strcmp(val->name, name) == 0) {
-            return val;
-        }
-        val = val->next;
-    }
-    // Se não encontrou, cria um novo
-    IntValue* newValue = (IntValue*)malloc(sizeof(IntValue));
-    if (!newValue) { perror("malloc failed"); exit(EXIT_FAILURE); }
-
-    newValue->name = strdup(name);
-    newValue->head = NULL; // A pilha começa vazia
-    newValue->next = intTable[index];
-    intTable[index] = newValue;
-    return newValue;
-}
-
 void set_int_value(const char* name, int value) {
     // 1. Encontra a estrutura da pilha para a variável
     IntValue* iv = get_or_create_int_value(name);
@@ -367,13 +346,13 @@ Symbol* get_symbol(const char *name) {
 
 void print_values(void) {
     printf("Tabela de Inteiros:\n");
-    for (int i = 0; i < TABLE_SIZE; i++) {
-        IntValue *val = intTable[i];
-        while (val) {
-            printf("[%s = %d] -> ", val->name, val->value);
-            val = val->next;
-        }
-    }
+    // for (int i = 0; i < TABLE_SIZE; i++) {
+    //     IntValue *val = intTable[i];
+    //     while (val) {
+    //         printf("[%s = %d] -> ", val->name, val->value);
+    //         val = val->next;
+    //     }
+    // }
     printf("\n");
 
     printf("Tabela de Booleanos:\n");
