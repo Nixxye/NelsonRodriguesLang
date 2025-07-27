@@ -352,8 +352,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 53
-#define YY_END_OF_BUFFER 54
+#define YY_NUM_RULES 54
+#define YY_END_OF_BUFFER 55
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -363,54 +363,54 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[436] =
     {   0,
-        0,    0,   54,   52,   52,   41,   52,   45,   46,   24,
-       47,   40,   42,   51,   51,   51,   51,   51,   51,   51,
-       51,   51,   51,   51,   51,   51,   51,   51,   51,   51,
-       51,   43,   44,   52,   52,   51,    0,    0,    1,   47,
-        5,   51,   51,   51,   51,   51,   51,   51,   51,   51,
-       17,   51,   51,    0,   51,   51,   14,   51,   51,   51,
-       51,   51,   51,   51,   51,   51,    5,   51,   51,   51,
-       51,   51,   11,   51,   51,   51,   51,   19,   51,   51,
-       51,   51,   20,    0,   51,    4,    0,    0,   51,   51,
-       51,   51,   51,   51,   51,   51,   51,    0,   51,   51,
+        0,    0,   55,   53,   53,   42,   53,   46,   47,   25,
+       48,   41,   43,   52,   52,   52,   52,   52,   52,   52,
+       52,   52,   52,   52,   52,   52,   52,   52,   52,   52,
+       52,   44,   45,   53,   53,   52,    0,    0,    1,   48,
+        5,   52,   52,   52,   52,   52,   52,   52,   52,   52,
+       17,   52,   52,    0,   52,   52,   14,   52,   52,   52,
+       52,   52,   52,   52,   52,   52,    5,   52,   52,   52,
+       52,   52,   11,   52,   52,   52,   52,   19,   52,   52,
+       52,   52,   21,    0,   52,    4,    0,    0,   52,   52,
+       52,   52,   52,   52,   52,   52,   52,    0,   52,   52,
 
-       51,   51,   16,   51,   51,   51,   51,   51,   51,   13,
-        0,   51,   51,    9,   51,   51,   51,   51,   21,   12,
-       51,   51,   51,   51,   51,   51,   51,   20,    0,   51,
-        0,    0,   51,   51,   51,   51,   51,   48,   51,   51,
-        0,   51,   51,   51,   51,    0,   51,   51,   51,   51,
-       51,   51,   51,    0,   51,   51,   51,   51,    0,   25,
-       51,   51,   51,   51,    0,   51,    0,    0,    0,    0,
-        0,   35,   51,   51,   51,   51,   51,    0,   51,   15,
-       23,   51,    0,   51,   51,    0,   51,   51,   18,   18,
-       51,    0,    0,   49,   51,   51,    0,   51,   51,   22,
+       52,   52,   16,   52,   52,   52,   52,   52,   52,   13,
+        0,   52,   52,    9,   52,   52,   52,   52,   22,   12,
+       52,   52,   52,   52,   52,   52,   52,   21,    0,   52,
+        0,    0,   52,   52,   52,   52,   52,   49,   52,   52,
+        0,   52,   52,   52,   52,    0,   52,   52,   52,   52,
+       52,   52,   52,    0,   52,   52,   52,   52,    0,   26,
+       52,   52,   52,   52,    0,   52,    0,    0,    0,    0,
+        0,   36,   52,   52,   52,   52,   52,    0,   52,   15,
+       24,   52,    0,   52,   52,    0,   52,   52,   18,   18,
+       52,    0,    0,   50,   52,   52,    0,   52,   52,   23,
 
-       50,   19,   51,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,   51,    0,   51,    0,    0,   51,   23,   51,
-        0,    0,    0,    0,    0,    0,   18,   51,    0,    0,
-       51,   51,   38,   51,   51,   51,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,   51,    0,    0,    0,   51,
-        0,    0,    0,    0,    0,    0,    0,   51,    0,    0,
-       51,   39,   51,    0,   51,    3,    0,    0,    0,    0,
-        2,    0,    0,    0,    0,    0,   51,    0,   27,    0,
-       34,    0,    0,    0,    0,   29,    0,    0,   51,    0,
-        0,   37,   51,    0,    0,    0,    0,    0,    0,    0,
+       51,   20,   52,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,   52,    0,   52,    0,    0,   52,   24,   52,
+        0,    0,    0,    0,    0,    0,   18,   52,    0,    0,
+       52,   52,   39,   52,   52,   52,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,   52,    0,    0,    0,   52,
+        0,    0,    0,    0,    0,    0,    0,   52,    0,    0,
+       52,   40,   52,    0,   52,    3,    0,    0,    0,    0,
+        2,    0,    0,    0,    0,    0,   52,    0,   28,    0,
+       35,    0,    0,    0,    0,   30,    0,    0,   52,    0,
+        0,   38,   52,    0,    0,    0,    0,    0,    0,    0,
 
-        0,    0,    0,    0,    0,    0,   33,   30,   51,    0,
-        0,    0,   51,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,   51,   10,    0,    0,   51,    0,
+        0,    0,    0,    0,    0,    0,   34,   31,   52,    0,
+        0,    0,   52,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,   52,   10,    0,    0,   52,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        6,    0,   26,    0,    0,    0,    0,    0,    0,    0,
+        6,    0,   27,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,   28,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,   29,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 
-       36,    0,    0,    0,    0,    0,    0,    8,    0,    0,
+       37,    0,    0,    0,    0,    0,    0,    8,    0,    0,
         7,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-       31,    0,    0,   32,    0
+       32,    0,    0,   33,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -1240,294 +1240,303 @@ case 20:
 YY_RULE_SETUP
 #line 151 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: É\n");
+    if (DEBUG_LEX) printf("TOKEN: VOCE\n");
     yylval.texto = strdup(yytext);
-    return EH;
+    return VOCE;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 156 "src/lexer.l"
 {
+    if (DEBUG_LEX) printf("TOKEN: É\n");
+    yylval.texto = strdup(yytext);
+    return EH;
+}
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 161 "src/lexer.l"
+{
     if (DEBUG_LEX) printf("TOKEN: SAEM\n");
     yylval.texto = strdup(yytext);
     return SAEM;
 }
 	YY_BREAK
-case 22:
+case 23:
 YY_RULE_SETUP
-#line 162 "src/lexer.l"
+#line 167 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: TODOS\n");
     yylval.texto = strdup(yytext);
     return TODOS;
 }
 	YY_BREAK
-case 23:
+case 24:
 YY_RULE_SETUP
-#line 168 "src/lexer.l"
+#line 173 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENTRAM\n");
     yylval.texto = strdup(yytext);
     return ENTRAM;
 }
 	YY_BREAK
-case 24:
+case 25:
 YY_RULE_SETUP
-#line 174 "src/lexer.l"
+#line 179 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: VIRGULA\n");
     return VIRGULA;
 }
 	YY_BREAK
-case 25:
+case 26:
 YY_RULE_SETUP
-#line 178 "src/lexer.l"
+#line 183 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SOMA\n");
     yylval.texto = strdup(yytext);
     return SOMAR;
 }
 	YY_BREAK
-case 26:
+case 27:
 YY_RULE_SETUP
-#line 184 "src/lexer.l"
+#line 189 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: SUBTRAÇÃO\n");
     yylval.texto = strdup(yytext);
     return SUBTRAIR;
 }
 	YY_BREAK
-case 27:
+case 28:
 YY_RULE_SETUP
-#line 190 "src/lexer.l"
+#line 195 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: DIVISÃO\n");
     yylval.texto = strdup(yytext);
     return DIVIDIR;
 }
 	YY_BREAK
-case 28:
+case 29:
 YY_RULE_SETUP
-#line 196 "src/lexer.l"
+#line 201 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAÇÃO\n");
     yylval.texto = strdup(yytext);
     return MULTIPLICAR;
 }
 	YY_BREAK
-case 29:
+case 30:
 YY_RULE_SETUP
-#line 202 "src/lexer.l"
+#line 207 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MAIOR\n");
     yylval.texto = strdup(yytext);
     return MAIOR;
 }
 	YY_BREAK
-case 30:
+case 31:
 YY_RULE_SETUP
-#line 208 "src/lexer.l"
+#line 213 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
     return MENOR;
 }
 	YY_BREAK
-case 31:
+case 32:
 YY_RULE_SETUP
-#line 214 "src/lexer.l"
+#line 219 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MOSTRA_VALOR\n");
     yylval.texto = strdup(yytext);
     return MOSTRA_VALOR;
 }
 	YY_BREAK
-case 32:
+case 33:
 YY_RULE_SETUP
-#line 219 "src/lexer.l"
+#line 224 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: LE_VALOR\n");
     yylval.texto = strdup(yytext);
     return LE_VALOR;
 }
 	YY_BREAK
-case 33:
+case 34:
 YY_RULE_SETUP
-#line 225 "src/lexer.l"
+#line 230 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
     yylval.texto = strdup(yytext);
     return IGUAL;
 }
 	YY_BREAK
-case 34:
+case 35:
 YY_RULE_SETUP
-#line 231 "src/lexer.l"
+#line 236 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_COMECO\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_COMECO;
 }
 	YY_BREAK
-case 35:
+case 36:
 YY_RULE_SETUP
-#line 237 "src/lexer.l"
+#line 242 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_FIM\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_FIM;
 }
 	YY_BREAK
-case 36:
+case 37:
 YY_RULE_SETUP
-#line 243 "src/lexer.l"
+#line 248 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: ENDIF\n");
     yylval.texto = strdup(yytext);
     return ENDIF;
 }
 	YY_BREAK
-case 37:
+case 38:
 YY_RULE_SETUP
-#line 249 "src/lexer.l"
+#line 254 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FACA\n");
     yylval.texto = strdup(yytext);
     return FACA;
 }
 	YY_BREAK
-case 38:
+case 39:
 YY_RULE_SETUP
-#line 255 "src/lexer.l"
+#line 260 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: DIVIDIR\n");
     yylval.texto = strdup(yytext);
     return DIVIDIR;
 }
 	YY_BREAK
-case 39:
+case 40:
 YY_RULE_SETUP
-#line 261 "src/lexer.l"
+#line 266 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
     yylval.texto = strdup(yytext);
     return MULTIPLICAR;
 }
 	YY_BREAK
-case 40:
+case 41:
 YY_RULE_SETUP
-#line 267 "src/lexer.l"
+#line 272 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: INICIO\n");
     return INICIO;
 }
 	YY_BREAK
-case 41:
+case 42:
 YY_RULE_SETUP
-#line 272 "src/lexer.l"
+#line 277 "src/lexer.l"
 {
     if (DEBUG_LEX) printf("TOKEN: FIM\n");
     return FIM;
-}
-	YY_BREAK
-case 42:
-YY_RULE_SETUP
-#line 276 "src/lexer.l"
-{
-    if (DEBUG_LEX) printf("TOKEN: INTERROGACAO\n");
-    return INTERROGACAO;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 281 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: ABRE_COLCHETES\n");
-    return ABRE_COLCHETES;
+    if (DEBUG_LEX) printf("TOKEN: INTERROGACAO\n");
+    return INTERROGACAO;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 286 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: FECHA_COLCHETES\n");
-    return FECHA_COLCHETES;
+    if (DEBUG_LEX) printf("TOKEN: ABRE_COLCHETES\n");
+    return ABRE_COLCHETES;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 291 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: ABRE_PARENTESES\n");
-    return ABRE_PARENTESES;
+    if (DEBUG_LEX) printf("TOKEN: FECHA_COLCHETES\n");
+    return FECHA_COLCHETES;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 296 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: FECHA_PARENTESES\n");
-    return FECHA_PARENTESES;
+    if (DEBUG_LEX) printf("TOKEN: ABRE_PARENTESES\n");
+    return ABRE_PARENTESES;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 301 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: NUMERO (%s)\n", yytext);
-    yylval.texto = strdup(yytext);
-    return NUMERO;
+    if (DEBUG_LEX) printf("TOKEN: FECHA_PARENTESES\n");
+    return FECHA_PARENTESES;
 }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 307 "src/lexer.l"
+#line 306 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
+    if (DEBUG_LEX) printf("TOKEN: NUMERO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
-    return ADJETIVO_POSITIVO;
+    return NUMERO;
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 312 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
+    if (DEBUG_LEX) printf("TOKEN: ADJETIVO_POSITIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
-    return ADJETIVO_NEGATIVO;
+    return ADJETIVO_POSITIVO;
 }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 317 "src/lexer.l"
 {
-    if (DEBUG_LEX) printf("TOKEN: VOLTAR CENÁRIO\n");
+    if (DEBUG_LEX) printf("TOKEN: ADJETIVO_NEGATIVO (%s)\n", yytext);
     yylval.texto = strdup(yytext);
-    return VOLTAR_CENARIO;
+    return ADJETIVO_NEGATIVO;
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 322 "src/lexer.l"
 {
+    if (DEBUG_LEX) printf("TOKEN: VOLTAR CENÁRIO\n");
+    yylval.texto = strdup(yytext);
+    return VOLTAR_CENARIO;
+}
+	YY_BREAK
+case 52:
+YY_RULE_SETUP
+#line 327 "src/lexer.l"
+{
     if (DEBUG_LEX) printf("TOKEN: TOKEN (%s)\n", yytext);
     yylval.texto = strdup(yytext);
     return TOKEN;
 }
 	YY_BREAK
-case 52:
-/* rule 52 can match eol */
+case 53:
+/* rule 53 can match eol */
 YY_RULE_SETUP
-#line 329 "src/lexer.l"
+#line 334 "src/lexer.l"
 { /* ignora tudo o resto */ }
 	YY_BREAK
-case 53:
+case 54:
 YY_RULE_SETUP
-#line 331 "src/lexer.l"
+#line 336 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 1531 "src/lex.yy.c"
+#line 1540 "src/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2535,7 +2544,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 331 "src/lexer.l"
+#line 336 "src/lexer.l"
 
 
 

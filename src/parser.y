@@ -28,9 +28,18 @@
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
+    char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou
     int result = 0; // guarda o resultado do if
     // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
+    void atualiza_personagemVoce(){
+        if (personagemVoce != personagemQueFala) {
+            if (DEBUG_BISON) {
+                printf("Atualizando personagemVoce: %s\n", personagemQueFala);
+            }
+            personagemVoce = personagemQueFala;
+        }
+    }
 %}
 
 %union {
@@ -50,7 +59,7 @@
 %token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR
+%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO VOCE TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -409,7 +418,7 @@ valor:
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             if (DEBUG_BISON) {
-                // printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
+                printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
             }
             Symbol *sym = get_symbol(personagemQueFala);
             if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
@@ -417,6 +426,23 @@ valor:
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
                 $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_eu");
+            }
+        }
+    }
+  | VOCE {
+        if (personagemVoce == NULL) {
+            yyerror("Variável 'voce' não definida");
+            $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
+        } else {
+            if (DEBUG_BISON) {
+                printf("Valor de 'voce': %d\n", get_int_value(personagemVoce));
+            }
+            Symbol *sym = get_symbol(personagemVoce);
+            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+                yyerror("Variável 'voce' inválida ou não declarada");
+                $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
+            } else {
+                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_voce");
             }
         }
     }
@@ -560,11 +586,13 @@ dialogo:
             printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
         }
         gerar_print_string(cenarioAtual);
+        atualiza_personagemVoce();
     }
     | inicioDialogo if_sentenca FIM {
         if (DEBUG_BISON) {
             printf("if sentença\n");
         }
+        atualiza_personagemVoce();
     }
     | inicioDialogo texto FIM {
         if (DEBUG_BISON) {
@@ -579,6 +607,7 @@ dialogo:
                     yyerror("Estado desconhecido no diálogo\n");
             }
         }
+        atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA TU EH expressao FIM {
         personagemDialogo = strdup($2);
@@ -611,9 +640,11 @@ dialogo:
 
         free(personagemDialogo);
         personagemDialogo = NULL;
+        atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         personagemDialogo = strdup($2);
+
 
         if (DEBUG_BISON) {
             // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
@@ -644,6 +675,7 @@ dialogo:
 
         free(personagemDialogo);
         personagemDialogo = NULL;
+        atualiza_personagemVoce();
     }
 
     | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM {
@@ -664,7 +696,7 @@ dialogo:
             YYABORT;
         }
         gerar_print_int($2);
-
+        atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA LE_VALOR FIM {
         // Scanf
@@ -680,6 +712,7 @@ dialogo:
             YYABORT;
         }
         gerar_leitura_inteiro($2);
+        atualiza_personagemVoce();
     }
 ;
 

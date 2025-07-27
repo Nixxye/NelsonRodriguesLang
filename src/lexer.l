@@ -143,10 +143,15 @@ FOR {
     yylval.texto = strdup(yytext);
     return MESMO;
 }
-(TU|VOCÊ) {
+(TU) {
     if (DEBUG_LEX) printf("TOKEN: TU\n");
     yylval.texto = strdup(yytext);
     return TU;
+}
+(VOCÊ) {
+    if (DEBUG_LEX) printf("TOKEN: VOCE\n");
+    yylval.texto = strdup(yytext);
+    return VOCE;
 }
 (É|ÉS) {
     if (DEBUG_LEX) printf("TOKEN: É\n");

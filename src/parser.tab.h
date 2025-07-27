@@ -93,22 +93,23 @@ extern int yydebug;
     TOKEN = 287,                   /* TOKEN  */
     ADJETIVO_POSITIVO = 288,       /* ADJETIVO_POSITIVO  */
     ADJETIVO_NEGATIVO = 289,       /* ADJETIVO_NEGATIVO  */
-    TU = 290,                      /* TU  */
-    EH = 291,                      /* EH  */
-    E = 292,                       /* E  */
-    ENTRE = 293,                   /* ENTRE  */
-    ARTIGO = 294,                  /* ARTIGO  */
-    MESMO = 295,                   /* MESMO  */
-    NUMERO = 296,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 297,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 298,      /* SUBSTITUIR_CENARIO  */
-    POR = 299,                     /* POR  */
-    NO_CENARIO = 300,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 301,         /* MOSTRAR_CENARIO  */
-    MOSTRA_VALOR = 302,            /* MOSTRA_VALOR  */
-    LE_VALOR = 303,                /* LE_VALOR  */
-    ATO = 304,                     /* ATO  */
-    CENA = 305                     /* CENA  */
+    VOCE = 290,                    /* VOCE  */
+    TU = 291,                      /* TU  */
+    EH = 292,                      /* EH  */
+    E = 293,                       /* E  */
+    ENTRE = 294,                   /* ENTRE  */
+    ARTIGO = 295,                  /* ARTIGO  */
+    MESMO = 296,                   /* MESMO  */
+    NUMERO = 297,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 298,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 299,      /* SUBSTITUIR_CENARIO  */
+    POR = 300,                     /* POR  */
+    NO_CENARIO = 301,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 302,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 303,            /* MOSTRA_VALOR  */
+    LE_VALOR = 304,                /* LE_VALOR  */
+    ATO = 305,                     /* ATO  */
+    CENA = 306                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -117,7 +118,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "src/parser.y"
+#line 45 "src/parser.y"
 
     // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
 
@@ -130,7 +131,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 134 "src/parser.tab.h"
+#line 135 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
