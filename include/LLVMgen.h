@@ -23,4 +23,5 @@ LLVMValueRef gerar_pop_llvm(LLVMModuleRef module, LLVMBuilderRef builder, const 
 LLVMValueRef gerar_peek_llvm(LLVMModuleRef module, LLVMBuilderRef builder, const char* name);
 void gerar_push_llvm(LLVMModuleRef module, LLVMBuilderRef builder, const char* name, LLVMValueRef value);
 void gerar_set_topo_pilha_llvm(LLVMModuleRef module, LLVMBuilderRef builder, const char* name, LLVMValueRef value);
+LLVMValueRef gerar_criar_pilha(LLVMModuleRef module, LLVMBuilderRef builder, LLVMValueRef capacidade_val);
 #endif

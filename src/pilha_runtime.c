@@ -1,4 +1,4 @@
-#include "pilha_runtime.c"
+#include "../include/pilha_runtime.h"
 #include <stdio.h>
 
 PilhaInt* criar_pilha(int capacidade_inicial) {
@@ -52,4 +52,12 @@ int pilha_pop(PilhaInt* pilha) {
     }
     pilha->tamanho--;
     return pilha->data[pilha->tamanho];
+}
+
+int pilha_peek(PilhaInt* pilha) {
+    if (!pilha || pilha->tamanho == 0) {
+        fprintf(stderr, "Erro: Tentativa de peek em pilha vazia.\n");
+        return 0; // Ou um valor de erro
+    }
+    return pilha->data[pilha->tamanho - 1];
 }

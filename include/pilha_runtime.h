@@ -26,4 +26,6 @@ void pilha_push(PilhaInt* pilha, int valor);
 // Remove e retorna o elemento do topo da pilha.
 int pilha_pop(PilhaInt* pilha);
 
+int pilha_peek(PilhaInt* pilha);
+
 #endif // PILHA_RUNTIME_H

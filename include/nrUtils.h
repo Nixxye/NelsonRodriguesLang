@@ -22,6 +22,7 @@ typedef struct Symbol {
     //LLVM:
     LLVMValueRef llvm_ref; // ponteiro alocado com LLVMBuildAlloca
     LLVMTypeRef llvm_type;        // tipo LLVM (ex: LLVMInt32Type())
+    PilhaInt *pilha;
 } Symbol;
 
 typedef struct node {
@@ -57,7 +58,7 @@ extern StringValue *stringTable[TABLE_SIZE];
 // Funções utilitárias tabela de símbolos
 unsigned int hash(const char *str);
 void add_symbol(const char *name, VarType type);
-void set_int_value(const char *name, int value);
+void set_int_value(const char* name, int value);
 void set_float_value(const char *name, float value);
 void set_bool_value(const char *name, int value);
 void set_string_value(const char *name, const char *value);

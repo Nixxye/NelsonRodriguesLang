@@ -583,30 +583,28 @@ dialogo:
     | inicioDialogo texto VIRGULA TU EH expressao FIM {
         personagemDialogo = strdup($2);
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
-        }
-
+        // 1. Valida se a variável é uma PILHA e está ativa.
         Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
+        if (!sym || sym->type != INT_VAR) { // <-- MUDANÇA IMPORTANTE: Verificar tipo de pilha
+            yyerror("Variável inválida ou não é do tipo pilha.");
             YYABORT;
-        }  else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
+        } else if (!sym->active) {
+            printf("Variável '%s' não está ativa.\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+            // LÓGICA ATUALIZADA PARA PILHA
+
+            // 2. Pega o valor atual do TOPO da pilha (gera call @peek_int_value)
+            LLVMValueRef valorAtual = gerar_peek_llvm(modulo, builder, personagemDialogo);
+
+            // 3. Pega o valor da expressão
             LLVMValueRef incremento = $6;
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
-        }
 
-        // Atualiza na tabela de valores também (se precisar)
-        // int novoValor = get_int_value(personagemDialogo) + $6;
-        // set_int_value(personagemDialogo, novoValor);
+            // 4. Soma os valores para obter o novo valor do topo
+            LLVMValueRef novoValorTopo = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+            // 5. ATUALIZA o valor no topo da pilha (gera call @set_int_value)
+            gerar_set_topo_pilha_llvm(modulo, builder, personagemDialogo, novoValorTopo);
         }
 
         free(personagemDialogo);

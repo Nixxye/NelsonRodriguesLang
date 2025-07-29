@@ -601,8 +601,8 @@ static const yytype_int16 yyrline[] =
      279,   290,   301,   313,   324,   335,   348,   361,   374,   383,
      389,   406,   423,   438,   441,   445,   449,   453,   462,   471,
      478,   496,   495,   509,   508,   537,   540,   543,   546,   549,
-     552,   558,   564,   569,   583,   615,   646,   666,   685,   718,
-     732
+     552,   558,   564,   569,   583,   613,   644,   664,   683,   716,
+     730
 };
 #endif
 
@@ -2018,40 +2018,38 @@ yyreduce:
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
-        }
-
+        // 1. Valida se a variável é uma PILHA e está ativa.
         Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
+        if (!sym || sym->type != INT_VAR) { // <-- MUDANÇA IMPORTANTE: Verificar tipo de pilha
+            yyerror("Variável inválida ou não é do tipo pilha.");
             YYABORT;
-        }  else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
+        } else if (!sym->active) {
+            printf("Variável '%s' não está ativa.\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+            // LÓGICA ATUALIZADA PARA PILHA
+
+            // 2. Pega o valor atual do TOPO da pilha (gera call @peek_int_value)
+            LLVMValueRef valorAtual = gerar_peek_llvm(modulo, builder, personagemDialogo);
+
+            // 3. Pega o valor da expressão
             LLVMValueRef incremento = (yyvsp[-1].llmValueRef);
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
-        }
 
-        // Atualiza na tabela de valores também (se precisar)
-        // int novoValor = get_int_value(personagemDialogo) + $6;
-        // set_int_value(personagemDialogo, novoValor);
+            // 4. Soma os valores para obter o novo valor do topo
+            LLVMValueRef novoValorTopo = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+            // 5. ATUALIZA o valor no topo da pilha (gera call @set_int_value)
+            gerar_set_topo_pilha_llvm(modulo, builder, personagemDialogo, novoValorTopo);
         }
 
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
-#line 2051 "src/parser.tab.c"
+#line 2049 "src/parser.tab.c"
     break;
 
   case 75: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 615 "src/parser.y"
+#line 613 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2082,11 +2080,11 @@ yyreduce:
         free(personagemDialogo);
         personagemDialogo = NULL;
     }
-#line 2086 "src/parser.tab.c"
+#line 2084 "src/parser.tab.c"
     break;
 
   case 76: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 646 "src/parser.y"
+#line 644 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2107,11 +2105,11 @@ yyreduce:
         gerar_print_int((yyvsp[-3].texto));
 
     }
-#line 2111 "src/parser.tab.c"
+#line 2109 "src/parser.tab.c"
     break;
 
   case 77: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 666 "src/parser.y"
+#line 664 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2127,11 +2125,11 @@ yyreduce:
         }
         gerar_leitura_inteiro((yyvsp[-3].texto));
     }
-#line 2131 "src/parser.tab.c"
+#line 2129 "src/parser.tab.c"
     break;
 
   case 78: /* inicioDialogo: texto INICIO  */
-#line 685 "src/parser.y"
+#line 683 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2163,11 +2161,11 @@ yyreduce:
             }        
         }
     }
-#line 2167 "src/parser.tab.c"
+#line 2165 "src/parser.tab.c"
     break;
 
   case 79: /* ato: ATO  */
-#line 718 "src/parser.y"
+#line 716 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2180,11 +2178,11 @@ yyreduce:
             }
         }
     }
-#line 2184 "src/parser.tab.c"
+#line 2182 "src/parser.tab.c"
     break;
 
   case 80: /* cena: CENA  */
-#line 732 "src/parser.y"
+#line 730 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2197,11 +2195,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2201 "src/parser.tab.c"
+#line 2199 "src/parser.tab.c"
     break;
 
 
-#line 2205 "src/parser.tab.c"
+#line 2203 "src/parser.tab.c"
 
       default: break;
     }
@@ -2394,7 +2392,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 746 "src/parser.y"
+#line 744 "src/parser.y"
 
 
 int main() {

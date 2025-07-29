@@ -88,9 +88,9 @@ LLVMValueRef gerar_peek_llvm(LLVMModuleRef module, LLVMBuilderRef builder, const
     // Declara a função: i32 peek_int_value(i8*)
     LLVMTypeRef args_types[] = {LLVMPointerType(LLVMInt8Type(), 0)};
     LLVMTypeRef func_type = LLVMFunctionType(LLVMInt32Type(), args_types, 1, 0);
-    LLVMValueRef func = LLVMGetNamedFunction(module, "peek_int_value");
+    LLVMValueRef func = LLVMGetNamedFunction(module, "pilha_peek");
     if (!func) {
-        func = LLVMAddFunction(module, "peek_int_value", func_type);
+        func = LLVMAddFunction(module, "pilha_peek", func_type);
     }
 
     LLVMValueRef name_str = LLVMBuildGlobalStringPtr(builder, name, "stack_name");
@@ -129,4 +129,56 @@ void gerar_set_topo_pilha_llvm(LLVMModuleRef module, LLVMBuilderRef builder, con
 
     // 3. Gerar a instrução de chamada para a função do runtime
     LLVMBuildCall2(builder, func_type, func, args, 2, ""); // "" porque a função é void
+}
+
+/**
+ * Gera uma chamada LLVM para a função de runtime 'criar_pilha'.
+ * Esta função C aloca uma nova pilha no heap e retorna um ponteiro para ela.
+ *
+ * @param module O módulo LLVM atual.
+ * @param builder O builder LLVM atual.
+ * @param capacidade_val O LLVMValueRef (i32) para a capacidade inicial da pilha.
+ * @return LLVMValueRef que representa o ponteiro para a nova estrutura de pilha (PilhaInt*).
+ */
+LLVMValueRef gerar_criar_pilha(LLVMModuleRef module, LLVMBuilderRef builder, LLVMValueRef capacidade_val) {
+    // --- PARTE 1: Criar a pilha vazia (lógica existente) ---
+
+    // Define o tipo "PilhaInt*" no LLVM
+    LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
+    LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
+
+    // Declara a função C 'criar_pilha'
+    LLVMTypeRef criar_args_types[] = { LLVMInt32Type() };
+    LLVMTypeRef criar_func_type = LLVMFunctionType(pilha_ptr_type, criar_args_types, 1, 0);
+    LLVMValueRef criar_func = LLVMGetNamedFunction(module, "criar_pilha");
+    if (!criar_func) {
+        criar_func = LLVMAddFunction(module, "criar_pilha", criar_func_type);
+    }
+
+    // Gera a chamada para 'criar_pilha' e obtém o ponteiro
+    LLVMValueRef args_criar[] = { capacidade_val };
+    LLVMValueRef nova_pilha_ptr = LLVMBuildCall2(builder, criar_func_type, criar_func, args_criar, 1, "nova_pilha_ptr");
+
+
+    // --- PARTE 2: Empilhar o valor 0 na pilha recém-criada (nova lógica) ---
+
+    // Declara a função C 'pilha_push'
+    // Assinatura: void pilha_push(PilhaInt*, int) -> void (%PilhaInt*, i32)
+    LLVMTypeRef push_args_types[] = { pilha_ptr_type, LLVMInt32Type() };
+    LLVMTypeRef push_func_type = LLVMFunctionType(LLVMVoidType(), push_args_types, 2, 0);
+    LLVMValueRef push_func = LLVMGetNamedFunction(module, "pilha_push");
+    if (!push_func) {
+        push_func = LLVMAddFunction(module, "pilha_push", push_func_type);
+    }
+
+    // Prepara os argumentos para o push: o ponteiro da pilha e a constante 0
+    LLVMValueRef zero_const = LLVMConstInt(LLVMInt32Type(), 0, 0);
+    LLVMValueRef args_push[] = { nova_pilha_ptr, zero_const };
+
+    // Gera a chamada para 'pilha_push'
+    LLVMBuildCall2(builder, push_func_type, push_func, args_push, 2, "");
+
+
+    // --- PARTE 3: Retornar o ponteiro para a pilha, que agora já tem o 0 ---
+    return nova_pilha_ptr;
 }

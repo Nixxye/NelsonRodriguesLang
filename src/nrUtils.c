@@ -48,9 +48,26 @@ void add_symbol(const char *name, VarType type) {
     // LLVM type and allocation
     switch (type) {
         case INT_VAR:
-            newSymbol->llvm_type = LLVMInt32TypeInContext(contexto);
+            LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
+            LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
+            newSymbol->llvm_type = pilha_ptr_type;
+
+            // 2. Aloca espaço na memória para guardar o PONTEIRO para a pilha (PilhaInt**)
             newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-            set_int_value(name, 0);
+
+            // 3. Gera a chamada para o runtime C: call @criar_pilha(capacidade_inicial)
+            LLVMValueRef capacidade_inicial = LLVMConstInt(LLVMInt32Type(), 8, 0); // Capacidade padrão 8
+            LLVMValueRef nova_pilha_ptr = gerar_criar_pilha(modulo, builder, capacidade_inicial); // Função que criamos antes
+
+            // 4. Armazena o ponteiro retornado na variável
+            LLVMBuildStore(builder, nova_pilha_ptr, newSymbol->llvm_ref);
+
+            IntValue *newIntValue = (IntValue*) malloc(sizeof(IntValue));
+            if (!newIntValue) { perror("malloc failed"); exit(EXIT_FAILURE); }
+            newIntValue->name = strdup(name);
+            newIntValue->head = NULL; // A pilha começa vazia
+            newIntValue->next = intTable[index];
+            intTable[index] = newIntValue;
             break;
 
         case BOOL_VAR:
@@ -80,6 +97,7 @@ IntValue* get_or_create_int_value(const char* name) {
     IntValue* val = intTable[index];
     while (val) {
         if (strcmp(val->name, name) == 0) {
+            printf("Achou a pilha de inteiros '%s'\n", name);
             return val;
         }
         val = val->next;
@@ -171,6 +189,7 @@ void set_int_value(const char* name, int value) {
         // Ele se tornará o novo topo.
         push_int_value(name, value);
     }
+    // gerar_set_topo_pilha_llvm(modulo, builder, name, )
 }
 
 
@@ -511,37 +530,33 @@ void gerar_print_string(const char *nome) {
 }
 
 void gerar_print_int(const char *nome) {
-    // Obtém símbolo da variável
+    // 1. Obtém o símbolo e verifica se é uma PILHA de inteiros
     Symbol *sym = get_symbol(nome);
-    if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-        fprintf(stderr, "Erro: variável inteira '%s' inválida ou não declarada\n", nome);
+    if (!sym || sym->type != INT_VAR) {
+        fprintf(stderr, "Erro: variável '%s' não é uma pilha de inteiros.\n", nome);
         return;
     }
 
-    // Declara printf (se ainda não foi)
+    // 2. Declara a função printf (código existente está correto)
     LLVMTypeRef printf_type = LLVMFunctionType(
         LLVMInt32TypeInContext(contexto),
         (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8TypeInContext(contexto), 0) },
-        1,  // 1 argumento fixo (formato)
-        1   // é varargs
-    );
+        1, 1);
     LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
-    if (!printf_func)
+    if (!printf_func) {
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
+    }
 
-    // Cria string global para formato "%d\n"
-    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s: Sou %d!\n", "fmt_str");
-
-    // Cria uma string global com o nome da variável para usar no printf
+    // 3. Cria as strings de formato para o printf (código existente está correto)
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s: Sou %d!\\n", "fmt_str");
     LLVMValueRef nome_str = LLVMBuildGlobalStringPtr(builder, nome, "var_name_str");
 
-    // Carrega o valor inteiro da variável
-    LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMInt32TypeInContext(contexto), sym->llvm_ref, "tmpint");
+    // 4. OBTÉM O VALOR DO TOPO DA PILHA (gera call @peek_int_value)
+    //    Esta é a principal mudança.
+    LLVMValueRef valor = gerar_peek_llvm(modulo, builder, nome);
 
-    // Define os argumentos para a chamada: formato, nome e valor
+    // 5. Define os argumentos e gera a chamada para o printf (código existente está correto)
     LLVMValueRef args[] = { fmt, nome_str, valor };
-
-    // Gera a chamada para printf com 3 argumentos
     LLVMBuildCall2(builder, printf_type, printf_func, args, 3, "");
 }
 

@@ -11,7 +11,7 @@ LEXFILE = $(SRC_DIR)/lexer.l
 YACCFILE = $(SRC_DIR)/parser.y
 INPUT = program.nr
 CODEGEN = $(SRC_DIR)/LLVMgen.c
-UTILS = $(SRC_DIR)/nrUtils.c
+UTILS = $(SRC_DIR)/nrUtils.c $(SRC_DIR)/pilha_runtime.c
 
 # Gerados
 PARSER_C = $(SRC_DIR)/parser.tab.c
