@@ -12,6 +12,7 @@ YACCFILE = $(SRC_DIR)/parser.y
 INPUT = program.nr
 CODEGEN = $(SRC_DIR)/LLVMgen.c
 UTILS = $(SRC_DIR)/nrUtils.c
+RUNTIME = $(SRC_DIR)/pilhaRuntime.c
 
 # Gerados
 PARSER_C = $(SRC_DIR)/parser.tab.c
@@ -46,7 +47,7 @@ run: $(EXEC) $(INPUT)
 
 # Gera e executa o LLVM IR via clang
 run-llvm: run
-	clang nrLLVM.ll -o $(LLVM_EXEC)
+	clang nrLLVM.ll -o $(LLVM_EXEC) $(RUNTIME)
 
 # Limpeza
 clean:

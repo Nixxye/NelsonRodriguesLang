@@ -663,7 +663,7 @@ dialogo:
             printf("Variável %s não está ativa\n", sym->name);
             YYABORT;
         }
-        gerar_print_int($2);
+        gerar_print_topo_pilha($2);
 
     }
     | inicioDialogo texto VIRGULA LE_VALOR FIM {

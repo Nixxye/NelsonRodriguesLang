@@ -2107,7 +2107,7 @@ yyreduce:
             printf("Variável %s não está ativa\n", sym->name);
             YYABORT;
         }
-        gerar_print_int((yyvsp[-3].texto));
+        gerar_print_topo_pilha((yyvsp[-3].texto));
 
     }
 #line 2114 "src/parser.tab.c"
