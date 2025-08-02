@@ -1,0 +1,15 @@
+# Executáveis
+nrparser
+executavel
+
+# Arquivos gerados pelo compilador
+*.ll
+
+# Arquivos intermediários do Flex e Bison
+*.yy.c
+*.tab.c
+*.tab.h
+*.output
+
+# Arquivos objeto da compilação
+*.o

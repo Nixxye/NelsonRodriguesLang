@@ -11,7 +11,7 @@ ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
 		[ENTRAM Jose Dirceu, Robertinha, Joaozinho E Maria Roberta] # Ajustar no futuro #
 		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
-		Jose Dirceu: Maria Roberta, VOCÊ É DOCE como um pudim! # Maria += 1 #
+		Jose Dirceu: Maria Roberta, TU É DOCE como um pudim!
 		Joaozinho: Jose Dirceu, TU ÉS BELO como um cachorro!
 		Jose Dirceu: Joaozinho, ESCUTA TEU CORACAO MISERAVEL.
 		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
