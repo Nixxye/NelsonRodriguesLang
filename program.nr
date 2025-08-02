@@ -14,8 +14,13 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Jose Dirceu: Maria Roberta, VOCÊ É DOCE como um pudim! # Maria += 1 #
 		Joaozinho: Jose Dirceu, TU ÉS BELO como um cachorro!
 		Jose Dirceu: Joaozinho, ESCUTA TEU CORACAO MISERAVEL.
-		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
-		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
+		Jose Dirceu: Joaozinho, GUARDE esse lixo que chamas de honra NO TEU AMAGO.
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
+		Jose Dirceu: Joaozinho, ESCUTA TEU CORACAO MISERAVEL.
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
+		Robertinha: Joaozinho, LEMBRE DE QUEM TU ES animal.
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
         Robertinha: VOLTEMOS AO Cenario 2.
         Joaozinho: VAMOS A Avenida Copacabana!

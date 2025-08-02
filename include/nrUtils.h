@@ -65,7 +65,7 @@ char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
 Symbol* get_symbol(const char *name);
 void gerar_print_string(const char *nome);
-void gerar_print_int(const char *nome);
+void gerar_print_topo_pilha(const char *nome);
 void gerar_leitura_inteiro(const char *nome);
 void desativar_todos_personagens(void);
 void ativar_cenario(const char *nome);

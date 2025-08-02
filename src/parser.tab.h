@@ -93,6 +93,7 @@ extern int yydebug;
     TOKEN = 287,                   /* TOKEN  */
     ADJETIVO_POSITIVO = 288,       /* ADJETIVO_POSITIVO  */
     ADJETIVO_NEGATIVO = 289,       /* ADJETIVO_NEGATIVO  */
+<<<<<<< HEAD
     VOCE = 290,                    /* VOCE  */
     TU = 291,                      /* TU  */
     EH = 292,                      /* EH  */
@@ -110,6 +111,27 @@ extern int yydebug;
     LE_VALOR = 304,                /* LE_VALOR  */
     ATO = 305,                     /* ATO  */
     CENA = 306                     /* CENA  */
+=======
+    TU = 290,                      /* TU  */
+    EH = 291,                      /* EH  */
+    E = 292,                       /* E  */
+    ENTRE = 293,                   /* ENTRE  */
+    ARTIGO = 294,                  /* ARTIGO  */
+    MESMO = 295,                   /* MESMO  */
+    NUMERO = 296,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 297,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 298,      /* SUBSTITUIR_CENARIO  */
+    POR = 299,                     /* POR  */
+    NO_CENARIO = 300,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 301,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 302,            /* MOSTRA_VALOR  */
+    LE_VALOR = 303,                /* LE_VALOR  */
+    GUARDE = 304,                  /* GUARDE  */
+    INTERIOR = 305,                /* INTERIOR  */
+    LEMBRE = 306,                  /* LEMBRE  */
+    ATO = 307,                     /* ATO  */
+    CENA = 308                     /* CENA  */
+>>>>>>> pilha_correta
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -131,7 +153,11 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
+<<<<<<< HEAD
 #line 135 "src/parser.tab.h"
+=======
+#line 137 "src/parser.tab.h"
+>>>>>>> pilha_correta
 
 };
 typedef union YYSTYPE YYSTYPE;

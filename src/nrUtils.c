@@ -1,4 +1,5 @@
 #include "../include/nrUtils.h"
+#include "../include/LLVMgen.h"
 
 // Definições das tabelas globais
 Symbol *symbolTable[TABLE_SIZE] = {0};
@@ -47,44 +48,51 @@ void add_symbol(const char *name, VarType type) {
 
     // LLVM type and allocation
     switch (type) {
-        case INT_VAR:
-            newSymbol->llvm_type = LLVMInt32TypeInContext(contexto);
+        case INT_VAR: // AGORA INT_VAR REPRESENTA UMA PILHA DE INTEIROS
+            // 1. Define o tipo "PilhaInt*" no LLVM.
+            LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
+            LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
+            newSymbol->llvm_type = pilha_ptr_type;
+
+            // 2. Aloca espaço na memória para guardar o PONTEIRO para a pilha (PilhaInt**).
             newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-            set_int_value(name, 0);
+
+            // 3. Gera a chamada para o runtime criar e inicializar a pilha com um 0.
+            LLVMValueRef capacidade_inicial = LLVMConstInt(LLVMInt32Type(), 8, 0); // Capacidade padrão 8
+            LLVMValueRef nova_pilha_ptr = gerar_criar_pilha_e_inicializar(capacidade_inicial);
+
+            // 4. Armazena o ponteiro para a pilha (agora inicializada) na variável.
+            LLVMBuildStore(builder, nova_pilha_ptr, newSymbol->llvm_ref);
             break;
 
         case BOOL_VAR:
             newSymbol->llvm_type = LLVMInt1TypeInContext(contexto);
             newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-            set_bool_value(name, 0);
+            // set_bool_value(name, 0); // Esta linha deve gerar LLVM, não chamar runtime
+            LLVMBuildStore(builder, LLVMConstInt(newSymbol->llvm_type, 0, 0), newSymbol->llvm_ref);
             break;
 
         case STRING_VAR:
             newSymbol->llvm_type = LLVMPointerType(LLVMInt8TypeInContext(contexto), 0);
             newSymbol->llvm_ref = LLVMBuildAlloca(builder, newSymbol->llvm_type, name);
-
-            // Inicializa string com ""
-            StringValue *newStringValue = (StringValue*) malloc(sizeof(StringValue));
-            if (!newStringValue) { perror("malloc failed"); exit(EXIT_FAILURE); }
-            newStringValue->name = strdup(name);
-            newStringValue->value = strdup("");
-            unsigned int strIndex = hash(name);
-            newStringValue->next = stringTable[strIndex];
-            stringTable[strIndex] = newStringValue;
+            // Inicializa com uma string vazia global
+            LLVMValueRef str_vazia = LLVMBuildGlobalStringPtr(builder, "", "empty_str");
+            LLVMBuildStore(builder, str_vazia, newSymbol->llvm_ref);
             break;
     }
 }
 
 // Adiciona valor inteiro
+// Altera o topo da pilha de uma variável INT_VAR (que agora é uma pilha)
 void set_int_value(const char *name, int value) {
-    // LLVM:
+    // 1. Validação do símbolo (permanece igual)
     Symbol *sym = get_symbol(name);
     if (!sym) {
         fprintf(stderr, "Erro: variável '%s' não declarada!\n", name);
         exit(EXIT_FAILURE);
     }
-    if (sym->type != INT_VAR) {
-        fprintf(stderr, "Erro: tipo incompatível ao atribuir a '%s'!\n", name);
+    if (sym->type != INT_VAR) { // INT_VAR agora representa uma pilha
+        fprintf(stderr, "Erro: variável '%s' não é uma pilha de inteiros!\n", name);
         exit(EXIT_FAILURE);
     }
     if (!sym->llvm_ref) {
@@ -92,24 +100,28 @@ void set_int_value(const char *name, int value) {
         exit(EXIT_FAILURE);
     }
 
-    LLVMValueRef valConst = LLVMConstInt(LLVMInt32Type(), value, 0);
-    LLVMBuildStore(builder, valConst, sym->llvm_ref);
-    // Tabela de valores inteiros:
-    unsigned int index = hash(name);
-    //add_symbol(name, INT_VAR);
-    IntValue *val = intTable[index];
-    while (val) {
-        if (strcmp(val->name, name) == 0) {
-            val->value = value;
-            return;
-        }
-        val = val->next;
+    // --- LÓGICA CORRETA PARA GERAR O CÓDIGO LLVM ---
+
+    // 2. Carrega o ponteiro para a pilha (PilhaInt*) que está armazenado na variável.
+    //    (sym->llvm_ref é um PilhaInt**, o load retorna um PilhaInt*)
+    LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+    // 3. Converte o 'int value' para uma constante LLVM 'i32'.
+    LLVMValueRef novo_valor_ref = LLVMConstInt(LLVMInt32Type(), value, 0);
+
+    // 4. Gera a chamada para a função de runtime C 'pilha_set_topo'.
+    //    Declara a função se for a primeira vez que a usamos.
+    LLVMTypeRef func_args_types[] = { sym->llvm_type, LLVMInt32Type() };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMVoidType(), func_args_types, 2, 0);
+    
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "pilha_set_topo");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "pilha_set_topo", func_type);
     }
-    IntValue *newValue = (IntValue *) malloc(sizeof(IntValue));
-    newValue->name = strdup(name);
-    newValue->value = value;
-    newValue->next = intTable[index];
-    intTable[index] = newValue;
+
+    // Gera a instrução de chamada
+    LLVMValueRef args[] = { pilha_ptr, novo_valor_ref };
+    LLVMBuildCall2(builder, func_type, func, args, 2, "");
 }
 
 
@@ -449,33 +461,35 @@ void gerar_print_string(const char *nome) {
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ fmt, valor }, 2, "");
 }
 
-void gerar_print_int(const char *nome) {
+void gerar_print_topo_pilha(const char *nome) {
     // Obtém símbolo da variável
     Symbol *sym = get_symbol(nome);
-    if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-        fprintf(stderr, "Erro: variável inteira '%s' inválida ou não declarada\n", nome);
+    // A validação do tipo deve ser para uma variável de pilha (INT_VAR)
+    if (!sym || sym->type != INT_VAR) {
+        fprintf(stderr, "Erro: variável de pilha '%s' inválida ou não declarada\n", nome);
         return;
     }
 
-    // Declara printf (se ainda não foi)
+    // Declara printf
     LLVMTypeRef printf_type = LLVMFunctionType(
         LLVMInt32TypeInContext(contexto),
         (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8TypeInContext(contexto), 0) },
-        1,  // 1 argumento fixo (formato)
-        1   // é varargs
-    );
+        1, 1);
     LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
     if (!printf_func)
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
 
-    // Cria string global para formato "%d\n"
+    // Cria as strings de formato para o printf
     LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s: Sou %d!\n", "fmt_str");
-
-    // Cria uma string global com o nome da variável para usar no printf
     LLVMValueRef nome_str = LLVMBuildGlobalStringPtr(builder, nome, "var_name_str");
 
-    // Carrega o valor inteiro da variável
-    LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMInt32TypeInContext(contexto), sym->llvm_ref, "tmpint");
+
+    // Carrega o ponteiro para a pilha (PilhaInt*) que está na variável.
+    LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+    // Chama a função que gera o 'call @pilha_peek' para obter o valor do topo.
+    LLVMValueRef valor = gerar_peek_pilha(pilha_ptr);
+
 
     // Define os argumentos para a chamada: formato, nome e valor
     LLVMValueRef args[] = { fmt, nome_str, valor };
@@ -486,13 +500,8 @@ void gerar_print_int(const char *nome) {
 
 void gerar_leitura_inteiro(const char *nome) {
     Symbol *sym = get_symbol(nome);
-    if (!sym) {
-        fprintf(stderr, "Erro: A variável '%s' não foi declarada.\n", nome);
-        print_symbols();
-        return;
-    }
-    if (sym->type != INT_VAR) {
-        fprintf(stderr, "Erro: A variável '%s' não é do tipo inteiro.\n", nome);
+    if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
+        fprintf(stderr, "Erro: A variável '%s' não é uma pilha de inteiros.\n", nome);
         return;
     }
     if (!sym->llvm_ref) {
@@ -500,9 +509,8 @@ void gerar_leitura_inteiro(const char *nome) {
         return;
     }
 
-    // printf("Digite valor de <nome>: ");
-    LLVMTypeRef printf_type = LLVMFunctionType(
-        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+    // Lógica para imprimir o prompt "Digite o valor..." (permanece igual)
+    LLVMTypeRef printf_type = LLVMFunctionType(LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
     LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
     if (!printf_func)
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
@@ -512,35 +520,44 @@ void gerar_leitura_inteiro(const char *nome) {
     LLVMValueRef prompt = LLVMBuildGlobalStringPtr(builder, msg, "prompt");
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ prompt }, 1, "");
 
-    // scanf("%d", &var)
-    LLVMTypeRef scanf_type = LLVMFunctionType(
-        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+
+    // 1. Aloca um inteiro temporário na memória para o scanf.
+    LLVMValueRef temp_var = LLVMBuildAlloca(builder, LLVMInt32Type(), "temp_scanf");
+
+    // 2. Chama scanf, passando o ponteiro para a variável temporária.
+    LLVMTypeRef scanf_type = LLVMFunctionType(LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
     LLVMValueRef scanf_func = LLVMGetNamedFunction(modulo, "scanf");
     if (!scanf_func)
         scanf_func = LLVMAddFunction(modulo, "scanf", scanf_type);
 
     LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%d", "fmt");
-    LLVMValueRef result = LLVMBuildCall2(builder, scanf_type, scanf_func,
-                                         (LLVMValueRef[]){ fmt, sym->llvm_ref }, 2, "res_scanf");
-
-    // if (result != 1)
-    LLVMValueRef cond = LLVMBuildICmp(builder, LLVMIntNE,
-                                      result, LLVMConstInt(LLVMInt32Type(), 1, 0),
-                                      "scanf_failed");
-
+    // Passa o ponteiro da variável temporária (temp_var), não sym->llvm_ref
+    LLVMValueRef result = LLVMBuildCall2(builder, scanf_type, scanf_func, (LLVMValueRef[]){ fmt, temp_var }, 2, "res_scanf");
+    
+    // Lógica de verificação de erro do scanf (permanece igual)
+    LLVMValueRef cond = LLVMBuildICmp(builder, LLVMIntNE, result, LLVMConstInt(LLVMInt32Type(), 1, 0), "scanf_failed");
     LLVMBasicBlockRef okBlock = LLVMAppendBasicBlock(funcao_main, "ok");
     LLVMBasicBlockRef errBlock = LLVMAppendBasicBlock(funcao_main, "erro");
-
     LLVMBuildCondBr(builder, cond, errBlock, okBlock);
 
-    // erro:
+    // Bloco de erro (permanece igual)
     LLVMPositionBuilderAtEnd(builder, errBlock);
-    LLVMValueRef errMsg = LLVMBuildGlobalStringPtr(builder, "Erro: valor inválido (esperado inteiro)\n", "errmsg");
+    LLVMValueRef errMsg = LLVMBuildGlobalStringPtr(builder, "Erro: valor inválido (esperado inteiro)\\n", "errmsg");
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ errMsg }, 1, "");
     LLVMBuildBr(builder, okBlock);
 
-    // ok:
+    // Bloco 'ok' (continuação após scanf bem-sucedido)
     LLVMPositionBuilderAtEnd(builder, okBlock);
+
+    
+    // 3. Carrega o valor que foi lido pelo scanf da variável temporária.
+    LLVMValueRef valor_lido = LLVMBuildLoad2(builder, LLVMInt32Type(), temp_var, "valor_lido");
+
+    // 4. Carrega o ponteiro para a estrutura da pilha.
+    LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+    // 5. Gera a chamada para a função que substitui o valor no topo.
+    gerar_set_topo_pilha(pilha_ptr, valor_lido);
 }
 
 int while_stack_top = -1;
