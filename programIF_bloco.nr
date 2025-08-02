@@ -11,7 +11,7 @@ ATO I: Onde o filho chora e a mae nao ve.
         Maria Roberta: Jose Dirceu, TU É PODRE! # Jose Dirceu += -1 #
 		Jose Dirceu: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
         Maria Roberta: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
-SE Jose Dirceu FOR MAIOR QUE Maria Roberta, a sentença começa:
+SE Jose Dirceu FOR MENOR QUE Maria Roberta, a sentença começa:
 		Jose Dirceu: Maria Roberta, TU É PODRE como um pudim! # Maria += 1 #
         Maria Roberta: Jose Dirceu, TU É DOCE! # Jose Dirceu += -1 #
 A SENTENÇA FINDA!

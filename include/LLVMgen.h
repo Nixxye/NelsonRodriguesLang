@@ -29,7 +29,8 @@ typedef struct {
     int topo;
 } PilhaControleFluxo;
 
-
+// Variável global para a nossa pilha.
+extern PilhaControleFluxo pilhaControleFluxo;
 
 void pilha_init(PilhaControleFluxo* p);
 void pilha_push(PilhaControleFluxo* p, ControleFluxo item);

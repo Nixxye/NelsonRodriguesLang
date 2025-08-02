@@ -42,8 +42,6 @@
         }
         ultimoPersonagemQueFala = personagemQueFala;
     }
-    // Variável global para a nossa pilha.
-    PilhaControleFluxo pilhaControleFluxo;
 %}
 
 

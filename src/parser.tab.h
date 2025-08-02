@@ -124,7 +124,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 51 "src/parser.y"
+#line 49 "src/parser.y"
 
     char* texto;
     int inteiro;

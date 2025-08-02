@@ -9,6 +9,7 @@ LLVMValueRef funcao_main;
 LLVMBasicBlockRef bloco_main;
 
 
+
 // Funções para manipular a pilha
 void pilha_init(PilhaControleFluxo* p) {
     p->topo = -1;
