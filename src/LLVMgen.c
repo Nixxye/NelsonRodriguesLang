@@ -33,19 +33,6 @@ void finalizar_codegen() {
 }
 
 
-void gerar_print_variavel(const char *nome) {
-    printf("Gerando IR para imprimir variável: %s (simulação)\n", nome);
-    // Aqui, você pode construir uma chamada para printf usando a LLVM-C API
-    // Isso requer incluir a função `printf` no módulo, criar a string e chamar.
-    // Podemos expandir esse ponto depois.
-}
-
-void gerar_atribuicao_variavel(const char *nome, int valor) {
-    printf("Gerando IR para atribuir %d à variável %s (simulação)\n", valor, nome);
-    // Aqui poderíamos alocar uma variável global ou local e atribuir o valor
-    // Isso também pode ser expandido depois
-}
-
 // ============================================================================
 // Funções de Geração de Código para a Pilha de Inteiros
 // ============================================================================

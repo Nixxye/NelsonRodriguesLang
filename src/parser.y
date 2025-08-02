@@ -59,7 +59,7 @@
 %token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO VOCE
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
+%token <texto> VIRGULA SERA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -485,12 +485,43 @@ expressao:
 
 
 if_sentenca:
-    SE condicao VIRGULA texto expressao{
-        if (DEBUG_BISON) {
-            printf("IF BLOCO DETECTADO\n");
-            printf("Condicao do IF: %d\n", $2);
-            printf("resultado do IF: %d\n", $5);
+    SE condicao VIRGULA texto SERA expressao {
+        // $2 é a condição (LLVMValueRef do tipo i1)
+        // $4 é o nome da variável de pilha (const char*)
+        // $6 é o novo valor para o topo (LLVMValueRef do tipo i32)
+
+        // 1. Cria os blocos básicos para os caminhos do if.
+        LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+
+        // 2. Gera o desvio condicional.
+        // Se a condição ($2) for true, pula para 'then_block', senão, pula para 'merge_block'.
+        LLVMBuildCondBr(builder, $2, then_block, merge_block);
+
+        // 3. Posiciona o builder para começar a escrever o código do bloco 'then'.
+        // Este código só será executado se a condição for verdadeira.
+        LLVMPositionBuilderAtEnd(builder, then_block);
+        {
+            // Lógica para atualizar o topo da pilha
+            const char* nome_pilha = $4;
+            LLVMValueRef novo_valor = $6;
+            Symbol* sym = get_symbol(nome_pilha);
+
+            if (sym && sym->type == INT_VAR) {
+                // Carrega o ponteiro para a estrutura da pilha
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+                // Gera a chamada ao runtime para atualizar o topo
+                gerar_set_topo_pilha(pilha_ptr, novo_valor);
+            } else {
+                yyerror("Variável de destino no 'SE' não é uma pilha válida.");
+            }
+            
+            // Ao final do bloco 'then', pula incondicionalmente para o bloco de continuação.
+            LLVMBuildBr(builder, merge_block);
         }
+
+        // 4. Move o builder para o bloco 'merge' para as próximas instruções do programa.
+        LLVMPositionBuilderAtEnd(builder, merge_block);
     }
 
 if_bloco:

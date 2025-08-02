@@ -263,6 +263,12 @@ RAZÃO {
     return DIVIDIR;
 }
 
+SERA {
+    if (DEBUG_LEX) printf("TOKEN: SERA\n");
+    yylval.texto = strdup(yytext);
+    return SERA;
+}
+
 PRODUTO {
     if (DEBUG_LEX) printf("TOKEN: MULTIPLICAR\n");
     yylval.texto = strdup(yytext);

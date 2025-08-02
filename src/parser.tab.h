@@ -91,28 +91,29 @@ extern int yydebug;
     ABRE_PARENTESES = 285,         /* ABRE_PARENTESES  */
     FECHA_PARENTESES = 286,        /* FECHA_PARENTESES  */
     VIRGULA = 287,                 /* VIRGULA  */
-    TOKEN = 288,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 289,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 290,       /* ADJETIVO_NEGATIVO  */
-    TU = 291,                      /* TU  */
-    EH = 292,                      /* EH  */
-    E = 293,                       /* E  */
-    ENTRE = 294,                   /* ENTRE  */
-    ARTIGO = 295,                  /* ARTIGO  */
-    MESMO = 296,                   /* MESMO  */
-    NUMERO = 297,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 298,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 299,      /* SUBSTITUIR_CENARIO  */
-    POR = 300,                     /* POR  */
-    NO_CENARIO = 301,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 302,         /* MOSTRAR_CENARIO  */
-    MOSTRA_VALOR = 303,            /* MOSTRA_VALOR  */
-    LE_VALOR = 304,                /* LE_VALOR  */
-    GUARDE = 305,                  /* GUARDE  */
-    INTERIOR = 306,                /* INTERIOR  */
-    LEMBRE = 307,                  /* LEMBRE  */
-    ATO = 308,                     /* ATO  */
-    CENA = 309                     /* CENA  */
+    SERA = 288,                    /* SERA  */
+    TOKEN = 289,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 290,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 291,       /* ADJETIVO_NEGATIVO  */
+    TU = 292,                      /* TU  */
+    EH = 293,                      /* EH  */
+    E = 294,                       /* E  */
+    ENTRE = 295,                   /* ENTRE  */
+    ARTIGO = 296,                  /* ARTIGO  */
+    MESMO = 297,                   /* MESMO  */
+    NUMERO = 298,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 299,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 300,      /* SUBSTITUIR_CENARIO  */
+    POR = 301,                     /* POR  */
+    NO_CENARIO = 302,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 303,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 304,            /* MOSTRA_VALOR  */
+    LE_VALOR = 305,                /* LE_VALOR  */
+    GUARDE = 306,                  /* GUARDE  */
+    INTERIOR = 307,                /* INTERIOR  */
+    LEMBRE = 308,                  /* LEMBRE  */
+    ATO = 309,                     /* ATO  */
+    CENA = 310                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -134,7 +135,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 138 "src/parser.tab.h"
+#line 139 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

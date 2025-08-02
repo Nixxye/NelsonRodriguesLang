@@ -8,11 +8,9 @@ State 20 conflicts: 2 shift/reduce
 State 40 conflicts: 1 shift/reduce
 State 85 conflicts: 1 shift/reduce
 State 86 conflicts: 1 shift/reduce
-State 133 conflicts: 1 reduce/reduce
-State 134 conflicts: 2 reduce/reduce
-State 158 conflicts: 2 reduce/reduce
-State 165 conflicts: 6 shift/reduce
-State 182 conflicts: 2 shift/reduce
+State 157 conflicts: 2 reduce/reduce
+State 164 conflicts: 6 shift/reduce
+State 181 conflicts: 2 shift/reduce
 
 
 Grammar
@@ -94,7 +92,7 @@ Grammar
    56          | ARTIGO MULTIPLICAR ENTRE valor E valor
    57          | ARTIGO DIVIDIR ENTRE valor E valor
 
-   58 if_sentenca: SE condicao VIRGULA texto expressao
+   58 if_sentenca: SE condicao VIRGULA texto SERA expressao
 
    59 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF
 
@@ -166,119 +164,120 @@ Terminals, with rules where they appear
     ABRE_PARENTESES <texto> (285) 19
     FECHA_PARENTESES <texto> (286) 19
     VIRGULA <texto> (287) 19 38 40 43 58 59 62 64 74 75 76 77 78 79
-    TOKEN <texto> (288) 29 32 35
-    ADJETIVO_POSITIVO <texto> (289) 30 33
-    ADJETIVO_NEGATIVO <texto> (290) 31 34
-    TU <texto> (291) 49 74 75
-    EH <texto> (292) 74 75
-    E <texto> (293) 41 44 54 55 56 57
-    ENTRE <texto> (294) 36 54 55 56 57
-    ARTIGO <texto> (295) 22 54 55 56 57
-    MESMO <texto> (296) 49
-    NUMERO <texto> (297) 27 48
-    ADICIONAR_CENARIO <texto> (298) 20
-    SUBSTITUIR_CENARIO <texto> (299) 21
-    POR <texto> (300) 21
-    NO_CENARIO <texto> (301) 21
-    MOSTRAR_CENARIO <texto> (302) 71
-    MOSTRA_VALOR <texto> (303) 76
-    LE_VALOR <texto> (304) 77
-    GUARDE <texto> (305) 78
-    INTERIOR <texto> (306) 78
-    LEMBRE <texto> (307) 79
-    ATO <inteiro> (308) 81
-    CENA <inteiro> (309) 82
+    SERA <texto> (288) 58
+    TOKEN <texto> (289) 29 32 35
+    ADJETIVO_POSITIVO <texto> (290) 30 33
+    ADJETIVO_NEGATIVO <texto> (291) 31 34
+    TU <texto> (292) 49 74 75
+    EH <texto> (293) 74 75
+    E <texto> (294) 41 44 54 55 56 57
+    ENTRE <texto> (295) 36 54 55 56 57
+    ARTIGO <texto> (296) 22 54 55 56 57
+    MESMO <texto> (297) 49
+    NUMERO <texto> (298) 27 48
+    ADICIONAR_CENARIO <texto> (299) 20
+    SUBSTITUIR_CENARIO <texto> (300) 21
+    POR <texto> (301) 21
+    NO_CENARIO <texto> (302) 21
+    MOSTRAR_CENARIO <texto> (303) 71
+    MOSTRA_VALOR <texto> (304) 76
+    LE_VALOR <texto> (305) 77
+    GUARDE <texto> (306) 78
+    INTERIOR <texto> (307) 78
+    LEMBRE <texto> (308) 79
+    ATO <inteiro> (309) 81
+    CENA <inteiro> (310) 82
 
 
 Nonterminals, with rules where they appear
 
-    $accept (55)
+    $accept (56)
         on left: 0
-    programa (56)
+    programa (57)
         on left: 1 2
         on right: 0 2
-    bloco <texto> (57)
+    bloco <texto> (58)
         on left: 3 4
         on right: 2 4 59 62 64
-    instrucao (58)
+    instrucao (59)
         on left: 5 6 7 8 9 10 11 12 13 14 15 16 17 18
         on right: 3 4
-    declaracaoCenario (59)
+    declaracaoCenario (60)
         on left: 19
         on right: 9
-    concatenarCenario (60)
+    concatenarCenario (61)
         on left: 20
         on right: 11
-    substituiCenario (61)
+    substituiCenario (62)
         on left: 21
         on right: 12
-    trocarCenario (62)
+    trocarCenario (63)
         on left: 22
         on right: 13
-    declaracaoQuestionamento (63)
+    declaracaoQuestionamento (64)
         on left: 23 24 25
         on right: 10
-    texto <texto> (64)
+    texto <texto> (65)
         on left: 26 27 28
         on right: 19 20 21 22 23 24 25 27 28 37 38 39 40 41 42 43 44 52 58 59 62 64 73 74 75 76 77 78 79 80
-    palavra <texto> (65)
+    palavra <texto> (66)
         on left: 29
         on right: 26 28
-    adjetivos <inteiro> (66)
+    adjetivos <inteiro> (67)
         on left: 30 31 32 33 34 35 36
         on right: 33 34 35 36 75
-    declaracao <texto> (67)
+    declaracao <texto> (68)
         on left: 37
         on right: 8
-    declaracaoInicio <texto> (68)
+    declaracaoInicio <texto> (69)
         on left: 38
         on right: 37
-    personagensEntrando (69)
+    personagensEntrando (70)
         on left: 39 40 41
         on right: 18 40 41 45
-    personagensSaindo (70)
+    personagensSaindo (71)
         on left: 42 43 44
         on right: 43 44 46
-    alteracaoElenco (71)
+    alteracaoElenco (72)
         on left: 45 46 47
         on right: 14
-    valor <llmValueRef> (72)
+    valor <llmValueRef> (73)
         on left: 48 49 50 51 52
         on right: 53 54 55 56 57
-    expressao <llmValueRef> (73)
+    expressao <llmValueRef> (74)
         on left: 53 54 55 56 57
         on right: 58 65 66 67 68 69 70 74
-    if_sentenca <inteiro> (74)
+    if_sentenca <inteiro> (75)
         on left: 58
         on right: 15 72
-    if_bloco (75)
+    if_bloco (76)
         on left: 59
         on right: 16
-    while_aux <WhileBlocks> (76)
+    while_aux <WhileBlocks> (77)
         on left: 60
         on right: 62
-    while <inteiro> (77)
+    while <inteiro> (78)
         on left: 62 64
         on right: 17
-    $@1 (78)
+    $@1 (79)
         on left: 61
         on right: 62
-    $@2 (79)
+    $@2 (80)
         on left: 63
         on right: 64
-    condicao <llmValueRef> (80)
+    condicao <llmValueRef> (81)
         on left: 65 66 67 68 69 70
         on right: 58 59 62 64
-    dialogo <texto> (81)
+    dialogo <texto> (82)
         on left: 71 72 73 74 75 76 77 78 79
         on right: 7
-    inicioDialogo <texto> (82)
+    inicioDialogo <texto> (83)
         on left: 80
         on right: 22 71 72 73 74 75 76 77 78 79
-    ato <texto> (83)
+    ato <texto> (84)
         on left: 81
         on right: 5
-    cena <texto> (84)
+    cena <texto> (85)
         on left: 82
         on right: 6
 
@@ -356,7 +355,7 @@ State 4
 
 State 5
 
-   58 if_sentenca: SE • condicao VIRGULA texto expressao
+   58 if_sentenca: SE • condicao VIRGULA texto SERA expressao
    59 if_bloco: SE • condicao VIRGULA texto INICIO bloco ENDIF
 
     EU      shift, and go to state 35
@@ -761,7 +760,7 @@ State 42
 
 State 43
 
-   58 if_sentenca: SE condicao • VIRGULA texto expressao
+   58 if_sentenca: SE condicao • VIRGULA texto SERA expressao
    59 if_bloco: SE condicao • VIRGULA texto INICIO bloco ENDIF
 
     VIRGULA  shift, and go to state 73
@@ -914,7 +913,7 @@ State 58
 
 State 59
 
-   58 if_sentenca: SE • condicao VIRGULA texto expressao
+   58 if_sentenca: SE • condicao VIRGULA texto SERA expressao
 
     EU      shift, and go to state 35
     VOCE    shift, and go to state 36
@@ -1048,7 +1047,7 @@ State 72
 
 State 73
 
-   58 if_sentenca: SE condicao VIRGULA • texto expressao
+   58 if_sentenca: SE condicao VIRGULA • texto SERA expressao
    59 if_bloco: SE condicao VIRGULA • texto INICIO bloco ENDIF
 
     TOKEN  shift, and go to state 8
@@ -1200,7 +1199,7 @@ State 86
 
 State 87
 
-   58 if_sentenca: SE condicao • VIRGULA texto expressao
+   58 if_sentenca: SE condicao • VIRGULA texto SERA expressao
 
     VIRGULA  shift, and go to state 113
 
@@ -1390,21 +1389,15 @@ State 102
 
    27 texto: texto • NUMERO
    28      | texto • palavra
-   58 if_sentenca: SE condicao VIRGULA texto • expressao
+   58 if_sentenca: SE condicao VIRGULA texto • SERA expressao
    59 if_bloco: SE condicao VIRGULA texto • INICIO bloco ENDIF
 
-    EU      shift, and go to state 35
     INICIO  shift, and go to state 132
-    VOCE    shift, and go to state 36
+    SERA    shift, and go to state 133
     TOKEN   shift, and go to state 8
-    TU      shift, and go to state 37
-    ARTIGO  shift, and go to state 38
-    NUMERO  shift, and go to state 133
+    NUMERO  shift, and go to state 54
 
-    texto      go to state 40
-    palavra    go to state 134
-    valor      go to state 41
-    expressao  go to state 135
+    palavra  go to state 55
 
 
 State 103
@@ -1420,7 +1413,7 @@ State 104
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 136
+    texto    go to state 134
     palavra  go to state 21
 
 
@@ -1430,7 +1423,7 @@ State 105
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 137
+    texto    go to state 135
     palavra  go to state 21
 
 
@@ -1454,7 +1447,7 @@ State 108
    27 texto: texto • NUMERO
    28      | texto • palavra
 
-    FECHA_PARENTESES  shift, and go to state 138
+    FECHA_PARENTESES  shift, and go to state 136
     TOKEN             shift, and go to state 8
     NUMERO            shift, and go to state 54
 
@@ -1476,7 +1469,7 @@ State 110
 
     TOKEN       shift, and go to state 8
     NUMERO      shift, and go to state 54
-    NO_CENARIO  shift, and go to state 139
+    NO_CENARIO  shift, and go to state 137
 
     palavra  go to state 55
 
@@ -1497,11 +1490,11 @@ State 112
 
 State 113
 
-   58 if_sentenca: SE condicao VIRGULA • texto expressao
+   58 if_sentenca: SE condicao VIRGULA • texto SERA expressao
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 140
+    texto    go to state 138
     palavra  go to state 21
 
 
@@ -1511,7 +1504,7 @@ State 114
    27 texto: texto • NUMERO
    28      | texto • palavra
 
-    FIM     shift, and go to state 141
+    FIM     shift, and go to state 139
     TOKEN   shift, and go to state 8
     NUMERO  shift, and go to state 54
 
@@ -1523,21 +1516,21 @@ State 115
    74 dialogo: inicioDialogo texto VIRGULA TU • EH expressao FIM
    75        | inicioDialogo texto VIRGULA TU • EH adjetivos FIM
 
-    EH  shift, and go to state 142
+    EH  shift, and go to state 140
 
 
 State 116
 
    76 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR • FIM
 
-    FIM  shift, and go to state 143
+    FIM  shift, and go to state 141
 
 
 State 117
 
    77 dialogo: inicioDialogo texto VIRGULA LE_VALOR • FIM
 
-    FIM  shift, and go to state 144
+    FIM  shift, and go to state 142
 
 
 State 118
@@ -1546,7 +1539,7 @@ State 118
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 145
+    texto    go to state 143
     palavra  go to state 21
 
 
@@ -1556,7 +1549,7 @@ State 119
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 146
+    texto    go to state 144
     palavra  go to state 21
 
 
@@ -1575,7 +1568,7 @@ State 120
     ATO                 shift, and go to state 11
     CENA                shift, and go to state 12
 
-    bloco                     go to state 147
+    bloco                     go to state 145
     instrucao                 go to state 14
     declaracaoCenario         go to state 15
     concatenarCenario         go to state 16
@@ -1603,7 +1596,7 @@ State 121
    28      | texto • palavra
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto • INICIO $@1 bloco texto ENQUANTO_FIM FIM
 
-    INICIO  shift, and go to state 148
+    INICIO  shift, and go to state 146
     TOKEN   shift, and go to state 8
     NUMERO  shift, and go to state 54
 
@@ -1614,28 +1607,28 @@ State 122
 
    54 expressao: ARTIGO SOMAR ENTRE valor • E valor
 
-    E  shift, and go to state 149
+    E  shift, and go to state 147
 
 
 State 123
 
    55 expressao: ARTIGO SUBTRAIR ENTRE valor • E valor
 
-    E  shift, and go to state 150
+    E  shift, and go to state 148
 
 
 State 124
 
    57 expressao: ARTIGO DIVIDIR ENTRE valor • E valor
 
-    E  shift, and go to state 151
+    E  shift, and go to state 149
 
 
 State 125
 
    56 expressao: ARTIGO MULTIPLICAR ENTRE valor • E valor
 
-    E  shift, and go to state 152
+    E  shift, and go to state 150
 
 
 State 126
@@ -1652,7 +1645,7 @@ State 126
     texto      go to state 40
     palavra    go to state 21
     valor      go to state 41
-    expressao  go to state 153
+    expressao  go to state 151
 
 
 State 127
@@ -1669,7 +1662,7 @@ State 127
     texto      go to state 40
     palavra    go to state 21
     valor      go to state 41
-    expressao  go to state 154
+    expressao  go to state 152
 
 
 State 128
@@ -1686,7 +1679,7 @@ State 128
     texto      go to state 40
     palavra    go to state 21
     valor      go to state 41
-    expressao  go to state 155
+    expressao  go to state 153
 
 
 State 129
@@ -1725,7 +1718,7 @@ State 132
     ATO                 shift, and go to state 11
     CENA                shift, and go to state 12
 
-    bloco                     go to state 156
+    bloco                     go to state 154
     instrucao                 go to state 14
     declaracaoCenario         go to state 15
     concatenarCenario         go to state 16
@@ -1749,45 +1742,22 @@ State 132
 
 State 133
 
-   27 texto: texto NUMERO •
-   48 valor: NUMERO •
+   58 if_sentenca: SE condicao VIRGULA texto SERA • expressao
 
-    EU        reduce using rule 27 (texto)
-    INICIO    reduce using rule 27 (texto)
-    VOCE      reduce using rule 27 (texto)
-    TOKEN     reduce using rule 27 (texto)
-    TOKEN     [reduce using rule 48 (valor)]
-    TU        reduce using rule 27 (texto)
-    ARTIGO    reduce using rule 27 (texto)
-    NUMERO    reduce using rule 27 (texto)
-    $default  reduce using rule 48 (valor)
+    EU      shift, and go to state 35
+    VOCE    shift, and go to state 36
+    TOKEN   shift, and go to state 8
+    TU      shift, and go to state 37
+    ARTIGO  shift, and go to state 38
+    NUMERO  shift, and go to state 39
+
+    texto      go to state 40
+    palavra    go to state 21
+    valor      go to state 41
+    expressao  go to state 155
 
 
 State 134
-
-   26 texto: palavra •
-   28      | texto palavra •
-
-    EU        reduce using rule 28 (texto)
-    INICIO    reduce using rule 28 (texto)
-    VOCE      reduce using rule 28 (texto)
-    TOKEN     reduce using rule 26 (texto)
-    TOKEN     [reduce using rule 28 (texto)]
-    TU        reduce using rule 28 (texto)
-    ARTIGO    reduce using rule 28 (texto)
-    NUMERO    reduce using rule 26 (texto)
-    NUMERO    [reduce using rule 28 (texto)]
-    $default  reduce using rule 26 (texto)
-
-
-State 135
-
-   58 if_sentenca: SE condicao VIRGULA texto expressao •
-
-    $default  reduce using rule 58 (if_sentenca)
-
-
-State 136
 
    27 texto: texto • NUMERO
    28      | texto • palavra
@@ -1801,7 +1771,7 @@ State 136
     palavra  go to state 55
 
 
-State 137
+State 135
 
    27 texto: texto • NUMERO
    28      | texto • palavra
@@ -1815,82 +1785,76 @@ State 137
     palavra  go to state 55
 
 
-State 138
+State 136
 
    19 declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES •
 
     $default  reduce using rule 19 (declaracaoCenario)
 
 
-State 139
+State 137
 
    21 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO • FIM
 
-    FIM  shift, and go to state 157
+    FIM  shift, and go to state 156
 
 
-State 140
+State 138
 
    27 texto: texto • NUMERO
    28      | texto • palavra
-   58 if_sentenca: SE condicao VIRGULA texto • expressao
+   58 if_sentenca: SE condicao VIRGULA texto • SERA expressao
 
-    EU      shift, and go to state 35
-    VOCE    shift, and go to state 36
+    SERA    shift, and go to state 133
     TOKEN   shift, and go to state 8
-    TU      shift, and go to state 37
-    ARTIGO  shift, and go to state 38
-    NUMERO  shift, and go to state 133
+    NUMERO  shift, and go to state 54
 
-    texto      go to state 40
-    palavra    go to state 134
-    valor      go to state 41
-    expressao  go to state 135
+    palavra  go to state 55
 
 
-State 141
+State 139
 
    22 trocarCenario: inicioDialogo VOLTAR_CENARIO ARTIGO texto FIM •
 
     $default  reduce using rule 22 (trocarCenario)
 
 
-State 142
+State 140
 
    74 dialogo: inicioDialogo texto VIRGULA TU EH • expressao FIM
    75        | inicioDialogo texto VIRGULA TU EH • adjetivos FIM
 
     EU                 shift, and go to state 35
     VOCE               shift, and go to state 36
-    TOKEN              shift, and go to state 158
-    ADJETIVO_POSITIVO  shift, and go to state 159
-    ADJETIVO_NEGATIVO  shift, and go to state 160
+    TOKEN              shift, and go to state 157
+    ADJETIVO_POSITIVO  shift, and go to state 158
+    ADJETIVO_NEGATIVO  shift, and go to state 159
     TU                 shift, and go to state 37
     ARTIGO             shift, and go to state 38
     NUMERO             shift, and go to state 39
 
     texto      go to state 40
     palavra    go to state 21
-    adjetivos  go to state 161
+    adjetivos  go to state 160
     valor      go to state 41
-    expressao  go to state 162
+    expressao  go to state 161
 
 
-State 143
+State 141
 
    76 dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM •
 
     $default  reduce using rule 76 (dialogo)
 
 
-State 144
+State 142
 
    77 dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM •
 
     $default  reduce using rule 77 (dialogo)
 
 
-State 145
+State 143
 
    27 texto: texto • NUMERO
    28      | texto • palavra
@@ -1898,31 +1862,31 @@ State 145
 
     TOKEN     shift, and go to state 8
     NUMERO    shift, and go to state 54
-    INTERIOR  shift, and go to state 163
+    INTERIOR  shift, and go to state 162
 
     palavra  go to state 55
 
 
-State 146
+State 144
 
    27 texto: texto • NUMERO
    28      | texto • palavra
    79 dialogo: inicioDialogo texto VIRGULA LEMBRE texto • FIM
 
-    FIM     shift, and go to state 164
+    FIM     shift, and go to state 163
     TOKEN   shift, and go to state 8
     NUMERO  shift, and go to state 54
 
     palavra  go to state 55
 
 
-State 147
+State 145
 
     4 bloco: bloco • instrucao
    64 while: FACA VIRGULA texto INICIO $@2 bloco • ENQUANTO_COMECO condicao VIRGULA texto FIM
 
     FACA                shift, and go to state 3
-    ENQUANTO_COMECO     shift, and go to state 165
+    ENQUANTO_COMECO     shift, and go to state 164
     SE                  shift, and go to state 5
     ABRE_COLCHETES      shift, and go to state 6
     ABRE_PARENTESES     shift, and go to state 7
@@ -1953,18 +1917,33 @@ State 147
     cena                      go to state 32
 
 
-State 148
+State 146
 
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO • $@1 bloco texto ENQUANTO_FIM FIM
 
     $default  reduce using rule 61 ($@1)
 
-    $@1  go to state 166
+    $@1  go to state 165
 
 
-State 149
+State 147
 
    54 expressao: ARTIGO SOMAR ENTRE valor E • valor
+
+    EU      shift, and go to state 35
+    VOCE    shift, and go to state 36
+    TOKEN   shift, and go to state 8
+    TU      shift, and go to state 37
+    NUMERO  shift, and go to state 39
+
+    texto    go to state 40
+    palavra  go to state 21
+    valor    go to state 166
+
+
+State 148
+
+   55 expressao: ARTIGO SUBTRAIR ENTRE valor E • valor
 
     EU      shift, and go to state 35
     VOCE    shift, and go to state 36
@@ -1977,9 +1956,9 @@ State 149
     valor    go to state 167
 
 
-State 150
+State 149
 
-   55 expressao: ARTIGO SUBTRAIR ENTRE valor E • valor
+   57 expressao: ARTIGO DIVIDIR ENTRE valor E • valor
 
     EU      shift, and go to state 35
     VOCE    shift, and go to state 36
@@ -1992,9 +1971,9 @@ State 150
     valor    go to state 168
 
 
-State 151
+State 150
 
-   57 expressao: ARTIGO DIVIDIR ENTRE valor E • valor
+   56 expressao: ARTIGO MULTIPLICAR ENTRE valor E • valor
 
     EU      shift, and go to state 35
     VOCE    shift, and go to state 36
@@ -2007,49 +1986,34 @@ State 151
     valor    go to state 169
 
 
-State 152
-
-   56 expressao: ARTIGO MULTIPLICAR ENTRE valor E • valor
-
-    EU      shift, and go to state 35
-    VOCE    shift, and go to state 36
-    TOKEN   shift, and go to state 8
-    TU      shift, and go to state 37
-    NUMERO  shift, and go to state 39
-
-    texto    go to state 40
-    palavra  go to state 21
-    valor    go to state 170
-
-
-State 153
+State 151
 
    69 condicao: expressao NAO FOR MAIOR expressao •
 
     $default  reduce using rule 69 (condicao)
 
 
-State 154
+State 152
 
    68 condicao: expressao NAO FOR MENOR expressao •
 
     $default  reduce using rule 68 (condicao)
 
 
-State 155
+State 153
 
    70 condicao: expressao NAO FOR IGUAL expressao •
 
     $default  reduce using rule 70 (condicao)
 
 
-State 156
+State 154
 
     4 bloco: bloco • instrucao
    59 if_bloco: SE condicao VIRGULA texto INICIO bloco • ENDIF
 
     FACA                shift, and go to state 3
-    ENDIF               shift, and go to state 171
+    ENDIF               shift, and go to state 170
     ENQUANTO_COMECO     shift, and go to state 4
     SE                  shift, and go to state 5
     ABRE_COLCHETES      shift, and go to state 6
@@ -2081,14 +2045,21 @@ State 156
     cena                      go to state 32
 
 
-State 157
+State 155
+
+   58 if_sentenca: SE condicao VIRGULA texto SERA expressao •
+
+    $default  reduce using rule 58 (if_sentenca)
+
+
+State 156
 
    21 substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM •
 
     $default  reduce using rule 21 (substituiCenario)
 
 
-State 158
+State 157
 
    29 palavra: TOKEN •
    32 adjetivos: TOKEN •
@@ -2103,21 +2074,21 @@ State 158
     $default           reduce using rule 29 (palavra)
 
 
-State 159
+State 158
 
    30 adjetivos: ADJETIVO_POSITIVO •
 
     $default  reduce using rule 30 (adjetivos)
 
 
-State 160
+State 159
 
    31 adjetivos: ADJETIVO_NEGATIVO •
 
     $default  reduce using rule 31 (adjetivos)
 
 
-State 161
+State 160
 
    33 adjetivos: adjetivos • ADJETIVO_POSITIVO
    34          | adjetivos • ADJETIVO_NEGATIVO
@@ -2125,35 +2096,35 @@ State 161
    36          | adjetivos • ENTRE
    75 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos • FIM
 
-    FIM                shift, and go to state 172
-    TOKEN              shift, and go to state 173
-    ADJETIVO_POSITIVO  shift, and go to state 174
-    ADJETIVO_NEGATIVO  shift, and go to state 175
-    ENTRE              shift, and go to state 176
+    FIM                shift, and go to state 171
+    TOKEN              shift, and go to state 172
+    ADJETIVO_POSITIVO  shift, and go to state 173
+    ADJETIVO_NEGATIVO  shift, and go to state 174
+    ENTRE              shift, and go to state 175
+
+
+State 161
+
+   74 dialogo: inicioDialogo texto VIRGULA TU EH expressao • FIM
+
+    FIM  shift, and go to state 176
 
 
 State 162
 
-   74 dialogo: inicioDialogo texto VIRGULA TU EH expressao • FIM
+   78 dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR • FIM
 
     FIM  shift, and go to state 177
 
 
 State 163
 
-   78 dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR • FIM
-
-    FIM  shift, and go to state 178
-
-
-State 164
-
    79 dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM •
 
     $default  reduce using rule 79 (dialogo)
 
 
-State 165
+State 164
 
    62 while: ENQUANTO_COMECO • while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM
    64      | FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO • condicao VIRGULA texto FIM
@@ -2177,10 +2148,10 @@ State 165
     valor      go to state 41
     expressao  go to state 42
     while_aux  go to state 34
-    condicao   go to state 179
+    condicao   go to state 178
 
 
-State 166
+State 165
 
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 • bloco texto ENQUANTO_FIM FIM
 
@@ -2195,7 +2166,7 @@ State 166
     ATO                 shift, and go to state 11
     CENA                shift, and go to state 12
 
-    bloco                     go to state 180
+    bloco                     go to state 179
     instrucao                 go to state 14
     declaracaoCenario         go to state 15
     concatenarCenario         go to state 16
@@ -2217,98 +2188,98 @@ State 166
     cena                      go to state 32
 
 
-State 167
+State 166
 
    54 expressao: ARTIGO SOMAR ENTRE valor E valor •
 
     $default  reduce using rule 54 (expressao)
 
 
-State 168
+State 167
 
    55 expressao: ARTIGO SUBTRAIR ENTRE valor E valor •
 
     $default  reduce using rule 55 (expressao)
 
 
-State 169
+State 168
 
    57 expressao: ARTIGO DIVIDIR ENTRE valor E valor •
 
     $default  reduce using rule 57 (expressao)
 
 
-State 170
+State 169
 
    56 expressao: ARTIGO MULTIPLICAR ENTRE valor E valor •
 
     $default  reduce using rule 56 (expressao)
 
 
-State 171
+State 170
 
    59 if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF •
 
     $default  reduce using rule 59 (if_bloco)
 
 
-State 172
+State 171
 
    75 dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM •
 
     $default  reduce using rule 75 (dialogo)
 
 
-State 173
+State 172
 
    35 adjetivos: adjetivos TOKEN •
 
     $default  reduce using rule 35 (adjetivos)
 
 
-State 174
+State 173
 
    33 adjetivos: adjetivos ADJETIVO_POSITIVO •
 
     $default  reduce using rule 33 (adjetivos)
 
 
-State 175
+State 174
 
    34 adjetivos: adjetivos ADJETIVO_NEGATIVO •
 
     $default  reduce using rule 34 (adjetivos)
 
 
-State 176
+State 175
 
    36 adjetivos: adjetivos ENTRE •
 
     $default  reduce using rule 36 (adjetivos)
 
 
-State 177
+State 176
 
    74 dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM •
 
     $default  reduce using rule 74 (dialogo)
 
 
-State 178
+State 177
 
    78 dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM •
 
     $default  reduce using rule 78 (dialogo)
 
 
-State 179
+State 178
 
    64 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao • VIRGULA texto FIM
 
-    VIRGULA  shift, and go to state 181
+    VIRGULA  shift, and go to state 180
 
 
-State 180
+State 179
 
     4 bloco: bloco • instrucao
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco • texto ENQUANTO_FIM FIM
@@ -2330,7 +2301,7 @@ State 180
     substituiCenario          go to state 17
     trocarCenario             go to state 18
     declaracaoQuestionamento  go to state 19
-    texto                     go to state 182
+    texto                     go to state 181
     palavra                   go to state 21
     declaracao                go to state 22
     declaracaoInicio          go to state 23
@@ -2345,17 +2316,17 @@ State 180
     cena                      go to state 32
 
 
-State 181
+State 180
 
    64 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA • texto FIM
 
     TOKEN  shift, and go to state 8
 
-    texto    go to state 183
+    texto    go to state 182
     palavra  go to state 21
 
 
-State 182
+State 181
 
    23 declaracaoQuestionamento: texto • INTERROGACAO NAO FIM
    24                         | texto • INTERROGACAO SIM FIM
@@ -2367,7 +2338,7 @@ State 182
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto • ENQUANTO_FIM FIM
    80 inicioDialogo: texto • INICIO
 
-    ENQUANTO_FIM  shift, and go to state 184
+    ENQUANTO_FIM  shift, and go to state 183
     INICIO        shift, and go to state 51
     INTERROGACAO  shift, and go to state 52
     VIRGULA       shift, and go to state 53
@@ -2381,34 +2352,34 @@ State 182
     palavra  go to state 55
 
 
-State 183
+State 182
 
    27 texto: texto • NUMERO
    28      | texto • palavra
    64 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto • FIM
 
-    FIM     shift, and go to state 185
+    FIM     shift, and go to state 184
     TOKEN   shift, and go to state 8
     NUMERO  shift, and go to state 54
 
     palavra  go to state 55
 
 
-State 184
+State 183
 
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM • FIM
 
-    FIM  shift, and go to state 186
+    FIM  shift, and go to state 185
 
 
-State 185
+State 184
 
    64 while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM •
 
     $default  reduce using rule 64 (while)
 
 
-State 186
+State 185
 
    62 while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM •
 

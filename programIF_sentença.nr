@@ -11,7 +11,9 @@ ATO I: Onde o filho chora e a mae nao ve.
         Jose Dirceu: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
         Maria Roberta: Jose Dirceu, TU É PODRE! # Jose Dirceu += -1 #
         Maria Roberta: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
-        Maria Roberta: SE VOCÊ FOR MENOR QUE EU, Jose Dirceu SERA A SOMA DE EU E VOCÊ! 
+		Jose Dirceu: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
+        Maria Roberta: SE VOCÊ FOR MAIOR QUE EU, Jose Dirceu SERA EU! 
+		Maria Roberta: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
 
 		[SAI Jose Dirceu]
 		[TODOS SAEM]

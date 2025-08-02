@@ -16,8 +16,6 @@ extern LLVMBasicBlockRef bloco_main;
 
 void iniciar_codegen();
 void finalizar_codegen();
-void gerar_print_variavel(const char *nome);
-void gerar_atribuicao_variavel(const char *nome, int valor);
 LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val);
 void gerar_push_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor);
 LLVMValueRef gerar_pop_pilha(LLVMValueRef pilha_ptr);
