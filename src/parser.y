@@ -395,67 +395,67 @@ valor:
         }
         $$ = LLVMConstInt(LLVMInt32Type(), atoi($1), 0);
     }
-  | TU MESMO {
+    | TU MESMO {
         if (personagemDialogo == NULL) {
             yyerror("Variável 'tu mesmo' não definida");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                // printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
-            }
             Symbol *sym = get_symbol(personagemDialogo);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
                 yyerror("Variável 'tu mesmo' inválida ou não declarada");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_tu");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_tu");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                $$ = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
-  | EU {
+    | EU {
         if (personagemQueFala == NULL) {
             yyerror("Variável 'eu' não definida");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
-            }
             Symbol *sym = get_symbol(personagemQueFala);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) {
                 yyerror("Variável 'eu' inválida ou não declarada");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_eu");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_eu");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                $$ = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
-  | VOCE {
+    | VOCE {
         if (personagemVoce == NULL) {
             yyerror("Variável 'voce' não definida");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                printf("Valor de 'voce': %d\n", get_int_value(personagemVoce));
-            }
             Symbol *sym = get_symbol(personagemVoce);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) {
                 yyerror("Variável 'voce' inválida ou não declarada");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_voce");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_voce");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                $$ = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
-  | texto {
-        if (DEBUG_BISON) {
-            printf("Valor de variável: %s\n", $1);
-        }
+    | texto {
         Symbol *sym = get_symbol($1);
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            printf("Variável inválida ou não declarada: %s\n", $1);
+        if (!sym || sym->type != INT_VAR) {
+            printf("Variável de pilha inválida ou não declarada: %s\n", $1);
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            $$ = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_var");
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_var");
+            // 2. Gera a chamada ao runtime para obter o valor do topo
+            $$ = gerar_peek_pilha(pilha_ptr);
         }
     };
 
@@ -655,17 +655,8 @@ dialogo:
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
             LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
 
-            // 2. Lê o valor atual do topo da pilha
-            LLVMValueRef valorAtual = gerar_peek_pilha(pilha_ptr);
-
-            // 3. Pega o valor da expressão
-            LLVMValueRef incremento = $6;
-
-            // 4. Calcula o novo valor
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-
-            // 5. Atualiza o valor no topo da pilha
-            gerar_set_topo_pilha(pilha_ptr, soma);
+            // Atualiza o valor no topo da pilha
+            gerar_set_topo_pilha(pilha_ptr, $6);
         }
 
         free(personagemDialogo);

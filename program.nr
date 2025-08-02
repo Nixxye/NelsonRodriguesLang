@@ -21,7 +21,12 @@ ATO I: Onde o filho chora e a mae nao ve.
 		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
 		Robertinha: Joaozinho, LEMBRE DE QUEM TU ES animal.
 		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
+		Maria Roberta: Robertinha, ABRE TEU CORACAO MISERAVEL!
+		Joaozinho: Jose Dirceu, ABRE TEU CORACAO MISERAVEL!
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
+		Maria Roberta: Robertinha, ABRE TEU CORACAO MISERAVEL!
+		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
+		Maria Roberta: Robertinha, ABRE TEU CORACAO MISERAVEL!
         Robertinha: VOLTEMOS AO Cenario 2.
         Joaozinho: VAMOS A Avenida Copacabana!
 		

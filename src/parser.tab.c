@@ -616,8 +616,8 @@ static const yytype_int16 yyrline[] =
      288,   299,   310,   322,   333,   344,   357,   370,   383,   392,
      398,   415,   432,   449,   464,   467,   471,   475,   479,   488,
      528,   535,   553,   552,   566,   565,   594,   597,   600,   603,
-     606,   609,   615,   622,   628,   643,   675,   715,   735,   751,
-     766,   781,   814,   828
+     606,   609,   615,   622,   628,   643,   666,   706,   726,   742,
+     757,   772,   805,   819
 };
 #endif
 
@@ -1748,20 +1748,20 @@ yyreduce:
 
   case 50: /* valor: TU MESMO  */
 #line 398 "src/parser.y"
-             {
+               {
         if (personagemDialogo == NULL) {
             yyerror("Variável 'tu mesmo' não definida");
             (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                // printf("Valor de 'tu mesmo': %d\n", get_int_value(personagemDialogo));
-            }
             Symbol *sym = get_symbol(personagemDialogo);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
                 yyerror("Variável 'tu mesmo' inválida ou não declarada");
                 (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                (yyval.llmValueRef) = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_tu");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_tu");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
@@ -1770,20 +1770,20 @@ yyreduce:
 
   case 51: /* valor: EU  */
 #line 415 "src/parser.y"
-       {
+         {
         if (personagemQueFala == NULL) {
             yyerror("Variável 'eu' não definida");
             (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                printf("Valor de 'eu': %d\n", get_int_value(personagemQueFala));
-            }
             Symbol *sym = get_symbol(personagemQueFala);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) {
                 yyerror("Variável 'eu' inválida ou não declarada");
                 (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                (yyval.llmValueRef) = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_eu");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_eu");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
@@ -1792,20 +1792,20 @@ yyreduce:
 
   case 52: /* valor: VOCE  */
 #line 432 "src/parser.y"
-         {
+           {
         if (personagemVoce == NULL) {
             yyerror("Variável 'voce' não definida");
             (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            if (DEBUG_BISON) {
-                printf("Valor de 'voce': %d\n", get_int_value(personagemVoce));
-            }
             Symbol *sym = get_symbol(personagemVoce);
-            if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
+            if (!sym || sym->type != INT_VAR) {
                 yyerror("Variável 'voce' inválida ou não declarada");
                 (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                (yyval.llmValueRef) = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_voce");
+                // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+                LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_voce");
+                // 2. Gera a chamada ao runtime para obter o valor do topo
+                (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
             }
         }
     }
@@ -1814,16 +1814,16 @@ yyreduce:
 
   case 53: /* valor: texto  */
 #line 449 "src/parser.y"
-          {
-        if (DEBUG_BISON) {
-            printf("Valor de variável: %s\n", (yyvsp[0].texto));
-        }
+            {
         Symbol *sym = get_symbol((yyvsp[0].texto));
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            printf("Variável inválida ou não declarada: %s\n", (yyvsp[0].texto));
+        if (!sym || sym->type != INT_VAR) {
+            printf("Variável de pilha inválida ou não declarada: %s\n", (yyvsp[0].texto));
             (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
-            (yyval.llmValueRef) = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "load_var");
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_var");
+            // 2. Gera a chamada ao runtime para obter o valor do topo
+            (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
         }
     }
 #line 1830 "src/parser.tab.c"
@@ -2107,28 +2107,19 @@ yyreduce:
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
             LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
 
-            // 2. Lê o valor atual do topo da pilha
-            LLVMValueRef valorAtual = gerar_peek_pilha(pilha_ptr);
-
-            // 3. Pega o valor da expressão
-            LLVMValueRef incremento = (yyvsp[-1].llmValueRef);
-
-            // 4. Calcula o novo valor
-            LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-
-            // 5. Atualiza o valor no topo da pilha
-            gerar_set_topo_pilha(pilha_ptr, soma);
+            // Atualiza o valor no topo da pilha
+            gerar_set_topo_pilha(pilha_ptr, (yyvsp[-1].llmValueRef));
         }
 
         free(personagemDialogo);
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2128 "src/parser.tab.c"
+#line 2119 "src/parser.tab.c"
     break;
 
   case 76: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 675 "src/parser.y"
+#line 666 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2168,11 +2159,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2172 "src/parser.tab.c"
+#line 2163 "src/parser.tab.c"
     break;
 
   case 77: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 715 "src/parser.y"
+#line 706 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2193,11 +2184,11 @@ yyreduce:
         gerar_print_topo_pilha((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2197 "src/parser.tab.c"
+#line 2188 "src/parser.tab.c"
     break;
 
   case 78: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 735 "src/parser.y"
+#line 726 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2214,11 +2205,11 @@ yyreduce:
         gerar_leitura_inteiro((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2218 "src/parser.tab.c"
+#line 2209 "src/parser.tab.c"
     break;
 
   case 79: /* dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM  */
-#line 751 "src/parser.y"
+#line 742 "src/parser.y"
                                                             {
         Symbol *sym = get_symbol((yyvsp[-5].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2234,11 +2225,11 @@ yyreduce:
             gerar_push_pilha(pilha_ptr, zero_const);
         }
     }
-#line 2238 "src/parser.tab.c"
+#line 2229 "src/parser.tab.c"
     break;
 
   case 80: /* dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM  */
-#line 766 "src/parser.y"
+#line 757 "src/parser.y"
                                                    {
         Symbol *sym = get_symbol((yyvsp[-4].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2251,11 +2242,11 @@ yyreduce:
             gerar_pop_pilha(pilha_ptr);
         }
     }
-#line 2255 "src/parser.tab.c"
+#line 2246 "src/parser.tab.c"
     break;
 
   case 81: /* inicioDialogo: texto INICIO  */
-#line 781 "src/parser.y"
+#line 772 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2287,11 +2278,11 @@ yyreduce:
             }        
         }
     }
-#line 2291 "src/parser.tab.c"
+#line 2282 "src/parser.tab.c"
     break;
 
   case 82: /* ato: ATO  */
-#line 814 "src/parser.y"
+#line 805 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2304,11 +2295,11 @@ yyreduce:
             }
         }
     }
-#line 2308 "src/parser.tab.c"
+#line 2299 "src/parser.tab.c"
     break;
 
   case 83: /* cena: CENA  */
-#line 828 "src/parser.y"
+#line 819 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2321,11 +2312,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2325 "src/parser.tab.c"
+#line 2316 "src/parser.tab.c"
     break;
 
 
-#line 2329 "src/parser.tab.c"
+#line 2320 "src/parser.tab.c"
 
       default: break;
     }
@@ -2518,7 +2509,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 842 "src/parser.y"
+#line 833 "src/parser.y"
 
 
 int main() {
