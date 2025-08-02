@@ -50,7 +50,10 @@ extern int yydebug;
   #include "../include/nrUtils.h"
   #include "../include/LLVMgen.h"
 
-#line 54 "src/parser.tab.h"
+// Variável global para a nossa pilha.
+PilhaControleFluxo pilhaControleFluxo;
+
+#line 57 "src/parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -122,20 +125,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 45 "src/parser.y"
+#line 51 "src/parser.y"
 
-    // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
-
-    struct {
-        LLVMBasicBlockRef cond_bb;
-        LLVMBasicBlockRef body_bb;
-        LLVMBasicBlockRef after_bb;
-    } WhileBlocks; // Estrutura para blocos de while
     char* texto;
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 139 "src/parser.tab.h"
+#line 135 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

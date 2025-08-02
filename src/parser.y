@@ -3,6 +3,9 @@
 %code requires {
   #include "../include/nrUtils.h"
   #include "../include/LLVMgen.h"
+
+// Variável global para a nossa pilha.
+PilhaControleFluxo pilhaControleFluxo;
 }
 
 %{
@@ -40,20 +43,17 @@
             personagemVoce = personagemQueFala;
         }
     }
+
 %}
 
-%union {
-    // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
 
-    struct {
-        LLVMBasicBlockRef cond_bb;
-        LLVMBasicBlockRef body_bb;
-        LLVMBasicBlockRef after_bb;
-    } WhileBlocks; // Estrutura para blocos de while
+
+%union {
     char* texto;
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 }
+
 
 /* Declaração dos tokens */
 %token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
@@ -65,7 +65,6 @@
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
 %nterm <inteiro> adjetivos if_sentenca while
 %nterm <llmValueRef> condicao valor expressao
-%type <WhileBlocks> while_aux
 %%
 
 /* Regras da gramática */
@@ -525,67 +524,60 @@ if_sentenca:
     }
 
 if_bloco:
-    SE condicao VIRGULA texto INICIO bloco ENDIF{
-        if (DEBUG_BISON) { 
-            printf("IF BLOCO DETECTADO\n");
+    SE condicao VIRGULA texto INICIO
+    {
+        // --- AÇÃO INTERMEDIÁRIA (Mid-rule Action) ---
+        ControleFluxo controle;
+        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+        controle.else_block = controle.merge_block;
+
+        LLVMBuildCondBr(builder, $2, controle.then_block, controle.merge_block);
+
+        // Empilha a estrutura de controlo
+        pilha_push(&pilhaControleFluxo, controle);
+
+        // Move o builder para o bloco 'then'
+        LLVMPositionBuilderAtEnd(builder, controle.then_block);
+    }
+    bloco ENDIF
+    {
+        // --- AÇÃO FINAL ---
+        // Pega a estrutura de controlo do topo da pilha e remove-a.
+        ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
+
+        // Cria um desvio incondicional do final do bloco 'then' para o 'merge',
+        // mas apenas se o bloco atual ainda não tiver uma instrução de terminação.
+        LLVMBasicBlockRef current_block = LLVMGetInsertBlock(builder);
+        LLVMValueRef last_instruction = LLVMGetLastInstruction(current_block);
+
+        // Um bloco não tem terminador se estiver vazio (last_instruction == NULL)
+        // ou se a sua última instrução não for um terminador.
+        if (last_instruction == NULL || !LLVMIsATerminatorInst(last_instruction)) {
+            LLVMBuildBr(builder, controle.merge_block);
         }
+
+        // Move o builder para o bloco 'merge' para continuar a geração de código.
+        LLVMPositionBuilderAtEnd(builder, controle.merge_block);
     }
-
-while_aux
-    : {
-        LLVMBasicBlockRef cond_bb = LLVMAppendBasicBlock(funcao_main, "while_cond");
-        LLVMBasicBlockRef body_bb = LLVMAppendBasicBlock(funcao_main, "while_body");
-        LLVMBasicBlockRef after_bb = LLVMAppendBasicBlock(funcao_main, "while_end");
-
-        LLVMBuildBr(builder, cond_bb);
-        LLVMPositionBuilderAtEnd(builder, cond_bb);
-
-        $$.cond_bb = cond_bb;
-        $$.body_bb = body_bb;
-        $$.after_bb = after_bb;
-    }
-    ;
-
-
+;
 
 while:
-    ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO
+    ENQUANTO_COMECO condicao VIRGULA texto INICIO
     {
-        if (DEBUG_BISON) printf("WHILE DETECTADO\n");
 
-        LLVMBuildCondBr(builder, $3, $2.body_bb, $2.after_bb);
-
-        LLVMPositionBuilderAtEnd(builder, $2.body_bb);
     }
     bloco texto ENQUANTO_FIM FIM
     {
-        LLVMBuildBr(builder, $2.cond_bb);
-        LLVMPositionBuilderAtEnd(builder, $2.after_bb);
+
     }
   | FACA VIRGULA texto INICIO
     {
-        if (DEBUG_BISON) printf("DO-WHILE DETECTADO\n");
 
-        LLVMBasicBlockRef body_bb = LLVMAppendBasicBlock(funcao_main, "do_body");
-        LLVMBasicBlockRef cond_bb = LLVMAppendBasicBlock(funcao_main, "do_cond");
-        LLVMBasicBlockRef after_bb = LLVMAppendBasicBlock(funcao_main, "do_end");
-
-        push_while_blocks(cond_bb, body_bb, after_bb);
-
-        LLVMBuildBr(builder, body_bb);
-        LLVMPositionBuilderAtEnd(builder, body_bb);
     }
     bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
     {
-        WhileBlocks blocks = pop_while_blocks();
 
-        LLVMBuildBr(builder, blocks.cond_bb);
-        LLVMPositionBuilderAtEnd(builder, blocks.cond_bb);
-
-        LLVMValueRef cond = $7;
-        LLVMBuildCondBr(builder, cond, blocks.body_bb, blocks.after_bb);
-
-        LLVMPositionBuilderAtEnd(builder, blocks.after_bb);
     }
 ;
 

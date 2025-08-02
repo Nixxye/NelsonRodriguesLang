@@ -1,6 +1,7 @@
 #include "../include/nrUtils.h"
 #include "../include/LLVMgen.h"
 
+
 // Definições das tabelas globais
 Symbol *symbolTable[TABLE_SIZE] = {0};
 IntValue *intTable[TABLE_SIZE] = {0};
@@ -609,4 +610,6 @@ void set_value_from_llvm(const char *name, LLVMValueRef val) {
         LLVMBuildStore(builder, val, sym->llvm_ref);
     }
 }
+
+
 

@@ -14,6 +14,26 @@ extern LLVMValueRef funcao_main;
 extern LLVMBasicBlockRef bloco_main;
 
 
+#define MAX_PILHA_ANINHAMENTO 50 // Define a profundidade máxima de if's/laços aninhados
+
+
+// Estrutura para guardar os blocos básicos de uma estrutura de controlo.
+typedef struct {
+    LLVMBasicBlockRef then_block;   // Para o código do 'then'
+    LLVMBasicBlockRef else_block;   // Para o código do 'else' (opcional)
+    LLVMBasicBlockRef merge_block;  // Para onde o fluxo converge no final
+} ControleFluxo;
+
+typedef struct {
+    ControleFluxo itens[MAX_PILHA_ANINHAMENTO];
+    int topo;
+} PilhaControleFluxo;
+
+
+
+void pilha_init(PilhaControleFluxo* p);
+void pilha_push(PilhaControleFluxo* p, ControleFluxo item);
+ControleFluxo pilha_pop(PilhaControleFluxo* p);
 void iniciar_codegen();
 void finalizar_codegen();
 LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val);

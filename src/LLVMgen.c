@@ -1,10 +1,34 @@
 #include "../include/LLVMgen.h"
+#include <stdio.h> // Para printf em caso de erro
+#include <stdlib.h> // Para exit()
 
 LLVMModuleRef modulo;
 LLVMBuilderRef builder;
 LLVMContextRef contexto;
 LLVMValueRef funcao_main;
 LLVMBasicBlockRef bloco_main;
+
+
+// Funções para manipular a pilha
+void pilha_init(PilhaControleFluxo* p) {
+    p->topo = -1;
+}
+
+void pilha_push(PilhaControleFluxo* p, ControleFluxo item) {
+    if (p->topo >= MAX_PILHA_ANINHAMENTO - 1) {
+        fprintf(stderr, "Erro: Estouro da pilha de controlo de fluxo! Aninhamento muito profundo.\n");
+        exit(1);
+    }
+    p->itens[++p->topo] = item;
+}
+
+ControleFluxo pilha_pop(PilhaControleFluxo* p) {
+    if (p->topo < 0) {
+        fprintf(stderr, "Erro: Underflow da pilha de controlo de fluxo!\n");
+        exit(1);
+    }
+    return p->itens[p->topo--];
+}
 
 void iniciar_codegen() {
     contexto = LLVMContextCreate();
