@@ -3,9 +3,6 @@
 %code requires {
   #include "../include/nrUtils.h"
   #include "../include/LLVMgen.h"
-
-// Variável global para a nossa pilha.
-PilhaControleFluxo pilhaControleFluxo;
 }
 
 %{
@@ -45,7 +42,8 @@ PilhaControleFluxo pilhaControleFluxo;
         }
         ultimoPersonagemQueFala = personagemQueFala;
     }
-
+    // Variável global para a nossa pilha.
+    PilhaControleFluxo pilhaControleFluxo;
 %}
 
 

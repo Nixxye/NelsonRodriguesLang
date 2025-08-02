@@ -50,10 +50,7 @@ extern int yydebug;
   #include "../include/nrUtils.h"
   #include "../include/LLVMgen.h"
 
-// Variável global para a nossa pilha.
-PilhaControleFluxo pilhaControleFluxo;
-
-#line 57 "src/parser.tab.h"
+#line 54 "src/parser.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -127,21 +124,13 @@ PilhaControleFluxo pilhaControleFluxo;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-<<<<<<< HEAD
 #line 51 "src/parser.y"
-=======
-#line 47 "src/parser.y"
->>>>>>> db9b9798927a93bd1676703678280ef1b802f3a7
 
     char* texto;
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-<<<<<<< HEAD
-#line 135 "src/parser.tab.h"
-=======
-#line 141 "src/parser.tab.h"
->>>>>>> db9b9798927a93bd1676703678280ef1b802f3a7
+#line 134 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
