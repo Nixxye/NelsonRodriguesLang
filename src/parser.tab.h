@@ -115,8 +115,10 @@ PilhaControleFluxo pilhaControleFluxo;
     GUARDE = 306,                  /* GUARDE  */
     INTERIOR = 307,                /* INTERIOR  */
     LEMBRE = 308,                  /* LEMBRE  */
-    ATO = 309,                     /* ATO  */
-    CENA = 310                     /* CENA  */
+    IF_MOSTRA_VALOR = 309,         /* IF_MOSTRA_VALOR  */
+    IF_LE_VALOR = 310,             /* IF_LE_VALOR  */
+    ATO = 311,                     /* ATO  */
+    CENA = 312                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -125,13 +127,21 @@ PilhaControleFluxo pilhaControleFluxo;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
+<<<<<<< HEAD
 #line 51 "src/parser.y"
+=======
+#line 47 "src/parser.y"
+>>>>>>> db9b9798927a93bd1676703678280ef1b802f3a7
 
     char* texto;
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
+<<<<<<< HEAD
 #line 135 "src/parser.tab.h"
+=======
+#line 141 "src/parser.tab.h"
+>>>>>>> db9b9798927a93bd1676703678280ef1b802f3a7
 
 };
 typedef union YYSTYPE YYSTYPE;

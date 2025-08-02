@@ -31,17 +31,19 @@ PilhaControleFluxo pilhaControleFluxo;
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
-    char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou
+    char* ultimoPersonagemQueFala = NULL; // Guarda o valor do último personagem que falou
+    char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou e diferente do atual
     int result = 0; // guarda o resultado do if
     // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
     void atualiza_personagemVoce(){
-        if (personagemVoce != personagemQueFala) {
+        if (!personagemVoce || strcmp(ultimoPersonagemQueFala, personagemQueFala) != 0) {
             if (DEBUG_BISON) {
-                printf("Atualizando personagemVoce: %s\n", personagemQueFala);
+                printf("Atualizando personagemVoce: %s\n", ultimoPersonagemQueFala);
             }
-            personagemVoce = personagemQueFala;
+            personagemVoce = ultimoPersonagemQueFala;
         }
+        ultimoPersonagemQueFala = personagemQueFala;
     }
 
 %}
@@ -60,9 +62,10 @@ PilhaControleFluxo pilhaControleFluxo;
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO VOCE
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA SERA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
+%token <text> IF_MOSTRA_VALOR IF_LE_VALOR
 %token <inteiro> ATO CENA 
 
-%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
+%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra personagem
 %nterm <inteiro> adjetivos if_sentenca while
 %nterm <llmValueRef> condicao valor expressao
 %%
@@ -294,6 +297,7 @@ personagensEntrando:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = $1; // Atualiza personagemVoce com o personagem que está entrando
     } 
     | personagensEntrando VIRGULA texto {
         Symbol *sym = get_symbol($3);
@@ -305,6 +309,7 @@ personagensEntrando:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
     }
     | personagensEntrando E texto {
         Symbol *sym = get_symbol($3);
@@ -316,6 +321,7 @@ personagensEntrando:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
     }
 personagensSaindo:
     texto {
@@ -385,6 +391,17 @@ alteracaoElenco:
         }
         // Ativa todos os personagens
         desativar_todos_personagens();
+    }
+
+personagem:
+    EU {
+        $$ = personagemQueFala;
+    }
+    | VOCE {
+        $$ = personagemVoce;
+    }
+    | texto {
+        $$ = $1;
     }
 
 valor:
@@ -484,7 +501,7 @@ expressao:
 
 
 if_sentenca:
-    SE condicao VIRGULA texto SERA expressao {
+    SE condicao VIRGULA personagem SERA expressao {
         // $2 é a condição (LLVMValueRef do tipo i1)
         // $4 é o nome da variável de pilha (const char*)
         // $6 é o novo valor para o topo (LLVMValueRef do tipo i32)
@@ -520,6 +537,61 @@ if_sentenca:
         }
 
         // 4. Move o builder para o bloco 'merge' para as próximas instruções do programa.
+        LLVMPositionBuilderAtEnd(builder, merge_block);
+    }
+    | SE condicao VIRGULA personagem IF_MOSTRA_VALOR {
+        // --- Padrão de 'if' em LLVM ---
+        // 1. Cria os blocos para os caminhos 'then' (se verdadeiro) e 'merge' (continuação).
+        LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+
+        // 2. Gera o desvio condicional baseado na condição ($2).
+        LLVMBuildCondBr(builder, $2, then_block, merge_block);
+
+        // 3. Posiciona o builder para preencher o bloco 'then'.
+        LLVMPositionBuilderAtEnd(builder, then_block);
+        {
+            // --- Lógica do MOSTRA_VALOR ---
+            const char *nome = $4;
+            Symbol *sym = get_symbol(nome);
+            if (!sym || sym->type != INT_VAR) {
+                yyerror("Variável inválida ou não declarada no SE.");
+            } else if (!sym->active) {
+                printf("Variável %s não está ativa no SE.\n", sym->name);
+            } else {
+                gerar_print_topo_pilha(nome);
+                // atualiza_personagemVoce();
+            }
+            // --- Fim da lógica ---
+
+            // 4. No final do bloco 'then', pula para o bloco 'merge'.
+            LLVMBuildBr(builder, merge_block);
+        }
+        // 5. Move o builder para o bloco 'merge' para continuar o resto do programa.
+        LLVMPositionBuilderAtEnd(builder, merge_block);
+    }
+    | SE condicao VIRGULA personagem IF_LE_VALOR {
+        // --- Padrão de 'if' em LLVM ---
+        LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+        LLVMBuildCondBr(builder, $2, then_block, merge_block);
+
+        LLVMPositionBuilderAtEnd(builder, then_block);
+        {
+            // --- Lógica do LE_VALOR ---
+            const char *nome = $4;
+            Symbol *sym = get_symbol(nome);
+            if (!sym || sym->type != INT_VAR) {
+                yyerror("Variável inválida ou não declarada no SE.");
+            } else if (!sym->active) {
+                printf("Variável %s não está ativa no SE.\n", sym->name);
+            } else {
+                gerar_leitura_inteiro(nome);
+                // atualiza_personagemVoce();
+            }
+            // --- Fim da lógica ---
+            LLVMBuildBr(builder, merge_block);
+        }
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
 
