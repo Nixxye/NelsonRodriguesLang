@@ -500,13 +500,8 @@ void gerar_print_topo_pilha(const char *nome) {
 
 void gerar_leitura_inteiro(const char *nome) {
     Symbol *sym = get_symbol(nome);
-    if (!sym) {
-        fprintf(stderr, "Erro: A variável '%s' não foi declarada.\n", nome);
-        print_symbols();
-        return;
-    }
-    if (sym->type != INT_VAR) {
-        fprintf(stderr, "Erro: A variável '%s' não é do tipo inteiro.\n", nome);
+    if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
+        fprintf(stderr, "Erro: A variável '%s' não é uma pilha de inteiros.\n", nome);
         return;
     }
     if (!sym->llvm_ref) {
@@ -514,9 +509,8 @@ void gerar_leitura_inteiro(const char *nome) {
         return;
     }
 
-    // printf("Digite valor de <nome>: ");
-    LLVMTypeRef printf_type = LLVMFunctionType(
-        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+    // Lógica para imprimir o prompt "Digite o valor..." (permanece igual)
+    LLVMTypeRef printf_type = LLVMFunctionType(LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
     LLVMValueRef printf_func = LLVMGetNamedFunction(modulo, "printf");
     if (!printf_func)
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
@@ -526,35 +520,44 @@ void gerar_leitura_inteiro(const char *nome) {
     LLVMValueRef prompt = LLVMBuildGlobalStringPtr(builder, msg, "prompt");
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ prompt }, 1, "");
 
-    // scanf("%d", &var)
-    LLVMTypeRef scanf_type = LLVMFunctionType(
-        LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
+
+    // 1. Aloca um inteiro temporário na memória para o scanf.
+    LLVMValueRef temp_var = LLVMBuildAlloca(builder, LLVMInt32Type(), "temp_scanf");
+
+    // 2. Chama scanf, passando o ponteiro para a variável temporária.
+    LLVMTypeRef scanf_type = LLVMFunctionType(LLVMInt32Type(), (LLVMTypeRef[]){ LLVMPointerType(LLVMInt8Type(), 0) }, 1, 1);
     LLVMValueRef scanf_func = LLVMGetNamedFunction(modulo, "scanf");
     if (!scanf_func)
         scanf_func = LLVMAddFunction(modulo, "scanf", scanf_type);
 
     LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%d", "fmt");
-    LLVMValueRef result = LLVMBuildCall2(builder, scanf_type, scanf_func,
-                                         (LLVMValueRef[]){ fmt, sym->llvm_ref }, 2, "res_scanf");
-
-    // if (result != 1)
-    LLVMValueRef cond = LLVMBuildICmp(builder, LLVMIntNE,
-                                      result, LLVMConstInt(LLVMInt32Type(), 1, 0),
-                                      "scanf_failed");
-
+    // Passa o ponteiro da variável temporária (temp_var), não sym->llvm_ref
+    LLVMValueRef result = LLVMBuildCall2(builder, scanf_type, scanf_func, (LLVMValueRef[]){ fmt, temp_var }, 2, "res_scanf");
+    
+    // Lógica de verificação de erro do scanf (permanece igual)
+    LLVMValueRef cond = LLVMBuildICmp(builder, LLVMIntNE, result, LLVMConstInt(LLVMInt32Type(), 1, 0), "scanf_failed");
     LLVMBasicBlockRef okBlock = LLVMAppendBasicBlock(funcao_main, "ok");
     LLVMBasicBlockRef errBlock = LLVMAppendBasicBlock(funcao_main, "erro");
-
     LLVMBuildCondBr(builder, cond, errBlock, okBlock);
 
-    // erro:
+    // Bloco de erro (permanece igual)
     LLVMPositionBuilderAtEnd(builder, errBlock);
-    LLVMValueRef errMsg = LLVMBuildGlobalStringPtr(builder, "Erro: valor inválido (esperado inteiro)\n", "errmsg");
+    LLVMValueRef errMsg = LLVMBuildGlobalStringPtr(builder, "Erro: valor inválido (esperado inteiro)\\n", "errmsg");
     LLVMBuildCall2(builder, printf_type, printf_func, (LLVMValueRef[]){ errMsg }, 1, "");
     LLVMBuildBr(builder, okBlock);
 
-    // ok:
+    // Bloco 'ok' (continuação após scanf bem-sucedido)
     LLVMPositionBuilderAtEnd(builder, okBlock);
+
+    
+    // 3. Carrega o valor que foi lido pelo scanf da variável temporária.
+    LLVMValueRef valor_lido = LLVMBuildLoad2(builder, LLVMInt32Type(), temp_var, "valor_lido");
+
+    // 4. Carrega o ponteiro para a estrutura da pilha.
+    LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+    // 5. Gera a chamada para a função que substitui o valor no topo.
+    gerar_set_topo_pilha(pilha_ptr, valor_lido);
 }
 
 int while_stack_top = -1;

@@ -583,30 +583,29 @@ dialogo:
     | inicioDialogo texto VIRGULA TU EH expressao FIM {
         personagemDialogo = strdup($2);
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
-        }
-
         Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
+        if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
+            yyerror("Variável de pilha inválida ou não declarada");
             YYABORT;
-        }  else if (!sym->active) {
+        } else if (!sym->active) {
             printf("Variável %s não está ativa\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+            // 2. Lê o valor atual do topo da pilha
+            LLVMValueRef valorAtual = gerar_peek_pilha(pilha_ptr);
+
+            // 3. Pega o valor da expressão
             LLVMValueRef incremento = $6;
+
+            // 4. Calcula o novo valor
             LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
-        }
 
-        // Atualiza na tabela de valores também (se precisar)
-        // int novoValor = get_int_value(personagemDialogo) + $6;
-        // set_int_value(personagemDialogo, novoValor);
-
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+            // 5. Atualiza o valor no topo da pilha
+            gerar_set_topo_pilha(pilha_ptr, soma);
         }
 
         free(personagemDialogo);
@@ -615,31 +614,29 @@ dialogo:
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         personagemDialogo = strdup($2);
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
-        }
-
-        // LLVM: gerar incremento personagem = personagem + $6
         Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
+        if (!sym || sym->type != INT_VAR) {
+            yyerror("Variável de pilha inválida ou não declarada");
             YYABORT;
-        }  else if (!sym->active) {
+        } else if (!sym->active) {
             printf("Variável %s não está ativa\n", personagemDialogo);
             YYABORT;
         } else {
-            LLVMValueRef valorAtual = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
+
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+            // 2. Lê o valor atual do topo da pilha
+            LLVMValueRef valorAtual = gerar_peek_pilha(pilha_ptr);
+
+            // 3. Converte o valor do adjetivo (int) para um LLVMValueRef
             LLVMValueRef incremento = LLVMConstInt(LLVMInt32Type(), $6, 0);
+
+            // 4. Calcula o novo valor
             LLVMValueRef soma = LLVMBuildAdd(builder, valorAtual, incremento, "tmp_sum");
-            LLVMBuildStore(builder, soma, sym->llvm_ref);
-        }
 
-        // Atualiza na tabela de valores também
-        // int novoValor = get_int_value(personagemDialogo) + $6;
-        // set_int_value(personagemDialogo, novoValor);
-
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem após diálogo: %d\n", get_int_value(personagemDialogo));
+            // 5. Atualiza o valor no topo da pilha
+            gerar_set_topo_pilha(pilha_ptr, soma);
         }
 
         free(personagemDialogo);

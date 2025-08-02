@@ -9,9 +9,9 @@ source_filename = "NelsonRodriguesLang"
 @var_name_str = private unnamed_addr constant [14 x i8] c"Maria Roberta\00", align 1
 @prompt = private unnamed_addr constant [30 x i8] c"Digite o valor de Joaozinho: \00", align 1
 @fmt = private unnamed_addr constant [3 x i8] c"%d\00", align 1
-@errmsg = private unnamed_addr constant [42 x i8] c"Erro: valor inv\C3\A1lido (esperado inteiro)\0A\00", align 1
+@errmsg = private unnamed_addr constant [43 x i8] c"Erro: valor inv\C3\A1lido (esperado inteiro)\\n\00", align 1
 @fmt_str.3 = private unnamed_addr constant [13 x i8] c"%s: Sou %d!\0A\00", align 1
-@var_name_str.4 = private unnamed_addr constant [14 x i8] c"Maria Roberta\00", align 1
+@var_name_str.4 = private unnamed_addr constant [10 x i8] c"Joaozinho\00", align 1
 @fmt_str.5 = private unnamed_addr constant [13 x i8] c"%s: Sou %d!\0A\00", align 1
 @var_name_str.6 = private unnamed_addr constant [12 x i8] c"Jose Dirceu\00", align 1
 
@@ -45,29 +45,36 @@ entrada:
   %pilha_ptr = load ptr, ptr %"Maria Roberta", align 8
   %peeked_val = call i32 @pilha_peek(ptr %pilha_ptr)
   %0 = call i32 (ptr, ...) @printf(ptr @fmt_str, ptr @var_name_str, i32 %peeked_val)
-  %tmp_load = load i32, ptr %"Maria Roberta", align 4
-  %tmp_sum = add i32 %tmp_load, 1
-  store i32 %tmp_sum, ptr %"Maria Roberta", align 4
-  %tmp_load4 = load i32, ptr %"Jose Dirceu", align 4
-  %tmp_sum5 = add i32 %tmp_load4, 1
-  store i32 %tmp_sum5, ptr %"Jose Dirceu", align 4
+  %pilha_ptr4 = load ptr, ptr %"Maria Roberta", align 8
+  %peeked_val5 = call i32 @pilha_peek(ptr %pilha_ptr4)
+  %tmp_sum = add i32 %peeked_val5, 1
+  call void @pilha_set_topo(ptr %pilha_ptr4, i32 %tmp_sum)
+  %pilha_ptr6 = load ptr, ptr %"Jose Dirceu", align 8
+  %peeked_val7 = call i32 @pilha_peek(ptr %pilha_ptr6)
+  %tmp_sum8 = add i32 %peeked_val7, 1
+  call void @pilha_set_topo(ptr %pilha_ptr6, i32 %tmp_sum8)
   %1 = call i32 (ptr, ...) @printf(ptr @prompt)
-  %res_scanf = call i32 (ptr, ...) @scanf(ptr @fmt, ptr %Joaozinho)
+  %temp_scanf = alloca i32, align 4
+  %res_scanf = call i32 (ptr, ...) @scanf(ptr @fmt, ptr %temp_scanf)
   %scanf_failed = icmp ne i32 %res_scanf, 1
   br i1 %scanf_failed, label %erro, label %ok
 
 ok:                                               ; preds = %erro, %entrada
-  %pilha_ptr6 = load ptr, ptr %"Maria Roberta", align 8
-  %peeked_val7 = call i32 @pilha_peek(ptr %pilha_ptr6)
-  %2 = call i32 (ptr, ...) @printf(ptr @fmt_str.3, ptr @var_name_str.4, i32 %peeked_val7)
-  %pilha_ptr8 = load ptr, ptr %"Jose Dirceu", align 8
-  %peeked_val9 = call i32 @pilha_peek(ptr %pilha_ptr8)
-  %3 = call i32 (ptr, ...) @printf(ptr @fmt_str.5, ptr @var_name_str.6, i32 %peeked_val9)
+  %valor_lido = load i32, ptr %temp_scanf, align 4
+  %pilha_ptr9 = load ptr, ptr %Joaozinho, align 8
+  call void @pilha_set_topo(ptr %pilha_ptr9, i32 %valor_lido)
+  %pilha_ptr10 = load ptr, ptr %Joaozinho, align 8
+  %peeked_val11 = call i32 @pilha_peek(ptr %pilha_ptr10)
+  %2 = call i32 (ptr, ...) @printf(ptr @fmt_str.3, ptr @var_name_str.4, i32 %peeked_val11)
+  %pilha_ptr12 = load ptr, ptr %"Jose Dirceu", align 8
+  %peeked_val13 = call i32 @pilha_peek(ptr %pilha_ptr12)
+  %3 = call i32 (ptr, ...) @printf(ptr @fmt_str.5, ptr @var_name_str.6, i32 %peeked_val13)
   %load_var = load i32, ptr %"Jose Dirceu", align 4
   %addtmp = add i32 %load_var, 0
-  %tmp_load10 = load i32, ptr %Robertinha, align 4
-  %tmp_sum11 = add i32 %tmp_load10, %addtmp
-  store i32 %tmp_sum11, ptr %Robertinha, align 4
+  %pilha_ptr14 = load ptr, ptr %Robertinha, align 8
+  %peeked_val15 = call i32 @pilha_peek(ptr %pilha_ptr14)
+  %tmp_sum16 = add i32 %peeked_val15, %addtmp
+  call void @pilha_set_topo(ptr %pilha_ptr14, i32 %tmp_sum16)
   ret i32 0
 
 erro:                                             ; preds = %entrada
@@ -82,5 +89,7 @@ declare void @pilha_push(ptr, i32)
 declare i32 @printf(ptr, ...)
 
 declare i32 @pilha_peek(ptr)
+
+declare void @pilha_set_topo(ptr, i32)
 
 declare i32 @scanf(ptr, ...)

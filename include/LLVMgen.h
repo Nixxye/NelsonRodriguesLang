@@ -22,5 +22,5 @@ LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val);
 void gerar_push_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor);
 LLVMValueRef gerar_pop_pilha(LLVMValueRef pilha_ptr);
 LLVMValueRef gerar_peek_pilha(LLVMValueRef pilha_ptr);
-
+void gerar_set_topo_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor_ref);
 #endif

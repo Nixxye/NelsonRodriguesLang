@@ -152,3 +152,20 @@ LLVMValueRef gerar_peek_pilha(LLVMValueRef pilha_ptr) {
     LLVMValueRef args[] = { pilha_ptr };
     return LLVMBuildCall2(builder, func_type, func, args, 1, "peeked_val");
 }
+
+// Em codegen.c
+void gerar_set_topo_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor_ref) {
+    LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
+    LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
+    
+    LLVMTypeRef func_args_types[] = { pilha_ptr_type, LLVMInt32Type() };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMVoidType(), func_args_types, 2, 0);
+    
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "pilha_set_topo");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "pilha_set_topo", func_type);
+    }
+
+    LLVMValueRef args[] = { pilha_ptr, valor_ref };
+    LLVMBuildCall2(builder, func_type, func, args, 2, "");
+}
