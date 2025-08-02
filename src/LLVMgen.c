@@ -8,6 +8,8 @@ LLVMContextRef contexto;
 LLVMValueRef funcao_main;
 LLVMBasicBlockRef bloco_main;
 
+// Variável global para a nossa pilha.
+PilhaControleFluxo pilhaControleFluxo;
 
 
 // Funções para manipular a pilha
