@@ -264,6 +264,24 @@ PRODUTO {
     return MULTIPLICAR;
 }
 
+GUARDE {
+    if (DEBUG_LEX) printf("TOKEN: GUARDE\n");
+    yylval.texto = strdup(yytext);
+    return GUARDE;
+}
+
+NO[ ]TEU[ ](CORACAO|INTIMO|INTERIOR|AMAGO) {
+    if (DEBUG_LEX) printf("TOKEN: INTERIOR\n");
+    yylval.texto = strdup(yytext);
+    return INTERIOR;
+}
+
+LEMBRE[ ]DE[ ]QUEM[ ]TU[ ]ES {
+    if (DEBUG_LEX) printf("TOKEN: LEMBRE\n");
+    yylval.texto = strdup(yytext);
+    return LEMBRE;
+}
+
 : {
     if (DEBUG_LEX) printf("TOKEN: INICIO\n");
     return INICIO;

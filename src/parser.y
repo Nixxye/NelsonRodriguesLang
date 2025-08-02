@@ -50,7 +50,7 @@
 %token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
-%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR
+%token <texto> VIRGULA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra
@@ -678,7 +678,33 @@ dialogo:
         }
         gerar_leitura_inteiro($2);
     }
-;
+    | inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM {
+        Symbol *sym = get_symbol($2);
+        if (!sym || sym->type != INT_VAR) {
+            yyerror("Variável não é uma pilha de inteiros ou não foi declarada.");
+        } else {
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+            // 2. Cria uma constante LLVM para o valor 0
+            LLVMValueRef zero_const = LLVMConstInt(LLVMInt32Type(), 0, 0);
+            
+            // 3. Gera a chamada para a função de push do runtime com o valor 0
+            gerar_push_pilha(pilha_ptr, zero_const);
+        }
+    }
+    | inicioDialogo texto VIRGULA LEMBRE texto FIM {
+        Symbol *sym = get_symbol($2);
+        if (!sym || sym->type != INT_VAR) {
+            yyerror("Variável não é uma pilha de inteiros ou não foi declarada.");
+        } else {
+            printf("Lembrete: %s\n", $4);
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+            
+            gerar_pop_pilha(pilha_ptr);
+        }
+    }
 
 
 inicioDialogo:   

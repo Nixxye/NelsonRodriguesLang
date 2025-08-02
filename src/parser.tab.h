@@ -107,8 +107,11 @@ extern int yydebug;
     MOSTRAR_CENARIO = 301,         /* MOSTRAR_CENARIO  */
     MOSTRA_VALOR = 302,            /* MOSTRA_VALOR  */
     LE_VALOR = 303,                /* LE_VALOR  */
-    ATO = 304,                     /* ATO  */
-    CENA = 305                     /* CENA  */
+    GUARDE = 304,                  /* GUARDE  */
+    INTERIOR = 305,                /* INTERIOR  */
+    LEMBRE = 306,                  /* LEMBRE  */
+    ATO = 307,                     /* ATO  */
+    CENA = 308                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -130,7 +133,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 134 "src/parser.tab.h"
+#line 137 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
