@@ -112,8 +112,10 @@ extern int yydebug;
     GUARDE = 306,                  /* GUARDE  */
     INTERIOR = 307,                /* INTERIOR  */
     LEMBRE = 308,                  /* LEMBRE  */
-    ATO = 309,                     /* ATO  */
-    CENA = 310                     /* CENA  */
+    IF_MOSTRA_VALOR = 309,         /* IF_MOSTRA_VALOR  */
+    IF_LE_VALOR = 310,             /* IF_LE_VALOR  */
+    ATO = 311,                     /* ATO  */
+    CENA = 312                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -122,7 +124,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 45 "src/parser.y"
+#line 47 "src/parser.y"
 
     // Felipe e Hyon: https://github.com/FelipecSanto/DisciplinaCompiladores/blob/main/ProjetoCompilador/compiler/parser.y
 
@@ -135,7 +137,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 139 "src/parser.tab.h"
+#line 141 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

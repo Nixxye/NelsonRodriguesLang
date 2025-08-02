@@ -91,20 +91,22 @@
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
-    char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou
+    char* ultimoPersonagemQueFala = NULL; // Guarda o valor do último personagem que falou
+    char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou e diferente do atual
     int result = 0; // guarda o resultado do if
     // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
     void atualiza_personagemVoce(){
-        if (personagemVoce != personagemQueFala) {
+        if (!personagemVoce || strcmp(ultimoPersonagemQueFala, personagemQueFala) != 0) {
             if (DEBUG_BISON) {
-                printf("Atualizando personagemVoce: %s\n", personagemQueFala);
+                printf("Atualizando personagemVoce: %s\n", ultimoPersonagemQueFala);
             }
-            personagemVoce = personagemQueFala;
+            personagemVoce = ultimoPersonagemQueFala;
         }
+        ultimoPersonagemQueFala = personagemQueFala;
     }
 
-#line 108 "src/parser.tab.c"
+#line 110 "src/parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -186,38 +188,41 @@ enum yysymbol_kind_t
   YYSYMBOL_GUARDE = 51,                    /* GUARDE  */
   YYSYMBOL_INTERIOR = 52,                  /* INTERIOR  */
   YYSYMBOL_LEMBRE = 53,                    /* LEMBRE  */
-  YYSYMBOL_ATO = 54,                       /* ATO  */
-  YYSYMBOL_CENA = 55,                      /* CENA  */
-  YYSYMBOL_YYACCEPT = 56,                  /* $accept  */
-  YYSYMBOL_programa = 57,                  /* programa  */
-  YYSYMBOL_bloco = 58,                     /* bloco  */
-  YYSYMBOL_instrucao = 59,                 /* instrucao  */
-  YYSYMBOL_declaracaoCenario = 60,         /* declaracaoCenario  */
-  YYSYMBOL_concatenarCenario = 61,         /* concatenarCenario  */
-  YYSYMBOL_substituiCenario = 62,          /* substituiCenario  */
-  YYSYMBOL_trocarCenario = 63,             /* trocarCenario  */
-  YYSYMBOL_declaracaoQuestionamento = 64,  /* declaracaoQuestionamento  */
-  YYSYMBOL_texto = 65,                     /* texto  */
-  YYSYMBOL_palavra = 66,                   /* palavra  */
-  YYSYMBOL_adjetivos = 67,                 /* adjetivos  */
-  YYSYMBOL_declaracao = 68,                /* declaracao  */
-  YYSYMBOL_declaracaoInicio = 69,          /* declaracaoInicio  */
-  YYSYMBOL_personagensEntrando = 70,       /* personagensEntrando  */
-  YYSYMBOL_personagensSaindo = 71,         /* personagensSaindo  */
-  YYSYMBOL_alteracaoElenco = 72,           /* alteracaoElenco  */
-  YYSYMBOL_valor = 73,                     /* valor  */
-  YYSYMBOL_expressao = 74,                 /* expressao  */
-  YYSYMBOL_if_sentenca = 75,               /* if_sentenca  */
-  YYSYMBOL_if_bloco = 76,                  /* if_bloco  */
-  YYSYMBOL_while_aux = 77,                 /* while_aux  */
-  YYSYMBOL_while = 78,                     /* while  */
-  YYSYMBOL_79_1 = 79,                      /* $@1  */
-  YYSYMBOL_80_2 = 80,                      /* $@2  */
-  YYSYMBOL_condicao = 81,                  /* condicao  */
-  YYSYMBOL_dialogo = 82,                   /* dialogo  */
-  YYSYMBOL_inicioDialogo = 83,             /* inicioDialogo  */
-  YYSYMBOL_ato = 84,                       /* ato  */
-  YYSYMBOL_cena = 85                       /* cena  */
+  YYSYMBOL_IF_MOSTRA_VALOR = 54,           /* IF_MOSTRA_VALOR  */
+  YYSYMBOL_IF_LE_VALOR = 55,               /* IF_LE_VALOR  */
+  YYSYMBOL_ATO = 56,                       /* ATO  */
+  YYSYMBOL_CENA = 57,                      /* CENA  */
+  YYSYMBOL_YYACCEPT = 58,                  /* $accept  */
+  YYSYMBOL_programa = 59,                  /* programa  */
+  YYSYMBOL_bloco = 60,                     /* bloco  */
+  YYSYMBOL_instrucao = 61,                 /* instrucao  */
+  YYSYMBOL_declaracaoCenario = 62,         /* declaracaoCenario  */
+  YYSYMBOL_concatenarCenario = 63,         /* concatenarCenario  */
+  YYSYMBOL_substituiCenario = 64,          /* substituiCenario  */
+  YYSYMBOL_trocarCenario = 65,             /* trocarCenario  */
+  YYSYMBOL_declaracaoQuestionamento = 66,  /* declaracaoQuestionamento  */
+  YYSYMBOL_texto = 67,                     /* texto  */
+  YYSYMBOL_palavra = 68,                   /* palavra  */
+  YYSYMBOL_adjetivos = 69,                 /* adjetivos  */
+  YYSYMBOL_declaracao = 70,                /* declaracao  */
+  YYSYMBOL_declaracaoInicio = 71,          /* declaracaoInicio  */
+  YYSYMBOL_personagensEntrando = 72,       /* personagensEntrando  */
+  YYSYMBOL_personagensSaindo = 73,         /* personagensSaindo  */
+  YYSYMBOL_alteracaoElenco = 74,           /* alteracaoElenco  */
+  YYSYMBOL_personagem = 75,                /* personagem  */
+  YYSYMBOL_valor = 76,                     /* valor  */
+  YYSYMBOL_expressao = 77,                 /* expressao  */
+  YYSYMBOL_if_sentenca = 78,               /* if_sentenca  */
+  YYSYMBOL_if_bloco = 79,                  /* if_bloco  */
+  YYSYMBOL_while_aux = 80,                 /* while_aux  */
+  YYSYMBOL_while = 81,                     /* while  */
+  YYSYMBOL_82_1 = 82,                      /* $@1  */
+  YYSYMBOL_83_2 = 83,                      /* $@2  */
+  YYSYMBOL_condicao = 84,                  /* condicao  */
+  YYSYMBOL_dialogo = 85,                   /* dialogo  */
+  YYSYMBOL_inicioDialogo = 86,             /* inicioDialogo  */
+  YYSYMBOL_ato = 87,                       /* ato  */
+  YYSYMBOL_cena = 88                       /* cena  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -545,19 +550,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   280
+#define YYLAST   283
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  56
+#define YYNTOKENS  58
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  30
+#define YYNNTS  31
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  83
+#define YYNRULES  88
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  186
+#define YYNSTATES  191
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   310
+#define YYMAXUTOK   312
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -602,22 +607,22 @@ static const yytype_int8 yytranslate[] =
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55
+      55,    56,    57
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    73,    73,    74,    78,    79,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-     103,   118,   138,   157,   176,   189,   202,   218,   221,   227,
-     237,   241,   244,   247,   250,   256,   262,   265,   270,   277,
-     288,   299,   310,   322,   333,   344,   357,   370,   383,   392,
-     398,   415,   432,   449,   464,   467,   471,   475,   479,   488,
-     528,   535,   553,   552,   566,   565,   594,   597,   600,   603,
-     606,   609,   615,   622,   628,   643,   666,   706,   726,   742,
-     757,   772,   805,   819
+       0,    76,    76,    77,    81,    82,    86,    87,    88,    89,
+      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
+     106,   121,   141,   160,   179,   192,   205,   221,   224,   230,
+     240,   244,   247,   250,   253,   259,   265,   268,   273,   280,
+     291,   303,   315,   328,   339,   350,   363,   376,   389,   398,
+     401,   404,   409,   415,   432,   449,   466,   481,   484,   488,
+     492,   496,   505,   543,   574,   600,   607,   625,   624,   638,
+     637,   666,   669,   672,   675,   678,   681,   687,   694,   700,
+     715,   738,   778,   798,   814,   829,   844,   877,   891
 };
 #endif
 
@@ -642,14 +647,15 @@ static const char *const yytname[] =
   "TOKEN", "ADJETIVO_POSITIVO", "ADJETIVO_NEGATIVO", "TU", "EH", "E",
   "ENTRE", "ARTIGO", "MESMO", "NUMERO", "ADICIONAR_CENARIO",
   "SUBSTITUIR_CENARIO", "POR", "NO_CENARIO", "MOSTRAR_CENARIO",
-  "MOSTRA_VALOR", "LE_VALOR", "GUARDE", "INTERIOR", "LEMBRE", "ATO",
-  "CENA", "$accept", "programa", "bloco", "instrucao", "declaracaoCenario",
-  "concatenarCenario", "substituiCenario", "trocarCenario",
-  "declaracaoQuestionamento", "texto", "palavra", "adjetivos",
-  "declaracao", "declaracaoInicio", "personagensEntrando",
-  "personagensSaindo", "alteracaoElenco", "valor", "expressao",
-  "if_sentenca", "if_bloco", "while_aux", "while", "$@1", "$@2",
-  "condicao", "dialogo", "inicioDialogo", "ato", "cena", YY_NULLPTR
+  "MOSTRA_VALOR", "LE_VALOR", "GUARDE", "INTERIOR", "LEMBRE",
+  "IF_MOSTRA_VALOR", "IF_LE_VALOR", "ATO", "CENA", "$accept", "programa",
+  "bloco", "instrucao", "declaracaoCenario", "concatenarCenario",
+  "substituiCenario", "trocarCenario", "declaracaoQuestionamento", "texto",
+  "palavra", "adjetivos", "declaracao", "declaracaoInicio",
+  "personagensEntrando", "personagensSaindo", "alteracaoElenco",
+  "personagem", "valor", "expressao", "if_sentenca", "if_bloco",
+  "while_aux", "while", "$@1", "$@2", "condicao", "dialogo",
+  "inicioDialogo", "ato", "cena", YY_NULLPTR
 };
 
 static const char *
@@ -659,7 +665,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-118)
+#define YYPACT_NINF (-117)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -673,25 +679,26 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    -118,     5,  -118,   -21,  -118,    33,   111,   -20,  -118,    11,
-     -20,  -118,  -118,   168,  -118,  -118,  -118,  -118,  -118,  -118,
-     118,  -118,  -118,   -20,    75,  -118,  -118,  -118,  -118,  -118,
-       6,  -118,  -118,   -20,    33,  -118,  -118,    -4,   127,  -118,
-     132,  -118,    31,     4,   -20,   -20,    48,    65,   -20,   198,
-    -118,  -118,    -3,  -118,  -118,  -118,    32,   -20,   -20,    33,
-      50,  -118,    45,    71,    -6,    77,  -118,    80,    82,   101,
-     122,   147,   268,   -20,   132,    -9,   132,   187,   141,   -20,
-      67,   -20,   149,   153,  -118,   132,   132,   142,   -20,  -118,
-     221,  -118,  -118,   -20,    87,    87,    87,    87,   271,    33,
-      33,    33,   167,  -118,   -20,   -20,  -118,  -118,   230,  -118,
-     -30,  -118,  -118,   -20,    72,   148,   157,   165,   -20,   -20,
-     168,    59,   152,   164,   170,   172,    33,    33,    33,  -118,
-    -118,  -118,   168,    33,   132,   132,  -118,   181,   203,  -118,
-     216,  -118,  -118,   182,   126,   194,  -118,    87,    87,    87,
-      87,  -118,  -118,  -118,   151,  -118,  -118,   227,  -118,  -118,
-     220,   192,   210,  -118,    33,   168,  -118,  -118,  -118,  -118,
-    -118,  -118,  -118,  -118,  -118,  -118,  -118,  -118,   158,   168,
-     -20,    39,   184,   212,  -118,  -118
+    -117,   148,  -117,   -27,  -117,   123,   129,   -24,  -117,     4,
+     -24,  -117,  -117,   183,  -117,  -117,  -117,  -117,  -117,  -117,
+      68,  -117,  -117,   -24,    71,  -117,  -117,  -117,  -117,  -117,
+       7,  -117,  -117,   -24,   123,  -117,  -117,    -3,   231,  -117,
+      25,  -117,    26,    31,   -24,   -24,    52,   233,   -24,    97,
+    -117,  -117,    28,  -117,  -117,  -117,   -20,   -24,   -24,   123,
+      38,  -117,    62,    58,    -9,    57,  -117,    51,    59,    64,
+      77,   115,   271,    32,    25,   136,    25,   179,   108,   -24,
+      75,   -24,   116,   119,  -117,    25,    25,   127,   -24,  -117,
+     184,  -117,  -117,   -24,   232,   232,   232,   232,   274,   123,
+     123,   123,  -117,  -117,     8,    -5,  -117,   -24,   -24,  -117,
+    -117,   -23,  -117,    82,  -117,  -117,    32,   107,   135,   138,
+     144,   -24,   -24,   183,    43,   137,   141,   155,   159,   123,
+     123,   123,  -117,  -117,  -117,   183,   123,  -117,  -117,    25,
+      25,  -117,   164,    25,  -117,   219,  -117,  -117,    19,   156,
+     186,  -117,   232,   232,   232,   232,  -117,  -117,  -117,   151,
+    -117,  -117,   237,  -117,  -117,   223,   178,   192,  -117,   123,
+     183,  -117,  -117,  -117,  -117,  -117,  -117,  -117,  -117,  -117,
+    -117,  -117,  -117,   170,   183,   -24,   204,   180,   196,  -117,
+    -117
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -699,41 +706,44 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     0,     1,     0,    61,     0,     0,     0,    30,     0,
-       0,    82,    83,     3,     4,    10,    12,    13,    14,    11,
+       2,     0,     1,     0,    66,     0,     0,     0,    30,     0,
+       0,    87,    88,     3,     4,    10,    12,    13,    14,    11,
       40,    27,     9,     0,    19,    15,    16,    17,    18,     8,
-       0,     6,     7,     0,     0,    51,    52,     0,     0,    49,
-      53,    54,     0,     0,     0,     0,     0,     0,     0,     0,
-       5,    81,    26,    39,    28,    29,     0,     0,     0,     0,
-       0,    72,     0,     0,     0,     0,    50,     0,     0,     0,
+       0,     6,     7,     0,     0,    54,    55,     0,     0,    52,
+      56,    57,     0,     0,     0,     0,     0,     0,     0,     0,
+       5,    86,    26,    39,    28,    29,     0,     0,     0,     0,
+       0,    77,     0,     0,     0,     0,    53,     0,     0,     0,
        0,     0,     0,     0,    43,     0,    40,     0,     0,     0,
-       0,     0,     0,     0,    38,    41,    42,     0,     0,    74,
-       0,    73,    64,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    47,     0,     0,    46,    48,     0,    21,
-       0,    24,    25,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    66,
-      67,    68,     0,     0,    44,    45,    20,     0,     0,    23,
-       0,    77,    78,     0,     0,     0,    62,     0,     0,     0,
-       0,    70,    69,    71,     0,    59,    22,    30,    31,    32,
-       0,     0,     0,    80,     0,     0,    55,    56,    58,    57,
-      60,    76,    36,    34,    35,    37,    75,    79,     0,     0,
-       0,    40,     0,     0,    65,    63
+       0,     0,     0,     0,    38,    41,    42,     0,     0,    79,
+       0,    78,    69,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    49,    50,    51,     0,    47,     0,     0,    46,
+      48,     0,    21,     0,    24,    25,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    71,    72,    73,     0,     0,    63,    64,    44,
+      45,    20,     0,    51,    23,     0,    82,    83,     0,     0,
+       0,    67,     0,     0,     0,     0,    75,    74,    76,     0,
+      62,    22,    30,    31,    32,     0,     0,     0,    85,     0,
+       0,    58,    59,    61,    60,    65,    81,    36,    34,    35,
+      37,    80,    84,     0,     0,     0,    40,     0,     0,    70,
+      68
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -118,  -118,  -117,   -12,  -118,  -118,  -118,  -118,  -118,    -1,
-      49,  -118,  -118,  -118,   176,  -118,  -118,   -11,   -75,   217,
-    -118,  -118,  -118,  -118,  -118,   -32,  -118,  -118,  -118,  -118
+    -117,  -117,  -116,   -12,  -117,  -117,  -117,  -117,  -117,    -1,
+     -16,  -117,  -117,  -117,   177,  -117,  -117,  -117,   -79,   -17,
+     194,  -117,  -117,  -117,  -117,  -117,   -32,  -117,  -117,  -117,
+    -117
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_uint8 yydefgoto[] =
 {
        0,     1,    13,    14,    15,    16,    17,    18,    19,    40,
-      21,   160,    22,    23,    24,    75,    25,    41,    42,    26,
-      27,    34,    28,   165,   120,    43,    29,    30,    31,    32
+      21,   165,    22,    23,    24,    75,    25,   105,    41,    42,
+      26,    27,    34,    28,   170,   123,    43,    29,    30,    31,
+      32
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -741,107 +751,108 @@ static const yytype_uint8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      20,    50,    65,   145,     8,     2,    47,    82,     3,    49,
-       4,    33,    20,    54,     8,   154,    92,   137,   103,     5,
-      59,    83,    56,   104,   129,   130,   131,    87,     8,    62,
-     105,     6,    64,    48,    60,     7,    73,    54,    66,     8,
-       8,    71,    72,    74,    76,   183,    35,    80,   179,     9,
-      10,   151,   152,   153,    61,    84,    85,    86,   155,    11,
-      12,    51,    36,    78,    52,   161,     8,     8,    89,    55,
-      37,    53,   102,     8,    38,    54,    39,    90,   108,     8,
-     110,   146,    54,   122,   123,   124,   125,   114,    54,    55,
-     109,    88,   121,     8,    91,   139,    55,    79,    55,     8,
-      35,     8,    54,   134,   135,    55,     8,    57,    54,    93,
-      54,    55,   138,    55,    58,    54,    36,   143,   144,    20,
-      94,     8,    95,    55,    37,    55,    44,    45,    46,    55,
-      39,    20,   178,    50,    55,    55,   166,   167,   168,   169,
-      51,    96,    50,    52,    20,    67,    68,    69,    70,   163,
-      53,    55,     8,    20,     3,   170,     4,    55,    98,    55,
-       8,    54,    97,    55,    20,     5,     8,    50,   107,    54,
-      55,     3,   111,     4,   113,    54,   112,     6,   181,   182,
-     141,     7,     5,    55,    55,     8,   140,    55,   142,   132,
-     180,   147,    55,    55,     6,     9,    10,     3,     7,   164,
-     133,     8,     8,   148,   156,    11,    12,   184,     5,   149,
-      54,   150,     9,    10,   106,   176,     8,     0,     8,    57,
-       6,    77,    11,    12,     7,    54,    58,    54,     8,    35,
-      55,    55,     8,   177,   162,   185,   133,     8,     9,    10,
-       0,    54,     0,   171,    81,    36,    54,    63,    11,    12,
-     157,   158,   159,    37,   172,   173,   174,    38,   115,    39,
-     175,   136,   -33,   -33,     8,     0,     0,   -33,     0,     0,
-     116,   117,   118,    54,   119,    99,   100,   101,   126,   127,
-     128
+      20,    50,    65,    84,    55,    33,    47,   150,   141,    49,
+       8,     8,    20,    92,     8,   125,   126,   127,   128,   159,
+      54,    59,    56,    54,    55,     8,    48,    87,   136,    62,
+     135,    55,    64,    55,    54,    60,    71,    72,    82,    66,
+      55,     8,     8,    74,    76,   102,    55,    80,    55,   137,
+     138,    54,    83,     8,   184,    61,    85,    86,    55,     8,
+      55,   103,    54,    73,    55,   151,     8,    78,    54,    55,
+      55,   167,   104,   171,   172,   173,   174,     8,   111,    88,
+     113,    91,   132,   133,   134,    89,    54,   117,    55,    93,
+      51,    94,   124,    52,    90,    55,     8,    55,   112,    95,
+      53,    55,     8,    57,    96,    54,   139,   140,    55,     8,
+      58,    54,   156,   157,   158,   143,     8,    97,    54,   160,
+     148,   149,    20,    55,    55,    54,    98,    55,   166,   142,
+     144,     8,    55,    55,    20,   110,    35,   183,    50,   114,
+      54,     8,   115,    81,    44,    45,    46,    50,     2,    20,
+      54,     3,    36,     4,     3,   175,     4,     8,    20,   116,
+      37,   146,     5,   106,    38,     5,    39,   147,   107,    20,
+      55,    55,    50,   145,     6,   108,   152,     6,     7,   168,
+     153,     7,     8,   186,   187,     8,     3,   161,     4,     3,
+       8,   169,     9,    10,   154,     9,    10,     5,   155,    54,
+       5,   181,   185,   189,    11,    12,   109,    11,    12,     6,
+     188,    57,     6,     7,     8,   182,     7,     8,    58,   190,
+       8,   118,    77,    54,    63,     0,    51,     9,    10,    52,
+       9,    10,    35,   119,   120,   121,    53,   122,     8,    11,
+      12,     0,    11,    12,     0,    35,   176,    54,    36,    67,
+      68,    69,    70,   162,   163,   164,    37,   177,   178,   179,
+      38,    36,    39,   180,     0,    79,     8,     8,     0,    37,
+       0,     0,   -33,   -33,     0,    39,    54,   -33,    99,   100,
+     101,   129,   130,   131
 };
 
 static const yytype_int16 yycheck[] =
 {
-       1,    13,    34,   120,    34,     0,     7,    10,     3,    10,
-       5,    32,    13,    43,    34,   132,    22,    47,    27,    14,
-      14,    24,    23,    32,    99,   100,   101,    59,    34,    30,
-      39,    26,    33,    22,    28,    30,    32,    43,    42,    34,
-      34,    10,    11,    44,    45,     6,    13,    48,   165,    44,
-      45,   126,   127,   128,    48,    23,    57,    58,   133,    54,
-      55,    22,    29,    15,    25,   140,    34,    34,    23,    20,
-      37,    32,    73,    34,    41,    43,    43,    32,    79,    34,
-      81,    22,    43,    94,    95,    96,    97,    88,    43,    40,
-      23,    41,    93,    34,    23,    23,    47,    32,    49,    34,
-      13,    34,    43,   104,   105,    56,    34,    32,    43,    32,
-      43,    62,   113,    64,    39,    43,    29,   118,   119,   120,
-      40,    34,    40,    74,    37,    76,    15,    16,    17,    80,
-      43,   132,   164,   145,    85,    86,   147,   148,   149,   150,
-      22,    40,   154,    25,   145,    18,    19,    20,    21,    23,
-      32,   102,    34,   154,     3,     4,     5,   108,    11,   110,
-      34,    43,    40,   114,   165,    14,    34,   179,    27,    43,
-     121,     3,    23,     5,    32,    43,    23,    26,   179,   180,
-      23,    30,    14,   134,   135,    34,    38,   138,    23,    22,
-      32,    39,   143,   144,    26,    44,    45,     3,    30,     5,
-      33,    34,    34,    39,    23,    54,    55,    23,    14,    39,
-      43,    39,    44,    45,    27,    23,    34,    -1,    34,    32,
-      26,    45,    54,    55,    30,    43,    39,    43,    34,    13,
-     181,   182,    34,    23,    52,    23,    33,    34,    44,    45,
-      -1,    43,    -1,    23,    46,    29,    43,    30,    54,    55,
-      34,    35,    36,    37,    34,    35,    36,    41,    37,    43,
-      40,    31,    35,    36,    34,    -1,    -1,    40,    -1,    -1,
-      49,    50,    51,    43,    53,     7,     8,     9,     7,     8,
-       9
+       1,    13,    34,    23,    20,    32,     7,   123,    31,    10,
+      34,    34,    13,    22,    34,    94,    95,    96,    97,   135,
+      43,    14,    23,    43,    40,    34,    22,    59,    33,    30,
+      22,    47,    33,    49,    43,    28,    10,    11,    10,    42,
+      56,    34,    34,    44,    45,    13,    62,    48,    64,    54,
+      55,    43,    24,    34,   170,    48,    57,    58,    74,    34,
+      76,    29,    43,    32,    80,    22,    34,    15,    43,    85,
+      86,    52,    73,   152,   153,   154,   155,    34,    79,    41,
+      81,    23,    99,   100,   101,    23,    43,    88,   104,    32,
+      22,    40,    93,    25,    32,   111,    34,   113,    23,    40,
+      32,   117,    34,    32,    40,    43,   107,   108,   124,    34,
+      39,    43,   129,   130,   131,   116,    34,    40,    43,   136,
+     121,   122,   123,   139,   140,    43,    11,   143,   145,    47,
+      23,    34,   148,   149,   135,    27,    13,   169,   150,    23,
+      43,    34,    23,    46,    15,    16,    17,   159,     0,   150,
+      43,     3,    29,     5,     3,     4,     5,    34,   159,    32,
+      37,    23,    14,    27,    41,    14,    43,    23,    32,   170,
+     186,   187,   184,    38,    26,    39,    39,    26,    30,    23,
+      39,    30,    34,   184,   185,    34,     3,    23,     5,     3,
+      34,     5,    44,    45,    39,    44,    45,    14,    39,    43,
+      14,    23,    32,    23,    56,    57,    27,    56,    57,    26,
+       6,    32,    26,    30,    34,    23,    30,    34,    39,    23,
+      34,    37,    45,    43,    30,    -1,    22,    44,    45,    25,
+      44,    45,    13,    49,    50,    51,    32,    53,    34,    56,
+      57,    -1,    56,    57,    -1,    13,    23,    43,    29,    18,
+      19,    20,    21,    34,    35,    36,    37,    34,    35,    36,
+      41,    29,    43,    40,    -1,    32,    34,    34,    -1,    37,
+      -1,    -1,    35,    36,    -1,    43,    43,    40,     7,     8,
+       9,     7,     8,     9
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    57,     0,     3,     5,    14,    26,    30,    34,    44,
-      45,    54,    55,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    68,    69,    70,    72,    75,    76,    78,    82,
-      83,    84,    85,    32,    77,    13,    29,    37,    41,    43,
-      65,    73,    74,    81,    15,    16,    17,    65,    22,    65,
-      59,    22,    25,    32,    43,    66,    65,    32,    39,    14,
-      28,    48,    65,    75,    65,    81,    42,    18,    19,    20,
-      21,    10,    11,    32,    65,    71,    65,    70,    15,    32,
-      65,    46,    10,    24,    23,    65,    65,    81,    41,    23,
+       0,    59,     0,     3,     5,    14,    26,    30,    34,    44,
+      45,    56,    57,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,    70,    71,    72,    74,    78,    79,    81,    85,
+      86,    87,    88,    32,    80,    13,    29,    37,    41,    43,
+      67,    76,    77,    84,    15,    16,    17,    67,    22,    67,
+      61,    22,    25,    32,    43,    68,    67,    32,    39,    14,
+      28,    48,    67,    78,    67,    84,    42,    18,    19,    20,
+      21,    10,    11,    32,    67,    73,    67,    72,    15,    32,
+      67,    46,    10,    24,    23,    67,    67,    84,    41,    23,
       32,    23,    22,    32,    40,    40,    40,    40,    11,     7,
-       8,     9,    65,    27,    32,    39,    27,    27,    65,    23,
-      65,    23,    23,    32,    65,    37,    49,    50,    51,    53,
-      80,    65,    73,    73,    73,    73,     7,     8,     9,    74,
-      74,    74,    22,    33,    65,    65,    31,    47,    65,    23,
-      38,    23,    23,    65,    65,    58,    22,    39,    39,    39,
-      39,    74,    74,    74,    58,    74,    23,    34,    35,    36,
-      67,    74,    52,    23,     5,    79,    73,    73,    73,    73,
-       4,    23,    34,    35,    36,    40,    23,    23,    81,    58,
-      32,    65,    65,     6,    23,    23
+       8,     9,    13,    29,    67,    75,    27,    32,    39,    27,
+      27,    67,    23,    67,    23,    23,    32,    67,    37,    49,
+      50,    51,    53,    83,    67,    76,    76,    76,    76,     7,
+       8,     9,    77,    77,    77,    22,    33,    54,    55,    67,
+      67,    31,    47,    67,    23,    38,    23,    23,    67,    67,
+      60,    22,    39,    39,    39,    39,    77,    77,    77,    60,
+      77,    23,    34,    35,    36,    69,    77,    52,    23,     5,
+      82,    76,    76,    76,    76,     4,    23,    34,    35,    36,
+      40,    23,    23,    84,    60,    32,    67,    67,     6,    23,
+      23
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    56,    57,    57,    58,    58,    59,    59,    59,    59,
-      59,    59,    59,    59,    59,    59,    59,    59,    59,    59,
-      60,    61,    62,    63,    64,    64,    64,    65,    65,    65,
-      66,    67,    67,    67,    67,    67,    67,    67,    68,    69,
-      70,    70,    70,    71,    71,    71,    72,    72,    72,    73,
-      73,    73,    73,    73,    74,    74,    74,    74,    74,    75,
-      76,    77,    79,    78,    80,    78,    81,    81,    81,    81,
-      81,    81,    82,    82,    82,    82,    82,    82,    82,    82,
-      82,    83,    84,    85
+       0,    58,    59,    59,    60,    60,    61,    61,    61,    61,
+      61,    61,    61,    61,    61,    61,    61,    61,    61,    61,
+      62,    63,    64,    65,    66,    66,    66,    67,    67,    67,
+      68,    69,    69,    69,    69,    69,    69,    69,    70,    71,
+      72,    72,    72,    73,    73,    73,    74,    74,    74,    75,
+      75,    75,    76,    76,    76,    76,    76,    77,    77,    77,
+      77,    77,    78,    78,    78,    79,    80,    82,    81,    83,
+      81,    84,    84,    84,    84,    84,    84,    85,    85,    85,
+      85,    85,    85,    85,    85,    85,    86,    87,    88
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -852,10 +863,10 @@ static const yytype_int8 yyr2[] =
        5,     4,     6,     5,     4,     4,     2,     1,     2,     2,
        1,     1,     1,     1,     2,     2,     2,     2,     3,     2,
        1,     3,     3,     1,     3,     3,     4,     4,     4,     1,
-       2,     1,     1,     1,     1,     6,     6,     6,     6,     6,
-       7,     0,     0,    11,     0,    11,     4,     4,     4,     5,
-       5,     5,     2,     3,     3,     7,     7,     5,     5,     7,
-       6,     2,     1,     1
+       1,     1,     1,     2,     1,     1,     1,     1,     6,     6,
+       6,     6,     6,     5,     5,     7,     0,     0,    11,     0,
+      11,     4,     4,     4,     5,     5,     5,     2,     3,     3,
+       7,     7,     5,     5,     7,     6,     2,     1,     1
 };
 
 
@@ -1319,19 +1330,19 @@ yyreduce:
   switch (yyn)
     {
   case 4: /* bloco: instrucao  */
-#line 78 "src/parser.y"
+#line 81 "src/parser.y"
                                 {  }
-#line 1325 "src/parser.tab.c"
+#line 1336 "src/parser.tab.c"
     break;
 
   case 5: /* bloco: bloco instrucao  */
-#line 79 "src/parser.y"
+#line 82 "src/parser.y"
                                {  }
-#line 1331 "src/parser.tab.c"
+#line 1342 "src/parser.tab.c"
     break;
 
   case 20: /* declaracaoCenario: ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES  */
-#line 103 "src/parser.y"
+#line 106 "src/parser.y"
                                                          {
         if (estado == E_DECLARACOES) {
             add_symbol((yyvsp[-3].texto), STRING_VAR);
@@ -1345,11 +1356,11 @@ yyreduce:
             yyerror("Declaração de cenário fora de contexto");
         }
     }
-#line 1349 "src/parser.tab.c"
+#line 1360 "src/parser.tab.c"
     break;
 
   case 21: /* concatenarCenario: ADICIONAR_CENARIO INICIO texto FIM  */
-#line 118 "src/parser.y"
+#line 121 "src/parser.y"
                                        {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1368,11 +1379,11 @@ yyreduce:
             yyerror("Adição de cenário fora de contexto");
         }
     }
-#line 1372 "src/parser.tab.c"
+#line 1383 "src/parser.tab.c"
     break;
 
   case 22: /* substituiCenario: SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM  */
-#line 138 "src/parser.y"
+#line 141 "src/parser.y"
                                                      {
         if (estado != E_DECLARACOES) {
             char * valorCenario = get_string_value(cenarioAtual);
@@ -1389,11 +1400,11 @@ yyreduce:
             yyerror("Substituição de cenário fora de contexto");
         }
     }
-#line 1393 "src/parser.tab.c"
+#line 1404 "src/parser.tab.c"
     break;
 
   case 23: /* trocarCenario: inicioDialogo VOLTAR_CENARIO ARTIGO texto FIM  */
-#line 157 "src/parser.y"
+#line 160 "src/parser.y"
                                                   {
         if (estado == E_DECLARACOES) {
             yyerror("Troca de cenário fora de contexto");
@@ -1412,11 +1423,11 @@ yyreduce:
             }
         }
     }
-#line 1416 "src/parser.tab.c"
+#line 1427 "src/parser.tab.c"
     break;
 
   case 24: /* declaracaoQuestionamento: texto INTERROGACAO NAO FIM  */
-#line 176 "src/parser.y"
+#line 179 "src/parser.y"
                                {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento negativo: %s\n", (yyvsp[-3].texto));
@@ -1430,11 +1441,11 @@ yyreduce:
         }
         set_bool_value((yyvsp[-3].texto), 0); // Inicializa como falso
     }
-#line 1434 "src/parser.tab.c"
+#line 1445 "src/parser.tab.c"
     break;
 
   case 25: /* declaracaoQuestionamento: texto INTERROGACAO SIM FIM  */
-#line 189 "src/parser.y"
+#line 192 "src/parser.y"
                                  {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento afirmativo: %s\n", (yyvsp[-3].texto));
@@ -1448,11 +1459,11 @@ yyreduce:
         }
         set_bool_value((yyvsp[-3].texto), 1); // Inicializa como verdadeiro
     }
-#line 1452 "src/parser.tab.c"
+#line 1463 "src/parser.tab.c"
     break;
 
   case 26: /* declaracaoQuestionamento: texto INTERROGACAO  */
-#line 202 "src/parser.y"
+#line 205 "src/parser.y"
                          {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento: %s\n", (yyvsp[-1].texto));
@@ -1466,119 +1477,119 @@ yyreduce:
         }
         set_bool_value((yyvsp[-1].texto), 0); // Inicializa como falso
     }
-#line 1470 "src/parser.tab.c"
+#line 1481 "src/parser.tab.c"
     break;
 
   case 27: /* texto: palavra  */
-#line 218 "src/parser.y"
+#line 221 "src/parser.y"
             { 
         (yyval.texto) = strdup((yyvsp[0].texto));
     }
-#line 1478 "src/parser.tab.c"
+#line 1489 "src/parser.tab.c"
     break;
 
   case 28: /* texto: texto NUMERO  */
-#line 221 "src/parser.y"
+#line 224 "src/parser.y"
                    {
         //  if (DEBUG_BISON) {
         //      printf("Concatenando: %s + %s\n", $1, $2);
         // }
         (yyval.texto) = concatena((yyvsp[-1].texto), (yyvsp[0].texto));
     }
-#line 1489 "src/parser.tab.c"
+#line 1500 "src/parser.tab.c"
     break;
 
   case 29: /* texto: texto palavra  */
-#line 227 "src/parser.y"
+#line 230 "src/parser.y"
                     {
         // if (DEBUG_BISON) {
         //     printf("Concatenando: %s + %s\n", $1, $2);
         // }
         (yyval.texto) = concatena((yyvsp[-1].texto), (yyvsp[0].texto));
     }
-#line 1500 "src/parser.tab.c"
+#line 1511 "src/parser.tab.c"
     break;
 
   case 30: /* palavra: TOKEN  */
-#line 237 "src/parser.y"
+#line 240 "src/parser.y"
           { (yyval.texto) = strdup((yyvsp[0].texto)); }
-#line 1506 "src/parser.tab.c"
+#line 1517 "src/parser.tab.c"
     break;
 
   case 31: /* adjetivos: ADJETIVO_POSITIVO  */
-#line 241 "src/parser.y"
+#line 244 "src/parser.y"
                       { 
         (yyval.inteiro) = 1;
     }
-#line 1514 "src/parser.tab.c"
+#line 1525 "src/parser.tab.c"
     break;
 
   case 32: /* adjetivos: ADJETIVO_NEGATIVO  */
-#line 244 "src/parser.y"
+#line 247 "src/parser.y"
                         {
         (yyval.inteiro) = -1;
     }
-#line 1522 "src/parser.tab.c"
+#line 1533 "src/parser.tab.c"
     break;
 
   case 33: /* adjetivos: TOKEN  */
-#line 247 "src/parser.y"
+#line 250 "src/parser.y"
             {
         (yyval.inteiro) = 0;
     }
-#line 1530 "src/parser.tab.c"
+#line 1541 "src/parser.tab.c"
     break;
 
   case 34: /* adjetivos: adjetivos ADJETIVO_POSITIVO  */
-#line 250 "src/parser.y"
+#line 253 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", (yyvsp[0].texto));
         }
         (yyval.inteiro) = (yyvsp[-1].inteiro) + 1;
     }
-#line 1541 "src/parser.tab.c"
+#line 1552 "src/parser.tab.c"
     break;
 
   case 35: /* adjetivos: adjetivos ADJETIVO_NEGATIVO  */
-#line 256 "src/parser.y"
+#line 259 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Adjetivo negativo concatenado: %s\n", (yyvsp[0].texto));
         }
         (yyval.inteiro) = (yyvsp[-1].inteiro) - 1;
     }
-#line 1552 "src/parser.tab.c"
+#line 1563 "src/parser.tab.c"
     break;
 
   case 36: /* adjetivos: adjetivos TOKEN  */
-#line 262 "src/parser.y"
-                      {
-        (yyval.inteiro) = (yyvsp[-1].inteiro);
-    }
-#line 1560 "src/parser.tab.c"
-    break;
-
-  case 37: /* adjetivos: adjetivos ENTRE  */
 #line 265 "src/parser.y"
                       {
         (yyval.inteiro) = (yyvsp[-1].inteiro);
     }
-#line 1568 "src/parser.tab.c"
+#line 1571 "src/parser.tab.c"
+    break;
+
+  case 37: /* adjetivos: adjetivos ENTRE  */
+#line 268 "src/parser.y"
+                      {
+        (yyval.inteiro) = (yyvsp[-1].inteiro);
+    }
+#line 1579 "src/parser.tab.c"
     break;
 
   case 38: /* declaracao: declaracaoInicio texto FIM  */
-#line 270 "src/parser.y"
+#line 273 "src/parser.y"
                                {
         if (DEBUG_BISON) {
             printf("Declaração: %s\n", (yyvsp[-1].texto));
         }
     }
-#line 1578 "src/parser.tab.c"
+#line 1589 "src/parser.tab.c"
     break;
 
   case 39: /* declaracaoInicio: texto VIRGULA  */
-#line 277 "src/parser.y"
+#line 280 "src/parser.y"
                   {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -1588,11 +1599,11 @@ yyreduce:
         }
         (yyval.texto) = (yyvsp[-1].texto);
     }
-#line 1592 "src/parser.tab.c"
+#line 1603 "src/parser.tab.c"
     break;
 
   case 40: /* personagensEntrando: texto  */
-#line 288 "src/parser.y"
+#line 291 "src/parser.y"
           {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1603,12 +1614,13 @@ yyreduce:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = (yyvsp[0].texto); // Atualiza personagemVoce com o personagem que está entrando
     }
-#line 1608 "src/parser.tab.c"
+#line 1620 "src/parser.tab.c"
     break;
 
   case 41: /* personagensEntrando: personagensEntrando VIRGULA texto  */
-#line 299 "src/parser.y"
+#line 303 "src/parser.y"
                                         {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1619,12 +1631,13 @@ yyreduce:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = (yyvsp[0].texto); // Atualiza personagemVoce com o personagem que está entrando
     }
-#line 1624 "src/parser.tab.c"
+#line 1637 "src/parser.tab.c"
     break;
 
   case 42: /* personagensEntrando: personagensEntrando E texto  */
-#line 310 "src/parser.y"
+#line 315 "src/parser.y"
                                   {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1635,12 +1648,13 @@ yyreduce:
             YYABORT;
         }
         sym->active = 1;
+        personagemVoce = (yyvsp[0].texto); // Atualiza personagemVoce com o personagem que está entrando
     }
-#line 1640 "src/parser.tab.c"
+#line 1654 "src/parser.tab.c"
     break;
 
   case 43: /* personagensSaindo: texto  */
-#line 322 "src/parser.y"
+#line 328 "src/parser.y"
           {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1652,11 +1666,11 @@ yyreduce:
         }
         sym->active = 0;
     }
-#line 1656 "src/parser.tab.c"
+#line 1670 "src/parser.tab.c"
     break;
 
   case 44: /* personagensSaindo: personagensSaindo VIRGULA texto  */
-#line 333 "src/parser.y"
+#line 339 "src/parser.y"
                                       {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1668,11 +1682,11 @@ yyreduce:
         }
         sym->active = 0;
     }
-#line 1672 "src/parser.tab.c"
+#line 1686 "src/parser.tab.c"
     break;
 
   case 45: /* personagensSaindo: personagensSaindo E texto  */
-#line 344 "src/parser.y"
+#line 350 "src/parser.y"
                                 {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym) {
@@ -1684,11 +1698,11 @@ yyreduce:
         }
         sym->active = 0;
     }
-#line 1688 "src/parser.tab.c"
+#line 1702 "src/parser.tab.c"
     break;
 
   case 46: /* alteracaoElenco: ABRE_COLCHETES ENTRAM personagensEntrando FECHA_COLCHETES  */
-#line 357 "src/parser.y"
+#line 363 "src/parser.y"
                                                               {
         if (estado == E_CENA) {
             if (DEBUG_BISON) {
@@ -1702,11 +1716,11 @@ yyreduce:
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
     }
-#line 1706 "src/parser.tab.c"
+#line 1720 "src/parser.tab.c"
     break;
 
   case 47: /* alteracaoElenco: ABRE_COLCHETES SAEM personagensSaindo FECHA_COLCHETES  */
-#line 370 "src/parser.y"
+#line 376 "src/parser.y"
                                                             {
         if (estado == E_CENA) {
             if (DEBUG_BISON) {
@@ -1720,11 +1734,11 @@ yyreduce:
             printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
         }
     }
-#line 1724 "src/parser.tab.c"
+#line 1738 "src/parser.tab.c"
     break;
 
   case 48: /* alteracaoElenco: ABRE_COLCHETES TODOS SAEM FECHA_COLCHETES  */
-#line 383 "src/parser.y"
+#line 389 "src/parser.y"
                                                 {
         if (DEBUG_BISON) {
             printf("Todos os personagens estão inativos\n");
@@ -1732,22 +1746,46 @@ yyreduce:
         // Ativa todos os personagens
         desativar_todos_personagens();
     }
-#line 1736 "src/parser.tab.c"
+#line 1750 "src/parser.tab.c"
     break;
 
-  case 49: /* valor: NUMERO  */
-#line 392 "src/parser.y"
+  case 49: /* personagem: EU  */
+#line 398 "src/parser.y"
+       {
+        (yyval.texto) = personagemQueFala;
+    }
+#line 1758 "src/parser.tab.c"
+    break;
+
+  case 50: /* personagem: VOCE  */
+#line 401 "src/parser.y"
+           {
+        (yyval.texto) = personagemVoce;
+    }
+#line 1766 "src/parser.tab.c"
+    break;
+
+  case 51: /* personagem: texto  */
+#line 404 "src/parser.y"
+            {
+        (yyval.texto) = (yyvsp[0].texto);
+    }
+#line 1774 "src/parser.tab.c"
+    break;
+
+  case 52: /* valor: NUMERO  */
+#line 409 "src/parser.y"
            {
         if (DEBUG_BISON) {
             printf("Valor numérico: %d\n", atoi((yyvsp[0].texto)));
         }
         (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), atoi((yyvsp[0].texto)), 0);
     }
-#line 1747 "src/parser.tab.c"
+#line 1785 "src/parser.tab.c"
     break;
 
-  case 50: /* valor: TU MESMO  */
-#line 398 "src/parser.y"
+  case 53: /* valor: TU MESMO  */
+#line 415 "src/parser.y"
                {
         if (personagemDialogo == NULL) {
             yyerror("Variável 'tu mesmo' não definida");
@@ -1765,11 +1803,11 @@ yyreduce:
             }
         }
     }
-#line 1769 "src/parser.tab.c"
+#line 1807 "src/parser.tab.c"
     break;
 
-  case 51: /* valor: EU  */
-#line 415 "src/parser.y"
+  case 54: /* valor: EU  */
+#line 432 "src/parser.y"
          {
         if (personagemQueFala == NULL) {
             yyerror("Variável 'eu' não definida");
@@ -1787,11 +1825,11 @@ yyreduce:
             }
         }
     }
-#line 1791 "src/parser.tab.c"
+#line 1829 "src/parser.tab.c"
     break;
 
-  case 52: /* valor: VOCE  */
-#line 432 "src/parser.y"
+  case 55: /* valor: VOCE  */
+#line 449 "src/parser.y"
            {
         if (personagemVoce == NULL) {
             yyerror("Variável 'voce' não definida");
@@ -1809,11 +1847,11 @@ yyreduce:
             }
         }
     }
-#line 1813 "src/parser.tab.c"
+#line 1851 "src/parser.tab.c"
     break;
 
-  case 53: /* valor: texto  */
-#line 449 "src/parser.y"
+  case 56: /* valor: texto  */
+#line 466 "src/parser.y"
             {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -1826,58 +1864,58 @@ yyreduce:
             (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
         }
     }
-#line 1830 "src/parser.tab.c"
+#line 1868 "src/parser.tab.c"
     break;
 
-  case 54: /* expressao: valor  */
-#line 464 "src/parser.y"
+  case 57: /* expressao: valor  */
+#line 481 "src/parser.y"
           {
         (yyval.llmValueRef) = (yyvsp[0].llmValueRef); // valor já retorna LLVMValueRef
     }
-#line 1838 "src/parser.tab.c"
+#line 1876 "src/parser.tab.c"
     break;
 
-  case 55: /* expressao: ARTIGO SOMAR ENTRE valor E valor  */
-#line 467 "src/parser.y"
+  case 58: /* expressao: ARTIGO SOMAR ENTRE valor E valor  */
+#line 484 "src/parser.y"
                                      {
         if (DEBUG_BISON) printf("Expressão de soma\n");
         (yyval.llmValueRef) = LLVMBuildAdd(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "addtmp");
     }
-#line 1847 "src/parser.tab.c"
+#line 1885 "src/parser.tab.c"
     break;
 
-  case 56: /* expressao: ARTIGO SUBTRAIR ENTRE valor E valor  */
-#line 471 "src/parser.y"
+  case 59: /* expressao: ARTIGO SUBTRAIR ENTRE valor E valor  */
+#line 488 "src/parser.y"
                                         {
         if (DEBUG_BISON) printf("Expressão de subtração\n");
         (yyval.llmValueRef) = LLVMBuildSub(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "subtmp");
     }
-#line 1856 "src/parser.tab.c"
+#line 1894 "src/parser.tab.c"
     break;
 
-  case 57: /* expressao: ARTIGO MULTIPLICAR ENTRE valor E valor  */
-#line 475 "src/parser.y"
+  case 60: /* expressao: ARTIGO MULTIPLICAR ENTRE valor E valor  */
+#line 492 "src/parser.y"
                                            {
         if (DEBUG_BISON) printf("Expressão de multiplicação\n");
         (yyval.llmValueRef) = LLVMBuildMul(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "multmp");
     }
-#line 1865 "src/parser.tab.c"
+#line 1903 "src/parser.tab.c"
     break;
 
-  case 58: /* expressao: ARTIGO DIVIDIR ENTRE valor E valor  */
-#line 479 "src/parser.y"
+  case 61: /* expressao: ARTIGO DIVIDIR ENTRE valor E valor  */
+#line 496 "src/parser.y"
                                        {
         if (DEBUG_BISON) printf("Expressão de divisão\n");
 
         // Divisão por zero em tempo de compilação não pode ser detectada aqui
         (yyval.llmValueRef) = LLVMBuildSDiv(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "divtmp");
     }
-#line 1876 "src/parser.tab.c"
+#line 1914 "src/parser.tab.c"
     break;
 
-  case 59: /* if_sentenca: SE condicao VIRGULA texto SERA expressao  */
-#line 488 "src/parser.y"
-                                             {
+  case 62: /* if_sentenca: SE condicao VIRGULA personagem SERA expressao  */
+#line 505 "src/parser.y"
+                                                  {
         // $2 é a condição (LLVMValueRef do tipo i1)
         // $4 é o nome da variável de pilha (const char*)
         // $6 é o novo valor para o topo (LLVMValueRef do tipo i32)
@@ -1915,21 +1953,86 @@ yyreduce:
         // 4. Move o builder para o bloco 'merge' para as próximas instruções do programa.
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
-#line 1919 "src/parser.tab.c"
+#line 1957 "src/parser.tab.c"
     break;
 
-  case 60: /* if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF  */
-#line 528 "src/parser.y"
+  case 63: /* if_sentenca: SE condicao VIRGULA personagem IF_MOSTRA_VALOR  */
+#line 543 "src/parser.y"
+                                                     {
+        // --- Padrão de 'if' em LLVM ---
+        // 1. Cria os blocos para os caminhos 'then' (se verdadeiro) e 'merge' (continuação).
+        LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+
+        // 2. Gera o desvio condicional baseado na condição ($2).
+        LLVMBuildCondBr(builder, (yyvsp[-3].llmValueRef), then_block, merge_block);
+
+        // 3. Posiciona o builder para preencher o bloco 'then'.
+        LLVMPositionBuilderAtEnd(builder, then_block);
+        {
+            // --- Lógica do MOSTRA_VALOR ---
+            const char *nome = (yyvsp[-1].texto);
+            Symbol *sym = get_symbol(nome);
+            if (!sym || sym->type != INT_VAR) {
+                yyerror("Variável inválida ou não declarada no SE.");
+            } else if (!sym->active) {
+                printf("Variável %s não está ativa no SE.\n", sym->name);
+            } else {
+                gerar_print_topo_pilha(nome);
+                // atualiza_personagemVoce();
+            }
+            // --- Fim da lógica ---
+
+            // 4. No final do bloco 'then', pula para o bloco 'merge'.
+            LLVMBuildBr(builder, merge_block);
+        }
+        // 5. Move o builder para o bloco 'merge' para continuar o resto do programa.
+        LLVMPositionBuilderAtEnd(builder, merge_block);
+    }
+#line 1993 "src/parser.tab.c"
+    break;
+
+  case 64: /* if_sentenca: SE condicao VIRGULA personagem IF_LE_VALOR  */
+#line 574 "src/parser.y"
+                                                 {
+        // --- Padrão de 'if' em LLVM ---
+        LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
+        LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
+        LLVMBuildCondBr(builder, (yyvsp[-3].llmValueRef), then_block, merge_block);
+
+        LLVMPositionBuilderAtEnd(builder, then_block);
+        {
+            // --- Lógica do LE_VALOR ---
+            const char *nome = (yyvsp[-1].texto);
+            Symbol *sym = get_symbol(nome);
+            if (!sym || sym->type != INT_VAR) {
+                yyerror("Variável inválida ou não declarada no SE.");
+            } else if (!sym->active) {
+                printf("Variável %s não está ativa no SE.\n", sym->name);
+            } else {
+                gerar_leitura_inteiro(nome);
+                // atualiza_personagemVoce();
+            }
+            // --- Fim da lógica ---
+            LLVMBuildBr(builder, merge_block);
+        }
+        LLVMPositionBuilderAtEnd(builder, merge_block);
+    }
+#line 2022 "src/parser.tab.c"
+    break;
+
+  case 65: /* if_bloco: SE condicao VIRGULA texto INICIO bloco ENDIF  */
+#line 600 "src/parser.y"
                                                 {
         if (DEBUG_BISON) { 
             printf("IF BLOCO DETECTADO\n");
         }
     }
-#line 1929 "src/parser.tab.c"
+#line 2032 "src/parser.tab.c"
     break;
 
-  case 61: /* while_aux: %empty  */
-#line 535 "src/parser.y"
+  case 66: /* while_aux: %empty  */
+#line 607 "src/parser.y"
       {
         LLVMBasicBlockRef cond_bb = LLVMAppendBasicBlock(funcao_main, "while_cond");
         LLVMBasicBlockRef body_bb = LLVMAppendBasicBlock(funcao_main, "while_body");
@@ -1942,11 +2045,11 @@ yyreduce:
         (yyval.WhileBlocks).body_bb = body_bb;
         (yyval.WhileBlocks).after_bb = after_bb;
     }
-#line 1946 "src/parser.tab.c"
+#line 2049 "src/parser.tab.c"
     break;
 
-  case 62: /* $@1: %empty  */
-#line 553 "src/parser.y"
+  case 67: /* $@1: %empty  */
+#line 625 "src/parser.y"
     {
         if (DEBUG_BISON) printf("WHILE DETECTADO\n");
 
@@ -1954,20 +2057,20 @@ yyreduce:
 
         LLVMPositionBuilderAtEnd(builder, (yyvsp[-4].WhileBlocks).body_bb);
     }
-#line 1958 "src/parser.tab.c"
+#line 2061 "src/parser.tab.c"
     break;
 
-  case 63: /* while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM  */
-#line 561 "src/parser.y"
+  case 68: /* while: ENQUANTO_COMECO while_aux condicao VIRGULA texto INICIO $@1 bloco texto ENQUANTO_FIM FIM  */
+#line 633 "src/parser.y"
     {
         LLVMBuildBr(builder, (yyvsp[-9].WhileBlocks).cond_bb);
         LLVMPositionBuilderAtEnd(builder, (yyvsp[-9].WhileBlocks).after_bb);
     }
-#line 1967 "src/parser.tab.c"
+#line 2070 "src/parser.tab.c"
     break;
 
-  case 64: /* $@2: %empty  */
-#line 566 "src/parser.y"
+  case 69: /* $@2: %empty  */
+#line 638 "src/parser.y"
     {
         if (DEBUG_BISON) printf("DO-WHILE DETECTADO\n");
 
@@ -1980,11 +2083,11 @@ yyreduce:
         LLVMBuildBr(builder, body_bb);
         LLVMPositionBuilderAtEnd(builder, body_bb);
     }
-#line 1984 "src/parser.tab.c"
+#line 2087 "src/parser.tab.c"
     break;
 
-  case 65: /* while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM  */
-#line 579 "src/parser.y"
+  case 70: /* while: FACA VIRGULA texto INICIO $@2 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM  */
+#line 651 "src/parser.y"
     {
         WhileBlocks blocks = pop_while_blocks();
 
@@ -1996,59 +2099,59 @@ yyreduce:
 
         LLVMPositionBuilderAtEnd(builder, blocks.after_bb);
     }
-#line 2000 "src/parser.tab.c"
+#line 2103 "src/parser.tab.c"
     break;
 
-  case 66: /* condicao: expressao FOR MAIOR expressao  */
-#line 594 "src/parser.y"
+  case 71: /* condicao: expressao FOR MAIOR expressao  */
+#line 666 "src/parser.y"
                                       {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpgt");
         }
-#line 2008 "src/parser.tab.c"
+#line 2111 "src/parser.tab.c"
     break;
 
-  case 67: /* condicao: expressao FOR MENOR expressao  */
-#line 597 "src/parser.y"
+  case 72: /* condicao: expressao FOR MENOR expressao  */
+#line 669 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmplt");
         }
-#line 2016 "src/parser.tab.c"
+#line 2119 "src/parser.tab.c"
     break;
 
-  case 68: /* condicao: expressao FOR IGUAL expressao  */
-#line 600 "src/parser.y"
+  case 73: /* condicao: expressao FOR IGUAL expressao  */
+#line 672 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntEQ, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpeq");
         }
-#line 2024 "src/parser.tab.c"
+#line 2127 "src/parser.tab.c"
     break;
 
-  case 69: /* condicao: expressao NAO FOR MENOR expressao  */
-#line 603 "src/parser.y"
+  case 74: /* condicao: expressao NAO FOR MENOR expressao  */
+#line 675 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpnlt");
         }
-#line 2032 "src/parser.tab.c"
+#line 2135 "src/parser.tab.c"
     break;
 
-  case 70: /* condicao: expressao NAO FOR MAIOR expressao  */
-#line 606 "src/parser.y"
+  case 75: /* condicao: expressao NAO FOR MAIOR expressao  */
+#line 678 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpngt");
         }
-#line 2040 "src/parser.tab.c"
+#line 2143 "src/parser.tab.c"
     break;
 
-  case 71: /* condicao: expressao NAO FOR IGUAL expressao  */
-#line 609 "src/parser.y"
+  case 76: /* condicao: expressao NAO FOR IGUAL expressao  */
+#line 681 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntNE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpneq");
         }
-#line 2048 "src/parser.tab.c"
+#line 2151 "src/parser.tab.c"
     break;
 
-  case 72: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
-#line 615 "src/parser.y"
+  case 77: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
+#line 687 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
@@ -2056,22 +2159,22 @@ yyreduce:
         gerar_print_string(cenarioAtual);
         atualiza_personagemVoce();
     }
-#line 2060 "src/parser.tab.c"
+#line 2163 "src/parser.tab.c"
     break;
 
-  case 73: /* dialogo: inicioDialogo if_sentenca FIM  */
-#line 622 "src/parser.y"
+  case 78: /* dialogo: inicioDialogo if_sentenca FIM  */
+#line 694 "src/parser.y"
                                     {
         if (DEBUG_BISON) {
             printf("if sentença\n");
         }
         atualiza_personagemVoce();
     }
-#line 2071 "src/parser.tab.c"
+#line 2174 "src/parser.tab.c"
     break;
 
-  case 74: /* dialogo: inicioDialogo texto FIM  */
-#line 628 "src/parser.y"
+  case 79: /* dialogo: inicioDialogo texto FIM  */
+#line 700 "src/parser.y"
                               {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", (yyvsp[-1].texto));
@@ -2087,11 +2190,11 @@ yyreduce:
         }
         atualiza_personagemVoce();
     }
-#line 2091 "src/parser.tab.c"
+#line 2194 "src/parser.tab.c"
     break;
 
-  case 75: /* dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM  */
-#line 643 "src/parser.y"
+  case 80: /* dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM  */
+#line 715 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2115,11 +2218,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2119 "src/parser.tab.c"
+#line 2222 "src/parser.tab.c"
     break;
 
-  case 76: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 666 "src/parser.y"
+  case 81: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
+#line 738 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2159,11 +2262,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2163 "src/parser.tab.c"
+#line 2266 "src/parser.tab.c"
     break;
 
-  case 77: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 706 "src/parser.y"
+  case 82: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
+#line 778 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2184,11 +2287,11 @@ yyreduce:
         gerar_print_topo_pilha((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2188 "src/parser.tab.c"
+#line 2291 "src/parser.tab.c"
     break;
 
-  case 78: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 726 "src/parser.y"
+  case 83: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
+#line 798 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2205,11 +2308,11 @@ yyreduce:
         gerar_leitura_inteiro((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2209 "src/parser.tab.c"
+#line 2312 "src/parser.tab.c"
     break;
 
-  case 79: /* dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM  */
-#line 742 "src/parser.y"
+  case 84: /* dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM  */
+#line 814 "src/parser.y"
                                                             {
         Symbol *sym = get_symbol((yyvsp[-5].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2225,11 +2328,11 @@ yyreduce:
             gerar_push_pilha(pilha_ptr, zero_const);
         }
     }
-#line 2229 "src/parser.tab.c"
+#line 2332 "src/parser.tab.c"
     break;
 
-  case 80: /* dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM  */
-#line 757 "src/parser.y"
+  case 85: /* dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM  */
+#line 829 "src/parser.y"
                                                    {
         Symbol *sym = get_symbol((yyvsp[-4].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2242,11 +2345,11 @@ yyreduce:
             gerar_pop_pilha(pilha_ptr);
         }
     }
-#line 2246 "src/parser.tab.c"
+#line 2349 "src/parser.tab.c"
     break;
 
-  case 81: /* inicioDialogo: texto INICIO  */
-#line 772 "src/parser.y"
+  case 86: /* inicioDialogo: texto INICIO  */
+#line 844 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2278,11 +2381,11 @@ yyreduce:
             }        
         }
     }
-#line 2282 "src/parser.tab.c"
+#line 2385 "src/parser.tab.c"
     break;
 
-  case 82: /* ato: ATO  */
-#line 805 "src/parser.y"
+  case 87: /* ato: ATO  */
+#line 877 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2295,11 +2398,11 @@ yyreduce:
             }
         }
     }
-#line 2299 "src/parser.tab.c"
+#line 2402 "src/parser.tab.c"
     break;
 
-  case 83: /* cena: CENA  */
-#line 819 "src/parser.y"
+  case 88: /* cena: CENA  */
+#line 891 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2312,11 +2415,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2316 "src/parser.tab.c"
+#line 2419 "src/parser.tab.c"
     break;
 
 
-#line 2320 "src/parser.tab.c"
+#line 2423 "src/parser.tab.c"
 
       default: break;
     }
@@ -2509,7 +2612,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 833 "src/parser.y"
+#line 905 "src/parser.y"
 
 
 int main() {

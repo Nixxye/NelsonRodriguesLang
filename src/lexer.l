@@ -221,10 +221,23 @@ ABRE[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     yylval.texto = strdup(yytext);
     return MOSTRA_VALOR;
 }
+
+ABRIRA[ ]TEU[ ]CORACAO[ ]MISERAVEL {
+    if (DEBUG_LEX) printf("TOKEN: IF_MOSTRA_VALOR\n");
+    yylval.texto = strdup(yytext);
+    return IF_MOSTRA_VALOR;
+}
+
 ESCUTA[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     if (DEBUG_LEX) printf("TOKEN: LE_VALOR\n");
     yylval.texto = strdup(yytext);
     return LE_VALOR;
+}
+
+ESCUTARA[ ]TEU[ ]CORACAO[ ]MISERAVEL {
+    if (DEBUG_LEX) printf("TOKEN: IF_LE_VALOR\n");
+    yylval.texto = strdup(yytext);
+    return IF_LE_VALOR;
 }
 
 IGUAL[ \t]+QUE {

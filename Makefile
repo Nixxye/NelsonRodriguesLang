@@ -9,7 +9,7 @@ INC_DIR = include
 # Arquivos
 LEXFILE = $(SRC_DIR)/lexer.l
 YACCFILE = $(SRC_DIR)/parser.y
-INPUT = program.nr
+INPUT = programIF_sentença.nr
 CODEGEN = $(SRC_DIR)/LLVMgen.c
 UTILS = $(SRC_DIR)/nrUtils.c
 RUNTIME = $(SRC_DIR)/pilhaRuntime.c
