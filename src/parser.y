@@ -632,39 +632,47 @@ if_bloco:
 ;
 
 while:
-    ENQUANTO_COMECO condicao VIRGULA texto INICIO
+    ENQUANTO_COMECO
     {
-        // --- Ação de Entrada do While ---
+        // --- Ação 1: Prepara os blocos ---
         ControleFluxo controle;
-        // 1. Cria os 3 blocos necessários: condição, corpo e continuação.
-        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_cond");  // Usando else_block para a condição
-        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_body");  // Usando then_block para o corpo
+        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_cond");
+        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_body");
         controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_merge");
 
-        // 2. Pula incondicionalmente para o bloco de teste da condição.
+        // 1. Pula para o bloco da condição para o primeiro teste.
         LLVMBuildBr(builder, controle.else_block);
 
-        // 3. Posiciona o builder no bloco da condição para gerar o teste.
-        LLVMPositionBuilderAtEnd(builder, controle.else_block);
-        // Se a condição ($2) for true, vai para o corpo; senão, sai do laço.
-        LLVMBuildCondBr(builder, $2, controle.then_block, controle.merge_block);
-
-        // 4. Empilha a estrutura de controle para uso no final do laço.
+        // 2. Empilha a estrutura para uso futuro.
         pilha_push(&pilhaControleFluxo, controle);
 
-        // 5. Move o builder para o corpo do laço para gerar o código do 'bloco'.
+        // 3. Posiciona o builder no bloco da CONDIÇÃO.
+        // É aqui que o código da regra 'condicao' será gerado.
+        LLVMPositionBuilderAtEnd(builder, controle.else_block);
+    }
+    condicao VIRGULA texto INICIO
+    {
+        // --- Ação 2: Gera o desvio condicional ---
+        // 1. Pega a estrutura de controle (sem remover da pilha).
+        ControleFluxo controle = pilha_peek(&pilhaControleFluxo);
+
+        // 2. A condição ($3) acabou de ser processada. Agora geramos o desvio.
+        // Se for true -> vai para o corpo. Se for false -> sai do laço.
+        LLVMBuildCondBr(builder, $3, controle.then_block, controle.merge_block);
+
+        // 3. Move o builder para o corpo do laço para gerar o código do 'bloco'.
         LLVMPositionBuilderAtEnd(builder, controle.then_block);
     }
     bloco texto ENQUANTO_FIM FIM
     {
         // --- Ação de Saída do While ---
-        // 1. Pega a estrutura de controle de volta.
+        // 1. Pega a estrutura de controle e remove da pilha.
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
         // 2. No final do corpo do laço, cria um pulo de volta para o teste da condição.
         LLVMBuildBr(builder, controle.else_block);
 
-        // 3. Move o builder para o bloco de continuação, para o resto do programa.
+        // 3. Move o builder para o bloco de continuação.
         LLVMPositionBuilderAtEnd(builder, controle.merge_block);
     }
     | FACA VIRGULA texto INICIO

@@ -75,11 +75,6 @@ ok:                                               ; preds = %erro, %entrada
   %addtmp = add i32 %peeked_val14, 0
   %pilha_ptr15 = load ptr, ptr %Robertinha, align 8
   call void @pilha_set_topo(ptr %pilha_ptr15, i32 %addtmp)
-  %pilha_ptr_var16 = load ptr, ptr %"Jose Dirceu", align 8
-  %peeked_val17 = call i32 @pilha_peek(ptr %pilha_ptr_var16)
-  %pilha_ptr_var18 = load ptr, ptr %Joaozinho, align 8
-  %peeked_val19 = call i32 @pilha_peek(ptr %pilha_ptr_var18)
-  %cmplt = icmp slt i32 %peeked_val17, %peeked_val19
   br label %while_cond
 
 erro:                                             ; preds = %entrada
@@ -87,6 +82,11 @@ erro:                                             ; preds = %entrada
   br label %ok
 
 while_cond:                                       ; preds = %while_body, %ok
+  %pilha_ptr_var16 = load ptr, ptr %"Jose Dirceu", align 8
+  %peeked_val17 = call i32 @pilha_peek(ptr %pilha_ptr_var16)
+  %pilha_ptr_var18 = load ptr, ptr %Joaozinho, align 8
+  %peeked_val19 = call i32 @pilha_peek(ptr %pilha_ptr_var18)
+  %cmplt = icmp slt i32 %peeked_val17, %peeked_val19
   br i1 %cmplt, label %while_body, label %while_merge
 
 while_body:                                       ; preds = %while_cond

@@ -35,6 +35,7 @@ extern PilhaControleFluxo pilhaControleFluxo;
 void pilha_init(PilhaControleFluxo* p);
 void pilha_push(PilhaControleFluxo* p, ControleFluxo item);
 ControleFluxo pilha_pop(PilhaControleFluxo* p);
+ControleFluxo pilha_peek(PilhaControleFluxo* p);
 void iniciar_codegen();
 void finalizar_codegen();
 LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val);

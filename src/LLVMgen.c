@@ -33,6 +33,13 @@ ControleFluxo pilha_pop(PilhaControleFluxo* p) {
     return p->itens[p->topo--];
 }
 
+ControleFluxo pilha_peek(PilhaControleFluxo* p) {
+    if (p->topo < 0) {
+        fprintf(stderr, "Erro: Pilha de controlo de fluxo vazia!\n");
+        exit(1);
+    }
+    return p->itens[p->topo];
+}
 void iniciar_codegen() {
     contexto = LLVMContextCreate();
     modulo = LLVMModuleCreateWithNameInContext("NelsonRodriguesLang", contexto);
