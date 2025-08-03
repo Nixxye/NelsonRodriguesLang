@@ -634,6 +634,7 @@ if_bloco:
 while:
     ENQUANTO_COMECO
     {
+        // WHILE
         // --- Ação 1: Prepara os blocos ---
         ControleFluxo controle;
         controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_cond");
@@ -677,38 +678,41 @@ while:
     }
     | FACA VIRGULA texto INICIO
     {
-        // --- Ação de Entrada do Do-While ---
+        printf("Iniciando do-while\n");
+        // DO WHILE
         ControleFluxo controle;
-        // 1. Cria os 3 blocos necessários.
-        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_body");
-        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_cond");
-        controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_merge");
-        
-        // 2. Empilha a estrutura para uso posterior.
-        pilha_push(&pilhaControleFluxo, controle);
+        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "do_body");
+        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "do_cond");
+        controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "do_merge");
 
-        // 3. Pula direto para o corpo do laço.
+        // Começamos no corpo
         LLVMBuildBr(builder, controle.then_block);
-
-        // 4. Posiciona o builder no início do corpo para gerar o código do 'bloco'.
         LLVMPositionBuilderAtEnd(builder, controle.then_block);
+
+        pilha_push(&pilhaControleFluxo, controle);
     }
     bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
     {
-        // --- Ação de Saída do Do-While ---
-        // 1. Pega a estrutura de controle de volta.
+        // --- Ação de Saída Corrigida ---
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
-        // 2. No final do corpo, pula para o bloco de teste da condição.
-        LLVMBuildBr(builder, controle.else_block);
+        LLVMBasicBlockRef current_block = LLVMGetInsertBlock(builder);
+        LLVMValueRef last_instruction = LLVMGetLastInstruction(current_block);
+        if (last_instruction == NULL || !LLVMIsATerminatorInst(last_instruction)) {
+            // No final do corpo, pula para o bloco de teste da condição.
+            LLVMBuildBr(builder, controle.else_block);
+        }
 
-        // 3. Posiciona o builder no bloco da condição.
+        // Posiciona o builder no bloco da condição.
         LLVMPositionBuilderAtEnd(builder, controle.else_block);
-        // Se a condição ($7) for true, volta para o corpo; senão, sai do laço.
-        LLVMBuildCondBr(builder, $7, controle.then_block, controle.merge_block);
+
+        // Se a condição ($8) for true, volta para o corpo; senão, sai do laço.
+        LLVMBuildCondBr(builder, $8, controle.then_block, controle.merge_block);
         
-        // 4. Move o builder para o bloco de continuação.
+        // Move o builder para o bloco de continuação.
         LLVMPositionBuilderAtEnd(builder, controle.merge_block);
+
+        // TODO: Entender pq aqui é o 8 que é o correto
     }
 
 condicao:

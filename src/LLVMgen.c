@@ -82,6 +82,10 @@ void finalizar_codegen() {
  * @return LLVMValueRef que representa o ponteiro para a nova estrutura de pilha (PilhaInt*).
  */
 LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val) {
+    if (!capacidade_val) {
+        fprintf(stderr, "Erro: capacidade da pilha é nula!\n");
+        exit(EXIT_FAILURE);
+    }
     // --- PARTE 1: Criar a pilha vazia ---
     LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
     LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
@@ -118,6 +122,14 @@ LLVMValueRef gerar_criar_pilha_e_inicializar(LLVMValueRef capacidade_val) {
  * @param valor O LLVMValueRef (i32) do valor a ser empilhado.
  */
 void gerar_push_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor) {
+    if (!pilha_ptr) {
+        fprintf(stderr, "Erro: ponteiro da pilha é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
+    if (!valor) {
+        fprintf(stderr, "Erro: valor a ser empilhado é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
     LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
     LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
 
@@ -139,6 +151,10 @@ void gerar_push_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor) {
  * @return LLVMValueRef (i32) com o valor retornado pela função pop.
  */
 LLVMValueRef gerar_pop_pilha(LLVMValueRef pilha_ptr) {
+    if (!pilha_ptr) {
+        fprintf(stderr, "Erro: ponteiro da pilha é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
     LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
     LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
 
@@ -160,6 +176,10 @@ LLVMValueRef gerar_pop_pilha(LLVMValueRef pilha_ptr) {
  * @return LLVMValueRef (i32) com o valor do topo da pilha.
  */
 LLVMValueRef gerar_peek_pilha(LLVMValueRef pilha_ptr) {
+    if (!pilha_ptr) {
+        fprintf(stderr, "Erro: ponteiro da pilha é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
     LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
     LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
 
@@ -174,8 +194,15 @@ LLVMValueRef gerar_peek_pilha(LLVMValueRef pilha_ptr) {
     return LLVMBuildCall2(builder, func_type, func, args, 1, "peeked_val");
 }
 
-// Em codegen.c
 void gerar_set_topo_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor_ref) {
+    if (!pilha_ptr) {
+        fprintf(stderr, "Erro: ponteiro da pilha é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
+    if (!valor_ref) {
+        fprintf(stderr, "Erro: valor a ser definido no topo da pilha é nulo!\n");
+        exit(EXIT_FAILURE);
+    }
     LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
     LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
     
