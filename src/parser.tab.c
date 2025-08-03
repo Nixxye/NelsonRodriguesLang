@@ -619,10 +619,10 @@ static const yytype_int16 yyrline[] =
      101,   116,   136,   155,   174,   187,   200,   216,   219,   225,
      235,   239,   242,   245,   248,   254,   260,   263,   268,   275,
      286,   298,   310,   323,   334,   345,   358,   371,   384,   393,
-     396,   399,   404,   410,   427,   444,   461,   476,   479,   483,
-     487,   491,   500,   538,   569,   596,   595,   635,   634,   643,
-     642,   654,   657,   660,   663,   666,   669,   675,   682,   688,
-     703,   726,   766,   786,   802,   817,   832,   865,   879
+     396,   399,   404,   410,   428,   445,   462,   477,   480,   484,
+     488,   492,   501,   539,   570,   597,   596,   636,   635,   671,
+     670,   707,   710,   713,   716,   719,   722,   728,   735,   741,
+     756,   779,   819,   839,   855,   870,   885,   918,   932
 };
 #endif
 
@@ -1796,6 +1796,7 @@ yyreduce:
                 yyerror("Variável 'tu mesmo' inválida ou não declarada");
                 (yyval.llmValueRef) = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
+                printf("Valor de 'tu mesmo': %s\n", sym->name);
                 // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
                 LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_tu");
                 // 2. Gera a chamada ao runtime para obter o valor do topo
@@ -1803,11 +1804,11 @@ yyreduce:
             }
         }
     }
-#line 1807 "src/parser.tab.c"
+#line 1808 "src/parser.tab.c"
     break;
 
   case 54: /* valor: EU  */
-#line 427 "src/parser.y"
+#line 428 "src/parser.y"
          {
         if (personagemQueFala == NULL) {
             yyerror("Variável 'eu' não definida");
@@ -1825,11 +1826,11 @@ yyreduce:
             }
         }
     }
-#line 1829 "src/parser.tab.c"
+#line 1830 "src/parser.tab.c"
     break;
 
   case 55: /* valor: VOCE  */
-#line 444 "src/parser.y"
+#line 445 "src/parser.y"
            {
         if (personagemVoce == NULL) {
             yyerror("Variável 'voce' não definida");
@@ -1847,11 +1848,11 @@ yyreduce:
             }
         }
     }
-#line 1851 "src/parser.tab.c"
+#line 1852 "src/parser.tab.c"
     break;
 
   case 56: /* valor: texto  */
-#line 461 "src/parser.y"
+#line 462 "src/parser.y"
             {
         Symbol *sym = get_symbol((yyvsp[0].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -1864,57 +1865,57 @@ yyreduce:
             (yyval.llmValueRef) = gerar_peek_pilha(pilha_ptr);
         }
     }
-#line 1868 "src/parser.tab.c"
+#line 1869 "src/parser.tab.c"
     break;
 
   case 57: /* expressao: valor  */
-#line 476 "src/parser.y"
+#line 477 "src/parser.y"
           {
         (yyval.llmValueRef) = (yyvsp[0].llmValueRef); // valor já retorna LLVMValueRef
     }
-#line 1876 "src/parser.tab.c"
+#line 1877 "src/parser.tab.c"
     break;
 
   case 58: /* expressao: ARTIGO SOMAR ENTRE valor E valor  */
-#line 479 "src/parser.y"
+#line 480 "src/parser.y"
                                      {
         if (DEBUG_BISON) printf("Expressão de soma\n");
         (yyval.llmValueRef) = LLVMBuildAdd(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "addtmp");
     }
-#line 1885 "src/parser.tab.c"
+#line 1886 "src/parser.tab.c"
     break;
 
   case 59: /* expressao: ARTIGO SUBTRAIR ENTRE valor E valor  */
-#line 483 "src/parser.y"
+#line 484 "src/parser.y"
                                         {
         if (DEBUG_BISON) printf("Expressão de subtração\n");
         (yyval.llmValueRef) = LLVMBuildSub(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "subtmp");
     }
-#line 1894 "src/parser.tab.c"
+#line 1895 "src/parser.tab.c"
     break;
 
   case 60: /* expressao: ARTIGO MULTIPLICAR ENTRE valor E valor  */
-#line 487 "src/parser.y"
+#line 488 "src/parser.y"
                                            {
         if (DEBUG_BISON) printf("Expressão de multiplicação\n");
         (yyval.llmValueRef) = LLVMBuildMul(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "multmp");
     }
-#line 1903 "src/parser.tab.c"
+#line 1904 "src/parser.tab.c"
     break;
 
   case 61: /* expressao: ARTIGO DIVIDIR ENTRE valor E valor  */
-#line 491 "src/parser.y"
+#line 492 "src/parser.y"
                                        {
         if (DEBUG_BISON) printf("Expressão de divisão\n");
 
         // Divisão por zero em tempo de compilação não pode ser detectada aqui
         (yyval.llmValueRef) = LLVMBuildSDiv(builder, (yyvsp[-2].llmValueRef), (yyvsp[0].llmValueRef), "divtmp");
     }
-#line 1914 "src/parser.tab.c"
+#line 1915 "src/parser.tab.c"
     break;
 
   case 62: /* if_sentenca: SE condicao VIRGULA personagem SERA expressao  */
-#line 500 "src/parser.y"
+#line 501 "src/parser.y"
                                                   {
         // $2 é a condição (LLVMValueRef do tipo i1)
         // $4 é o nome da variável de pilha (const char*)
@@ -1953,11 +1954,11 @@ yyreduce:
         // 4. Move o builder para o bloco 'merge' para as próximas instruções do programa.
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
-#line 1957 "src/parser.tab.c"
+#line 1958 "src/parser.tab.c"
     break;
 
   case 63: /* if_sentenca: SE condicao VIRGULA personagem IF_MOSTRA_VALOR  */
-#line 538 "src/parser.y"
+#line 539 "src/parser.y"
                                                      {
         // --- Padrão de 'if' em LLVM ---
         // 1. Cria os blocos para os caminhos 'then' (se verdadeiro) e 'merge' (continuação).
@@ -1989,11 +1990,11 @@ yyreduce:
         // 5. Move o builder para o bloco 'merge' para continuar o resto do programa.
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
-#line 1993 "src/parser.tab.c"
+#line 1994 "src/parser.tab.c"
     break;
 
   case 64: /* if_sentenca: SE condicao VIRGULA personagem IF_LE_VALOR  */
-#line 569 "src/parser.y"
+#line 570 "src/parser.y"
                                                  {
         // --- Padrão de 'if' em LLVM ---
         LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
@@ -2018,11 +2019,11 @@ yyreduce:
         }
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
-#line 2022 "src/parser.tab.c"
+#line 2023 "src/parser.tab.c"
     break;
 
   case 65: /* $@1: %empty  */
-#line 596 "src/parser.y"
+#line 597 "src/parser.y"
     {
         // --- AÇÃO INTERMEDIÁRIA (Mid-rule Action) ---
         ControleFluxo controle;
@@ -2038,11 +2039,11 @@ yyreduce:
         // Move o builder para o bloco 'then'
         LLVMPositionBuilderAtEnd(builder, controle.then_block);
     }
-#line 2042 "src/parser.tab.c"
+#line 2043 "src/parser.tab.c"
     break;
 
   case 66: /* if_bloco: SE condicao VIRGULA texto INICIO $@1 bloco ENDIF  */
-#line 612 "src/parser.y"
+#line 613 "src/parser.y"
     {
         // --- AÇÃO FINAL ---
         // Pega a estrutura de controlo do topo da pilha e remove-a.
@@ -2062,91 +2063,145 @@ yyreduce:
         // Move o builder para o bloco 'merge' para continuar a geração de código.
         LLVMPositionBuilderAtEnd(builder, controle.merge_block);
     }
-#line 2066 "src/parser.tab.c"
+#line 2067 "src/parser.tab.c"
     break;
 
   case 67: /* $@2: %empty  */
-#line 635 "src/parser.y"
+#line 636 "src/parser.y"
     {
+        // --- Ação de Entrada do While ---
+        ControleFluxo controle;
+        // 1. Cria os 3 blocos necessários: condição, corpo e continuação.
+        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_cond");  // Usando else_block para a condição
+        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_body");  // Usando then_block para o corpo
+        controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_merge");
 
+        // 2. Pula incondicionalmente para o bloco de teste da condição.
+        LLVMBuildBr(builder, controle.else_block);
+
+        // 3. Posiciona o builder no bloco da condição para gerar o teste.
+        LLVMPositionBuilderAtEnd(builder, controle.else_block);
+        // Se a condição ($2) for true, vai para o corpo; senão, sai do laço.
+        LLVMBuildCondBr(builder, (yyvsp[-3].llmValueRef), controle.then_block, controle.merge_block);
+
+        // 4. Empilha a estrutura de controle para uso no final do laço.
+        pilha_push(&pilhaControleFluxo, controle);
+
+        // 5. Move o builder para o corpo do laço para gerar o código do 'bloco'.
+        LLVMPositionBuilderAtEnd(builder, controle.then_block);
     }
-#line 2074 "src/parser.tab.c"
+#line 2094 "src/parser.tab.c"
     break;
 
   case 68: /* while: ENQUANTO_COMECO condicao VIRGULA texto INICIO $@2 bloco texto ENQUANTO_FIM FIM  */
-#line 639 "src/parser.y"
+#line 659 "src/parser.y"
     {
+        // --- Ação de Saída do While ---
+        // 1. Pega a estrutura de controle de volta.
+        ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
+        // 2. No final do corpo do laço, cria um pulo de volta para o teste da condição.
+        LLVMBuildBr(builder, controle.else_block);
+
+        // 3. Move o builder para o bloco de continuação, para o resto do programa.
+        LLVMPositionBuilderAtEnd(builder, controle.merge_block);
     }
-#line 2082 "src/parser.tab.c"
+#line 2110 "src/parser.tab.c"
     break;
 
   case 69: /* $@3: %empty  */
-#line 643 "src/parser.y"
+#line 671 "src/parser.y"
     {
+        // --- Ação de Entrada do Do-While ---
+        ControleFluxo controle;
+        // 1. Cria os 3 blocos necessários.
+        controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_body");
+        controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_cond");
+        controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "dowhile_merge");
+        
+        // 2. Empilha a estrutura para uso posterior.
+        pilha_push(&pilhaControleFluxo, controle);
 
+        // 3. Pula direto para o corpo do laço.
+        LLVMBuildBr(builder, controle.then_block);
+
+        // 4. Posiciona o builder no início do corpo para gerar o código do 'bloco'.
+        LLVMPositionBuilderAtEnd(builder, controle.then_block);
     }
-#line 2090 "src/parser.tab.c"
+#line 2132 "src/parser.tab.c"
     break;
 
   case 70: /* while: FACA VIRGULA texto INICIO $@3 bloco ENQUANTO_COMECO condicao VIRGULA texto FIM  */
-#line 647 "src/parser.y"
+#line 689 "src/parser.y"
     {
+        // --- Ação de Saída do Do-While ---
+        // 1. Pega a estrutura de controle de volta.
+        ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
+        // 2. No final do corpo, pula para o bloco de teste da condição.
+        LLVMBuildBr(builder, controle.else_block);
+
+        // 3. Posiciona o builder no bloco da condição.
+        LLVMPositionBuilderAtEnd(builder, controle.else_block);
+        // Se a condição ($7) for true, volta para o corpo; senão, sai do laço.
+        LLVMBuildCondBr(builder, (yyvsp[-4].texto), controle.then_block, controle.merge_block);
+        
+        // 4. Move o builder para o bloco de continuação.
+        LLVMPositionBuilderAtEnd(builder, controle.merge_block);
     }
-#line 2098 "src/parser.tab.c"
+#line 2153 "src/parser.tab.c"
     break;
 
   case 71: /* condicao: expressao FOR MAIOR expressao  */
-#line 654 "src/parser.y"
+#line 707 "src/parser.y"
                                       {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpgt");
         }
-#line 2106 "src/parser.tab.c"
+#line 2161 "src/parser.tab.c"
     break;
 
   case 72: /* condicao: expressao FOR MENOR expressao  */
-#line 657 "src/parser.y"
+#line 710 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmplt");
         }
-#line 2114 "src/parser.tab.c"
+#line 2169 "src/parser.tab.c"
     break;
 
   case 73: /* condicao: expressao FOR IGUAL expressao  */
-#line 660 "src/parser.y"
+#line 713 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntEQ, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpeq");
         }
-#line 2122 "src/parser.tab.c"
+#line 2177 "src/parser.tab.c"
     break;
 
   case 74: /* condicao: expressao NAO FOR MENOR expressao  */
-#line 663 "src/parser.y"
+#line 716 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpnlt");
         }
-#line 2130 "src/parser.tab.c"
+#line 2185 "src/parser.tab.c"
     break;
 
   case 75: /* condicao: expressao NAO FOR MAIOR expressao  */
-#line 666 "src/parser.y"
+#line 719 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpngt");
         }
-#line 2138 "src/parser.tab.c"
+#line 2193 "src/parser.tab.c"
     break;
 
   case 76: /* condicao: expressao NAO FOR IGUAL expressao  */
-#line 669 "src/parser.y"
+#line 722 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntNE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpneq");
         }
-#line 2146 "src/parser.tab.c"
+#line 2201 "src/parser.tab.c"
     break;
 
   case 77: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
-#line 675 "src/parser.y"
+#line 728 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
@@ -2154,22 +2209,22 @@ yyreduce:
         gerar_print_string(cenarioAtual);
         atualiza_personagemVoce();
     }
-#line 2158 "src/parser.tab.c"
+#line 2213 "src/parser.tab.c"
     break;
 
   case 78: /* dialogo: inicioDialogo if_sentenca FIM  */
-#line 682 "src/parser.y"
+#line 735 "src/parser.y"
                                     {
         if (DEBUG_BISON) {
             printf("if sentença\n");
         }
         atualiza_personagemVoce();
     }
-#line 2169 "src/parser.tab.c"
+#line 2224 "src/parser.tab.c"
     break;
 
   case 79: /* dialogo: inicioDialogo texto FIM  */
-#line 688 "src/parser.y"
+#line 741 "src/parser.y"
                               {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", (yyvsp[-1].texto));
@@ -2185,11 +2240,11 @@ yyreduce:
         }
         atualiza_personagemVoce();
     }
-#line 2189 "src/parser.tab.c"
+#line 2244 "src/parser.tab.c"
     break;
 
   case 80: /* dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM  */
-#line 703 "src/parser.y"
+#line 756 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2213,11 +2268,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2217 "src/parser.tab.c"
+#line 2272 "src/parser.tab.c"
     break;
 
   case 81: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 726 "src/parser.y"
+#line 779 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2257,11 +2312,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2261 "src/parser.tab.c"
+#line 2316 "src/parser.tab.c"
     break;
 
   case 82: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 766 "src/parser.y"
+#line 819 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2282,11 +2337,11 @@ yyreduce:
         gerar_print_topo_pilha((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2286 "src/parser.tab.c"
+#line 2341 "src/parser.tab.c"
     break;
 
   case 83: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 786 "src/parser.y"
+#line 839 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2303,11 +2358,11 @@ yyreduce:
         gerar_leitura_inteiro((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2307 "src/parser.tab.c"
+#line 2362 "src/parser.tab.c"
     break;
 
   case 84: /* dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM  */
-#line 802 "src/parser.y"
+#line 855 "src/parser.y"
                                                             {
         Symbol *sym = get_symbol((yyvsp[-5].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2323,11 +2378,11 @@ yyreduce:
             gerar_push_pilha(pilha_ptr, zero_const);
         }
     }
-#line 2327 "src/parser.tab.c"
+#line 2382 "src/parser.tab.c"
     break;
 
   case 85: /* dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM  */
-#line 817 "src/parser.y"
+#line 870 "src/parser.y"
                                                    {
         Symbol *sym = get_symbol((yyvsp[-4].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2340,11 +2395,11 @@ yyreduce:
             gerar_pop_pilha(pilha_ptr);
         }
     }
-#line 2344 "src/parser.tab.c"
+#line 2399 "src/parser.tab.c"
     break;
 
   case 86: /* inicioDialogo: texto INICIO  */
-#line 832 "src/parser.y"
+#line 885 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2376,11 +2431,11 @@ yyreduce:
             }        
         }
     }
-#line 2380 "src/parser.tab.c"
+#line 2435 "src/parser.tab.c"
     break;
 
   case 87: /* ato: ATO  */
-#line 865 "src/parser.y"
+#line 918 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2393,11 +2448,11 @@ yyreduce:
             }
         }
     }
-#line 2397 "src/parser.tab.c"
+#line 2452 "src/parser.tab.c"
     break;
 
   case 88: /* cena: CENA  */
-#line 879 "src/parser.y"
+#line 932 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2410,11 +2465,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2414 "src/parser.tab.c"
+#line 2469 "src/parser.tab.c"
     break;
 
 
-#line 2418 "src/parser.tab.c"
+#line 2473 "src/parser.tab.c"
 
       default: break;
     }
@@ -2607,7 +2662,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 893 "src/parser.y"
+#line 946 "src/parser.y"
 
 
 int main() {

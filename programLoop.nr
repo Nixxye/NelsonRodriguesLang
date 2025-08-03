@@ -8,23 +8,23 @@ Robertinha, um iterador.
 Esta chovendo? SIM!
 ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
-		[Entra Jose Dirceu e Robertinha] # Ajustar no futuro #
+		[ENTRAM Jose Dirceu, Maria Roberta, Joaozinho E Robertinha] # Ajustar no futuro #
 		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
-		Jose Dirceu: Maria Roberta, VOCÊ É DOCE como um pudim! # Maria += 1 #
+		Jose Dirceu: Maria Roberta, TU É DOCE como um pudim! # Maria += 1 #
 		Joaozinho: Jose Dirceu, TU ÉS BELO como um cachorro!
-		Jose Dirceu: Joazinho, ESCUTA TEU CORACAO MISERAVEL.
+		Jose Dirceu: Joaozinho, ESCUTA TEU CORACAO MISERAVEL.
 		Robertinha: Maria Roberta, ABRE TEU CORACAO MISERAVEL.
 		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
 		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 0!
-	#
-	ENQUANTO Jose Dirceu FOR MENOR QUE Joaozinho, O SOFRIMENTO VAI CONTINUAR: # Loop #
-		Robertinha: Jose Dirceu, VOCÊ É A SOMA DE TU MESMO E Robertinha!
-		Maria Roberta: Robertinha, TU ÉS A SOMA DE José Dirceu e 0!
+	ENQUANTO Jose Dirceu FOR MENOR QUE Joaozinho, o sofrimento vai continuar: # Loop #
+		Robertinha: Jose Dirceu, TU É A SOMA DE TU MESMO E Robertinha!
+		Maria Roberta: Robertinha, TU ÉS A SOMA DE Jose Dirceu E 1!
+		Maria Roberta: Robertinha, ABRE TEU CORACAO MISERAVEL.
 		Robertinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL.
-	O SOFRIMENTO ACABA!
-	#
-		[Sai Jose Dirceu]
-		[Todos saem]
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
+	o sofrimento ACABA!
+		[SAI Jose Dirceu]
+		[TODOS SAEM]
 
 
 # Um comentário qualquer #
