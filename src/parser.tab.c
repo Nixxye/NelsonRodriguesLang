@@ -622,8 +622,8 @@ static const yytype_int16 yyrline[] =
      286,   298,   310,   323,   334,   345,   358,   371,   384,   393,
      396,   399,   404,   410,   428,   445,   462,   477,   480,   484,
      488,   492,   501,   539,   570,   597,   596,   636,   655,   635,
-     680,   679,   720,   723,   726,   729,   732,   735,   741,   748,
-     754,   769,   792,   832,   852,   868,   883,   898,   931,   945
+     680,   679,   719,   722,   725,   728,   731,   734,   740,   747,
+     753,   768,   791,   831,   851,   867,   882,   897,   930,   944
 };
 #endif
 
@@ -2144,10 +2144,8 @@ yyreduce:
 #line 695 "src/parser.y"
     {
         // --- Ação de Saída Corrigida ---
-        printf("Condição do do-while: %s\n", (yyvsp[-3].llmValueRef));
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
-        // CORREÇÃO 1: Adiciona a verificação de segurança.
         LLVMBasicBlockRef current_block = LLVMGetInsertBlock(builder);
         LLVMValueRef last_instruction = LLVMGetLastInstruction(current_block);
         if (last_instruction == NULL || !LLVMIsATerminatorInst(last_instruction)) {
@@ -2158,66 +2156,67 @@ yyreduce:
         // Posiciona o builder no bloco da condição.
         LLVMPositionBuilderAtEnd(builder, controle.else_block);
 
-        // CORREÇÃO 2: Usa o índice correto para a condição ($8).
         // Se a condição ($8) for true, volta para o corpo; senão, sai do laço.
         LLVMBuildCondBr(builder, (yyvsp[-3].llmValueRef), controle.then_block, controle.merge_block);
         
         // Move o builder para o bloco de continuação.
         LLVMPositionBuilderAtEnd(builder, controle.merge_block);
+
+        // TODO: Entender pq aqui é o 8 que é o correto
     }
-#line 2169 "src/parser.tab.c"
+#line 2168 "src/parser.tab.c"
     break;
 
   case 72: /* condicao: expressao FOR MAIOR expressao  */
-#line 720 "src/parser.y"
+#line 719 "src/parser.y"
                                       {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpgt");
         }
-#line 2177 "src/parser.tab.c"
+#line 2176 "src/parser.tab.c"
     break;
 
   case 73: /* condicao: expressao FOR MENOR expressao  */
-#line 723 "src/parser.y"
+#line 722 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLT, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmplt");
         }
-#line 2185 "src/parser.tab.c"
+#line 2184 "src/parser.tab.c"
     break;
 
   case 74: /* condicao: expressao FOR IGUAL expressao  */
-#line 726 "src/parser.y"
+#line 725 "src/parser.y"
                                     {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntEQ, (yyvsp[-3].llmValueRef), (yyvsp[0].llmValueRef), "cmpeq");
         }
-#line 2193 "src/parser.tab.c"
+#line 2192 "src/parser.tab.c"
     break;
 
   case 75: /* condicao: expressao NAO FOR MENOR expressao  */
-#line 729 "src/parser.y"
+#line 728 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSGE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpnlt");
         }
-#line 2201 "src/parser.tab.c"
+#line 2200 "src/parser.tab.c"
     break;
 
   case 76: /* condicao: expressao NAO FOR MAIOR expressao  */
-#line 732 "src/parser.y"
+#line 731 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntSLE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpngt");
         }
-#line 2209 "src/parser.tab.c"
+#line 2208 "src/parser.tab.c"
     break;
 
   case 77: /* condicao: expressao NAO FOR IGUAL expressao  */
-#line 735 "src/parser.y"
+#line 734 "src/parser.y"
                                         {
             (yyval.llmValueRef) = LLVMBuildICmp(builder, LLVMIntNE, (yyvsp[-4].llmValueRef), (yyvsp[0].llmValueRef), "cmpneq");
         }
-#line 2217 "src/parser.tab.c"
+#line 2216 "src/parser.tab.c"
     break;
 
   case 78: /* dialogo: inicioDialogo MOSTRAR_CENARIO  */
-#line 741 "src/parser.y"
+#line 740 "src/parser.y"
                                   {
         if (DEBUG_BISON) {
             printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
@@ -2225,22 +2224,22 @@ yyreduce:
         gerar_print_string(cenarioAtual);
         atualiza_personagemVoce();
     }
-#line 2229 "src/parser.tab.c"
+#line 2228 "src/parser.tab.c"
     break;
 
   case 79: /* dialogo: inicioDialogo if_sentenca FIM  */
-#line 748 "src/parser.y"
+#line 747 "src/parser.y"
                                     {
         if (DEBUG_BISON) {
             printf("if sentença\n");
         }
         atualiza_personagemVoce();
     }
-#line 2240 "src/parser.tab.c"
+#line 2239 "src/parser.tab.c"
     break;
 
   case 80: /* dialogo: inicioDialogo texto FIM  */
-#line 754 "src/parser.y"
+#line 753 "src/parser.y"
                               {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", (yyvsp[-1].texto));
@@ -2256,11 +2255,11 @@ yyreduce:
         }
         atualiza_personagemVoce();
     }
-#line 2260 "src/parser.tab.c"
+#line 2259 "src/parser.tab.c"
     break;
 
   case 81: /* dialogo: inicioDialogo texto VIRGULA TU EH expressao FIM  */
-#line 769 "src/parser.y"
+#line 768 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2284,11 +2283,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2288 "src/parser.tab.c"
+#line 2287 "src/parser.tab.c"
     break;
 
   case 82: /* dialogo: inicioDialogo texto VIRGULA TU EH adjetivos FIM  */
-#line 792 "src/parser.y"
+#line 791 "src/parser.y"
                                                       {
         personagemDialogo = strdup((yyvsp[-5].texto));
 
@@ -2328,11 +2327,11 @@ yyreduce:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
-#line 2332 "src/parser.tab.c"
+#line 2331 "src/parser.tab.c"
     break;
 
   case 83: /* dialogo: inicioDialogo texto VIRGULA MOSTRA_VALOR FIM  */
-#line 832 "src/parser.y"
+#line 831 "src/parser.y"
                                                    {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
@@ -2353,11 +2352,11 @@ yyreduce:
         gerar_print_topo_pilha((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2357 "src/parser.tab.c"
+#line 2356 "src/parser.tab.c"
     break;
 
   case 84: /* dialogo: inicioDialogo texto VIRGULA LE_VALOR FIM  */
-#line 852 "src/parser.y"
+#line 851 "src/parser.y"
                                                {
         // Scanf
         if (DEBUG_BISON) {
@@ -2374,11 +2373,11 @@ yyreduce:
         gerar_leitura_inteiro((yyvsp[-3].texto));
         atualiza_personagemVoce();
     }
-#line 2378 "src/parser.tab.c"
+#line 2377 "src/parser.tab.c"
     break;
 
   case 85: /* dialogo: inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM  */
-#line 868 "src/parser.y"
+#line 867 "src/parser.y"
                                                             {
         Symbol *sym = get_symbol((yyvsp[-5].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2394,11 +2393,11 @@ yyreduce:
             gerar_push_pilha(pilha_ptr, zero_const);
         }
     }
-#line 2398 "src/parser.tab.c"
+#line 2397 "src/parser.tab.c"
     break;
 
   case 86: /* dialogo: inicioDialogo texto VIRGULA LEMBRE texto FIM  */
-#line 883 "src/parser.y"
+#line 882 "src/parser.y"
                                                    {
         Symbol *sym = get_symbol((yyvsp[-4].texto));
         if (!sym || sym->type != INT_VAR) {
@@ -2411,11 +2410,11 @@ yyreduce:
             gerar_pop_pilha(pilha_ptr);
         }
     }
-#line 2415 "src/parser.tab.c"
+#line 2414 "src/parser.tab.c"
     break;
 
   case 87: /* inicioDialogo: texto INICIO  */
-#line 898 "src/parser.y"
+#line 897 "src/parser.y"
                  {
         personagemQueFala = (yyvsp[-1].texto);
         if (estado == E_TITULO) {
@@ -2447,11 +2446,11 @@ yyreduce:
             }        
         }
     }
-#line 2451 "src/parser.tab.c"
+#line 2450 "src/parser.tab.c"
     break;
 
   case 88: /* ato: ATO  */
-#line 931 "src/parser.y"
+#line 930 "src/parser.y"
         {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
@@ -2464,11 +2463,11 @@ yyreduce:
             }
         }
     }
-#line 2468 "src/parser.tab.c"
+#line 2467 "src/parser.tab.c"
     break;
 
   case 89: /* cena: CENA  */
-#line 945 "src/parser.y"
+#line 944 "src/parser.y"
          {
         if (estado == E_ATO) {
             if (DEBUG_BISON) {
@@ -2481,11 +2480,11 @@ yyreduce:
             printf("Cena fora de contexto, estado atual: %d", estado);
         }
     }
-#line 2485 "src/parser.tab.c"
+#line 2484 "src/parser.tab.c"
     break;
 
 
-#line 2489 "src/parser.tab.c"
+#line 2488 "src/parser.tab.c"
 
       default: break;
     }
@@ -2678,7 +2677,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 959 "src/parser.y"
+#line 958 "src/parser.y"
 
 
 int main() {
