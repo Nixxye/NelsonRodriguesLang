@@ -58,7 +58,7 @@
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO VOCE
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA SERA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
-%token <text> IF_MOSTRA_VALOR IF_LE_VALOR
+%token <text> IF_MOSTRA_VALOR IF_LE_VALOR O_TAMANHO_DE
 %token <inteiro> ATO CENA 
 
 %nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra personagem
@@ -319,6 +319,7 @@ personagensEntrando:
         sym->active = 1;
         personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
     }
+
 personagensSaindo:
     texto {
         Symbol *sym = get_symbol($1);
@@ -457,6 +458,23 @@ valor:
                 // 2. Gera a chamada ao runtime para obter o valor do topo
                 $$ = gerar_peek_pilha(pilha_ptr);
             }
+        }
+    }
+    | O_TAMANHO_DE texto {
+        // $2 é o nome da pilha (const char*)
+        const char* nome_pilha = $2;
+        Symbol* sym = get_symbol(nome_pilha);
+
+        // Valida se a variável existe e é uma pilha
+        if (!sym || sym->type != INT_VAR) {
+            printf("Variável de pilha inválida ou não declarada: %s\n", nome_pilha);
+            $$ = LLVMConstInt(LLVMInt32Type(), 0, 0); // Retorna 0 em caso de erro
+        } else {
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_size");
+
+            // 2. Gera a chamada ao runtime para obter o tamanho da pilha
+            $$ = gerar_obter_tamanho_pilha(pilha_ptr);
         }
     }
     | texto {

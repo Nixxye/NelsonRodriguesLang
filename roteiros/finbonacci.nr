@@ -12,7 +12,7 @@ ATO I: A calculadora.
 
 		Robertinha: Joaozinho, TU ÉS DOCE como um paozinho. # Joaozinho += 1 #
 		Maria Roberta: Jose Dirceu, ESCUTA TEU CORACAO MISERAVEL! # Jose Dirceu <- input usuário #
-
+	# Refazer com DO WHILE #
 	ENQUANTO Maria Roberta NAO FOR MAIOR QUE Jose Dirceu, o sofrimento do cálculo continuará: # while Maria Roberta < Jose Dirceu #
 		Jose Dirceu: Maria Roberta, ABRE TEU CORACAO MISERAVEL! # print Maria Roberta #
 		Jose Dirceu: Robertinha, TU ÉS A SOMA DE Maria Roberta E Joaozinho! # Robertinha <- Maria Roberta + Joaozinho #

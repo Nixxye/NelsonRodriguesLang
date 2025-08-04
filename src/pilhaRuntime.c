@@ -74,3 +74,12 @@ void pilha_set_topo(PilhaInt* pilha, int novo_valor) {
     // Acessa o último elemento (o topo) e altera seu valor.
     pilha->data[pilha->tamanho - 1] = novo_valor;
 }
+
+
+int pilha_obter_tamanho(const PilhaInt* pilha) {
+    if (!pilha) {
+        // Se o ponteiro for nulo, retorna 0 por segurança
+        return 0;
+    }
+    return pilha->tamanho;
+}

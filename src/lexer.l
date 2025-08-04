@@ -319,6 +319,12 @@ LEMBRE[ ]DE[ ]QUEM[ ]TU[ ]ES {
     return LEMBRE;
 }
 
+O[ ]TAMANHO[ ]DE {
+    if (DEBUG_LEX) printf("TOKEN: O_TAMANHO_DE\n");
+    yylval.texto = strdup(yytext);
+    return O_TAMANHO_DE;
+}
+
 : {
     if (DEBUG_LEX) printf("TOKEN: INICIO\n");
     return INICIO;
