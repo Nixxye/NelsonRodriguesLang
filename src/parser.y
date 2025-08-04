@@ -54,7 +54,7 @@
 
 
 /* Declaração dos tokens */
-%token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MENOR IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
+%token <texto> FACA ENDIF ENQUANTO_COMECO ENQUANTO_FIM MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL IGUAL NAO FOR ENTAO EU SE SAEM ENTRAM TODOS SOMAR SUBTRAIR DIVIDIR MULTIPLICAR
 %token <texto> INICIO FIM SIM INTERROGACAO ABRE_COLCHETES FECHA_COLCHETES VOLTAR_CENARIO VOCE
 %token <texto> ABRE_PARENTESES FECHA_PARENTESES
 %token <texto> VIRGULA SERA TOKEN ADJETIVO_POSITIVO ADJETIVO_NEGATIVO TU EH E ENTRE ARTIGO MESMO NUMERO ADICIONAR_CENARIO SUBSTITUIR_CENARIO POR NO_CENARIO MOSTRAR_CENARIO MOSTRA_VALOR LE_VALOR GUARDE INTERIOR LEMBRE
@@ -719,8 +719,14 @@ condicao:
         expressao FOR MAIOR expressao {
             $$ = LLVMBuildICmp(builder, LLVMIntSGT, $1, $4, "cmpgt");
         }
+    | expressao FOR MAIOR_IGUAL expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSGE, $1, $4, "cmpge");
+        }
     | expressao FOR MENOR expressao {
             $$ = LLVMBuildICmp(builder, LLVMIntSLT, $1, $4, "cmplt");
+        }
+    | expressao FOR MENOR_IGUAL expressao {
+            $$ = LLVMBuildICmp(builder, LLVMIntSLE, $1, $4, "cmple");
         }
     | expressao FOR IGUAL expressao {
             $$ = LLVMBuildICmp(builder, LLVMIntEQ, $1, $4, "cmpeq");

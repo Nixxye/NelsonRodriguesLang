@@ -210,11 +210,24 @@ MULTIPLICAÇÃO {
     return MAIOR;
 }
 
+(MAIS[ \t]+OU[ \t]+IGUAL[ \t]+QUE)|(MAIOR[ \t]+OU[ \t]+IGUAL[ \t]+QUE) {
+    if (DEBUG_LEX) printf("TOKEN: MAIOR_IGUAL\n");
+    yylval.texto = strdup(yytext);
+    return MAIOR_IGUAL;
+}
+
 (MENOS[ \t]+QUE)|(MENOR[ \t]+QUE) {
     if (DEBUG_LEX) printf("TOKEN: MENOR\n");
     yylval.texto = strdup(yytext);
     return MENOR;
 }
+
+(MENOS[ \t]+OU[ \t]+IGUAL[ \t]+QUE)|(MENOR[ \t]+OU[ \t]+IGUAL[ \t]+QUE) {
+    if (DEBUG_LEX) printf("TOKEN: MENOR_IGUAL\n");
+    yylval.texto = strdup(yytext);
+    return MENOR_IGUAL;
+}
+
 
 ABRE[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     if (DEBUG_LEX) printf("TOKEN: MOSTRA_VALOR\n");
