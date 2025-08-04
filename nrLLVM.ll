@@ -1,6 +1,7 @@
 ; ModuleID = 'NelsonRodriguesLang'
 source_filename = "NelsonRodriguesLang"
 
+<<<<<<< Updated upstream
 @prompt = private unnamed_addr constant [30 x i8] c"Digite o valor de Dia atual: \00", align 1
 @fmt = private unnamed_addr constant [3 x i8] c"%d\00", align 1
 @errmsg = private unnamed_addr constant [43 x i8] c"Erro: valor inv\C3\A1lido (esperado inteiro)\\n\00", align 1
@@ -21,6 +22,15 @@ source_filename = "NelsonRodriguesLang"
 @errmsg.15 = private unnamed_addr constant [43 x i8] c"Erro: valor inv\C3\A1lido (esperado inteiro)\\n\00", align 1
 @fmt_str = private unnamed_addr constant [13 x i8] c"%s: Sou %d!\0A\00", align 1
 @var_name_str = private unnamed_addr constant [11 x i8] c"caluladora\00", align 1
+=======
+@empty_str = private unnamed_addr constant [1 x i8] zeroinitializer, align 1
+@strtmp = private unnamed_addr constant [19 x i8] c"luxuria e confusao\00", align 1
+@prompt = private unnamed_addr constant [32 x i8] c"Digite o valor de Jose Dirceu: \00", align 1
+@fmt = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+@errmsg = private unnamed_addr constant [43 x i8] c"Erro: valor inv\C3\A1lido (esperado inteiro)\\n\00", align 1
+@fmt_str = private unnamed_addr constant [13 x i8] c"%s: Sou %d!\0A\00", align 1
+@var_name_str = private unnamed_addr constant [14 x i8] c"Maria Roberta\00", align 1
+>>>>>>> Stashed changes
 
 define i32 @main() {
 entrada:
@@ -39,6 +49,7 @@ entrada:
   %"Dia do seu aniversario" = alloca ptr, align 8
   %nova_pilha_ptr3 = call ptr @criar_pilha(i32 8)
   call void @pilha_push(ptr %nova_pilha_ptr3, i32 0)
+<<<<<<< Updated upstream
   store ptr %nova_pilha_ptr3, ptr %"Dia do seu aniversario", align 8
   %"Mes do seu aniversario" = alloca ptr, align 8
   %nova_pilha_ptr4 = call ptr @criar_pilha(i32 8)
@@ -52,6 +63,16 @@ entrada:
   %nova_pilha_ptr6 = call ptr @criar_pilha(i32 8)
   call void @pilha_push(ptr %nova_pilha_ptr6, i32 0)
   store ptr %nova_pilha_ptr6, ptr %caluladora, align 8
+=======
+  store ptr %nova_pilha_ptr3, ptr %Robertinha, align 8
+  %"o mundo dos n meros" = alloca ptr, align 8
+  store ptr @empty_str, ptr %"o mundo dos n meros", align 8
+  store ptr @strtmp, ptr %"o mundo dos n meros", align 8
+  %pilha_ptr = load ptr, ptr %Joaozinho, align 8
+  %peeked_val = call i32 @pilha_peek(ptr %pilha_ptr)
+  %tmp_sum = add i32 %peeked_val, 1
+  call void @pilha_set_topo(ptr %pilha_ptr, i32 %tmp_sum)
+>>>>>>> Stashed changes
   %0 = call i32 (ptr, ...) @printf(ptr @prompt)
   %temp_scanf = alloca i32, align 4
   %res_scanf = call i32 (ptr, ...) @scanf(ptr @fmt, ptr %temp_scanf)
@@ -60,6 +81,7 @@ entrada:
 
 ok:                                               ; preds = %erro, %entrada
   %valor_lido = load i32, ptr %temp_scanf, align 4
+<<<<<<< Updated upstream
   %pilha_ptr = load ptr, ptr %"Dia atual", align 8
   call void @pilha_set_topo(ptr %pilha_ptr, i32 %valor_lido)
   %1 = call i32 (ptr, ...) @printf(ptr @prompt.1)
@@ -162,6 +184,46 @@ if_merge:                                         ; preds = %if_merge54, %ok38
   %pilha_ptr57 = load ptr, ptr %caluladora, align 8
   %peeked_val58 = call i32 @pilha_peek(ptr %pilha_ptr57)
   %12 = call i32 (ptr, ...) @printf(ptr @fmt_str, ptr @var_name_str, i32 %peeked_val58)
+=======
+  %pilha_ptr4 = load ptr, ptr %"Jose Dirceu", align 8
+  call void @pilha_set_topo(ptr %pilha_ptr4, i32 %valor_lido)
+  br label %while_cond
+
+erro:                                             ; preds = %entrada
+  %1 = call i32 (ptr, ...) @printf(ptr @errmsg)
+  br label %ok
+
+while_cond:                                       ; preds = %while_body, %ok
+  %pilha_ptr_var = load ptr, ptr %"Maria Roberta", align 8
+  %peeked_val5 = call i32 @pilha_peek(ptr %pilha_ptr_var)
+  %pilha_ptr_var6 = load ptr, ptr %"Jose Dirceu", align 8
+  %peeked_val7 = call i32 @pilha_peek(ptr %pilha_ptr_var6)
+  %cmpngt = icmp sle i32 %peeked_val5, %peeked_val7
+  br i1 %cmpngt, label %while_body, label %while_merge
+
+while_body:                                       ; preds = %while_cond
+  %pilha_ptr8 = load ptr, ptr %"Maria Roberta", align 8
+  %peeked_val9 = call i32 @pilha_peek(ptr %pilha_ptr8)
+  %2 = call i32 (ptr, ...) @printf(ptr @fmt_str, ptr @var_name_str, i32 %peeked_val9)
+  %pilha_ptr_var10 = load ptr, ptr %"Maria Roberta", align 8
+  %peeked_val11 = call i32 @pilha_peek(ptr %pilha_ptr_var10)
+  %pilha_ptr_var12 = load ptr, ptr %Joaozinho, align 8
+  %peeked_val13 = call i32 @pilha_peek(ptr %pilha_ptr_var12)
+  %addtmp = add i32 %peeked_val11, %peeked_val13
+  %pilha_ptr14 = load ptr, ptr %Robertinha, align 8
+  call void @pilha_set_topo(ptr %pilha_ptr14, i32 %addtmp)
+  %pilha_ptr_var15 = load ptr, ptr %Joaozinho, align 8
+  %peeked_val16 = call i32 @pilha_peek(ptr %pilha_ptr_var15)
+  %pilha_ptr17 = load ptr, ptr %"Maria Roberta", align 8
+  call void @pilha_set_topo(ptr %pilha_ptr17, i32 %peeked_val16)
+  %pilha_ptr_var18 = load ptr, ptr %Robertinha, align 8
+  %peeked_val19 = call i32 @pilha_peek(ptr %pilha_ptr_var18)
+  %pilha_ptr20 = load ptr, ptr %Joaozinho, align 8
+  call void @pilha_set_topo(ptr %pilha_ptr20, i32 %peeked_val19)
+  br label %while_cond
+
+while_merge:                                      ; preds = %while_cond
+>>>>>>> Stashed changes
   ret i32 0
 
 if_then53:                                        ; preds = %if_then
@@ -179,6 +241,7 @@ declare ptr @criar_pilha(i32)
 
 declare void @pilha_push(ptr, i32)
 
+<<<<<<< Updated upstream
 declare i32 @printf(ptr, ...)
 
 declare i32 @scanf(ptr, ...)
@@ -186,3 +249,12 @@ declare i32 @scanf(ptr, ...)
 declare void @pilha_set_topo(ptr, i32)
 
 declare i32 @pilha_peek(ptr)
+=======
+declare i32 @pilha_peek(ptr)
+
+declare void @pilha_set_topo(ptr, i32)
+
+declare i32 @printf(ptr, ...)
+
+declare i32 @scanf(ptr, ...)
+>>>>>>> Stashed changes
