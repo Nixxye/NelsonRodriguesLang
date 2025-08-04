@@ -1,7 +1,4 @@
-Um titulo: uma descricao.
-
-Jose Dirceu, um cara muito bacana.
-Maria Roberta, a mulher que dá inicio.
+Calculadora de Idade: Calcula a sua idade.
 
 Dia atual, o dia do mes de hoje.
 Mes atual, o numero do mes que estamos agora.
