@@ -219,3 +219,28 @@ void gerar_set_topo_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor_ref) {
     LLVMValueRef args[] = { pilha_ptr, valor_ref };
     LLVMBuildCall2(builder, func_type, func, args, 2, "");
 }
+
+/**
+ * @brief Gera o código LLVM para chamar a função de runtime 'pilha_obter_tamanho'.
+ *
+ * @param pilha_ptr O LLVMValueRef que aponta para a pilha (PilhaInt*).
+ * @return LLVMValueRef (i32) com o tamanho da pilha.
+ */
+LLVMValueRef gerar_obter_tamanho_pilha(LLVMValueRef pilha_ptr) {
+    // 1. Define os tipos LLVM necessários
+    LLVMTypeRef pilha_type = LLVMStructCreateNamed(LLVMGetGlobalContext(), "PilhaInt");
+    LLVMTypeRef pilha_ptr_type = LLVMPointerType(pilha_type, 0);
+
+    // 2. Declara a função do runtime C: int pilha_obter_tamanho(PilhaInt*)
+    LLVMTypeRef func_args_types[] = { pilha_ptr_type };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMInt32Type(), func_args_types, 1, 0);
+    
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "pilha_obter_tamanho");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "pilha_obter_tamanho", func_type);
+    }
+
+    // 3. Gera a chamada para a função do runtime
+    LLVMValueRef args[] = { pilha_ptr };
+    return LLVMBuildCall2(builder, func_type, func, args, 1, "tamanho_pilha");
+}

@@ -44,4 +44,11 @@ int pilha_peek(const PilhaInt* pilha);
 
 void pilha_set_topo(PilhaInt* pilha, int novo_valor);
 
+/**
+ * @brief Retorna o número de elementos em uma pilha.
+ * @param pilha O ponteiro para a pilha.
+ * @return O campo 'tamanho' da struct da pilha.
+ */
+int pilha_obter_tamanho(const PilhaInt* pilha);
+
 #endif // PILHA_RUNTIME_H
