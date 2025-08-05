@@ -265,7 +265,7 @@ ENQUANTO {
     return ENQUANTO_COMECO;
 }
 
-ACABA {
+ACABA|ENCERRAM {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_FIM\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_FIM;

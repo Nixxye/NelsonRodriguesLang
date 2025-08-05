@@ -242,3 +242,108 @@ LLVMValueRef gerar_obter_tamanho_pilha(LLVMValueRef pilha_ptr) {
     LLVMValueRef args[] = { pilha_ptr };
     return LLVMBuildCall2(builder, func_type, func, args, 1, "tamanho_pilha");
 }
+
+/**
+ * @brief Gera 'call' para string_criar(valor_inicial), retornando o ponteiro da nova string.
+ */
+LLVMValueRef gerar_criar_string(const char* valor_inicial) {
+    // Declara a função: ptr string_criar(ptr)
+    LLVMTypeRef arg_types[] = { LLVMPointerType(LLVMInt8Type(), 0) };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMPointerType(LLVMInt8Type(), 0), arg_types, 1, 0);
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "string_criar");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "string_criar", func_type);
+    }
+
+    // Argumento: a string literal global
+    LLVMValueRef str_const = LLVMBuildGlobalStringPtr(builder, valor_inicial, "init_str");
+    LLVMValueRef args[] = { str_const };
+    return LLVMBuildCall2(builder, func_type, func, args, 1, "nova_str_ptr");
+}
+
+/**
+ * @brief Gera 'call' para string_concatenar(str_atual, str_nova), retornando o ponteiro atualizado.
+ */
+LLVMValueRef gerar_concatenar_string(LLVMValueRef str_atual_ptr, const char* str_para_adicionar) {
+    // Declara a função: ptr string_concatenar(ptr, ptr)
+    LLVMTypeRef arg_types[] = { LLVMPointerType(LLVMInt8Type(), 0), LLVMPointerType(LLVMInt8Type(), 0) };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMPointerType(LLVMInt8Type(), 0), arg_types, 2, 0);
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "string_concatenar");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "string_concatenar", func_type);
+    }
+
+    // Argumentos: o ponteiro da string atual e a nova string literal
+    LLVMValueRef str_add_const = LLVMBuildGlobalStringPtr(builder, str_para_adicionar, "add_str");
+    LLVMValueRef args[] = { str_atual_ptr, str_add_const };
+    return LLVMBuildCall2(builder, func_type, func, args, 2, "str_concatenada_ptr");
+}
+
+/**
+ * @brief Gera 'call' para string_substituir(str_atual, alvo, substituto), retornando o ponteiro atualizado.
+ */
+LLVMValueRef gerar_substituir_string(LLVMValueRef str_atual_ptr, const char* alvo, const char* substituto) {
+    // Declara a função: ptr string_substituir(ptr, ptr, ptr)
+    LLVMTypeRef arg_types[] = { LLVMPointerType(LLVMInt8Type(), 0), LLVMPointerType(LLVMInt8Type(), 0), LLVMPointerType(LLVMInt8Type(), 0) };
+    LLVMTypeRef func_type = LLVMFunctionType(LLVMPointerType(LLVMInt8Type(), 0), arg_types, 3, 0);
+    LLVMValueRef func = LLVMGetNamedFunction(modulo, "string_substituir");
+    if (!func) {
+        func = LLVMAddFunction(modulo, "string_substituir", func_type);
+    }
+
+    // Argumentos
+    LLVMValueRef alvo_const = LLVMBuildGlobalStringPtr(builder, alvo, "alvo_str");
+    LLVMValueRef substituto_const = LLVMBuildGlobalStringPtr(builder, substituto, "subst_str");
+    LLVMValueRef args[] = { str_atual_ptr, alvo_const, substituto_const };
+    return LLVMBuildCall2(builder, func_type, func, args, 3, "str_substituida_ptr");
+}
+
+/**
+ * @brief Gera o código LLVM para criar (alocar e inicializar) uma variável booleana.
+ *
+ * @param nome O nome da variável para depuração no LLVM IR.
+ * @param valor_inicial O valor C inicial (0 para false, 1 para true).
+ * @return LLVMValueRef O ponteiro para a variável alocada na memória (do tipo i1*).
+ */
+LLVMValueRef gerar_criar_booleano(const char* nome, int valor_inicial) {
+    // 1. Define o tipo booleano do LLVM, que é um inteiro de 1 bit (i1).
+    LLVMTypeRef bool_type = LLVMInt1TypeInContext(contexto);
+
+    // 2. Aloca espaço na memória da função para a variável (retorna um i1*).
+    LLVMValueRef var_ref = LLVMBuildAlloca(builder, bool_type, nome);
+
+    // 3. Cria a constante LLVM para o valor inicial.
+    LLVMValueRef const_val = LLVMConstInt(bool_type, valor_inicial, 0);
+
+    // 4. Armazena o valor inicial na variável recém-alocada.
+    LLVMBuildStore(builder, const_val, var_ref);
+
+    // 5. Retorna a referência para a variável (o ponteiro i1*).
+    return var_ref;
+}
+
+/**
+ * @brief Gera o código LLVM para atribuir um novo valor a uma variável booleana.
+ *
+ * @param var_ref A referência para a variável booleana (um i1* obtido do Symbol).
+ * @param novo_valor_ref O novo valor (um i1) a ser armazenado.
+ */
+void gerar_set_booleano(LLVMValueRef var_ref, LLVMValueRef novo_valor_ref) {
+    // Gera uma única instrução 'store' para atualizar o valor na memória.
+    LLVMBuildStore(builder, novo_valor_ref, var_ref);
+}
+
+/**
+ * @brief Gera o código LLVM para ler (carregar) o valor de uma variável booleana.
+ *
+ * @param var_ref A referência para a variável booleana (um i1* obtido do Symbol).
+ * @return LLVMValueRef O valor booleano (i1) lido da memória.
+ */
+LLVMValueRef gerar_get_booleano(LLVMValueRef var_ref) {
+    // 1. Define o tipo do valor que estamos carregando (i1).
+    LLVMTypeRef bool_type = LLVMInt1TypeInContext(contexto);
+
+    // 2. Gera a instrução 'load' e retorna o valor carregado.
+    // O último argumento é o nome do registrador temporário no LLVM IR.
+    return LLVMBuildLoad2(builder, bool_type, var_ref, "load_bool_tmp");
+}

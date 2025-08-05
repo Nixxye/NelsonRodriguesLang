@@ -15,6 +15,7 @@ ATO I: A calculadora.
 		Mariazinha: Jose Dirceu, ESCUTA TEU CORACAO MISERAVEL! # Jose Dirceu <- input usuário #
 	o sofrimento ACABA!	# End while #
     Mariazinha: Jose Dirceu, LEMBRE DE QUEM TU ES desgracado! # Jose Dirceu <- input usuário #
+	# DIVIDIR EM DOIS ATOS #
     ENQUANTO O TAMANHO DE Jose Dirceu FOR MAIOR QUE 0, o sofrimento do cálculo continuará: # size Jose Dirceu > 0 #
 		Mariazinha: Jose Dirceu, ABRE TEU CORACAO MISERAVEL! # Jose Dirceu <- input usuário #
 		Mariazinha: Jose Dirceu, LEMBRE DE QUEM TU ES desgracado! # pop() Jose Dirceu #

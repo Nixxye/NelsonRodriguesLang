@@ -100,13 +100,17 @@ instrucao:
 declaracaoCenario:
     ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES {
         if (estado == E_DECLARACOES) {
-            add_symbol($2, STRING_VAR);
-            set_string_value($2, $4);
             if (DEBUG_BISON) {
-                printf("Cenário adicionado: %s = %s\n", $2, $4);
+                printf("Declaração de cenário: %s com valor inicial: %s\n", $2, $4);
             }
+            add_symbol($2, STRING_VAR);
             cenarioAtual = strdup($2);
             ativar_cenario(cenarioAtual);
+
+            Symbol* sym = get_symbol(cenarioAtual);
+            LLVMValueRef nova_str_ptr = gerar_criar_string($4);
+            // Armazena o ponteiro na variável
+            LLVMBuildStore(builder, nova_str_ptr, sym->llvm_ref);
         } else {
             yyerror("Declaração de cenário fora de contexto");
         }
@@ -149,7 +153,6 @@ substituiCenario:
             yyerror("Substituição de cenário fora de contexto");
         }
     }
-/* Booleanos - operações lógicas */
 
 trocarCenario: 
     inicioDialogo VOLTAR_CENARIO ARTIGO texto FIM {
@@ -170,6 +173,9 @@ trocarCenario:
             }
         }
     }
+
+/* Booleanos - operações lógicas */
+
 declaracaoQuestionamento:
     texto INTERROGACAO NAO FIM {
         if (DEBUG_BISON) {
@@ -178,11 +184,15 @@ declaracaoQuestionamento:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             add_symbol($1, BOOL_VAR);
+            Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
+            sym->llvm_ref = gerar_criar_booleano($1, 0);
         } else if (sym->type != BOOL_VAR) {
             yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
             YYABORT;
+        } else {
+            LLVMValueRef valor_false = LLVMConstInt(LLVMInt1Type(), 0, 0);
+            gerar_set_booleano(sym->llvm_ref, valor_false);
         }
-        set_bool_value($1, 0); // Inicializa como falso
     }
     | texto INTERROGACAO SIM FIM {
         if (DEBUG_BISON) {
@@ -191,11 +201,15 @@ declaracaoQuestionamento:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             add_symbol($1, BOOL_VAR);
+            Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
+            sym->llvm_ref = gerar_criar_booleano($1, 1);
         } else if (sym->type != BOOL_VAR) {
             yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
             YYABORT;
+        } else {
+            LLVMValueRef valor_true = LLVMConstInt(LLVMInt1Type(), 1, 0);
+            gerar_set_booleano(sym->llvm_ref, valor_true);// Inicializa como verdadeiro
         }
-        set_bool_value($1, 1); // Inicializa como verdadeiro
     }
     | texto INTERROGACAO {
         if (DEBUG_BISON) {
@@ -204,11 +218,15 @@ declaracaoQuestionamento:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             add_symbol($1, BOOL_VAR);
+            Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
+            sym->llvm_ref = gerar_criar_booleano($1, 0);
         } else if (sym->type != BOOL_VAR) {
             yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
             YYABORT;
+        } else {
+            LLVMValueRef valor_false = LLVMConstInt(LLVMInt1Type(), 0, 0);
+            gerar_set_booleano(sym->llvm_ref, valor_false);
         }
-        set_bool_value($1, 0); // Inicializa como falso
     }
 
 
@@ -734,7 +752,7 @@ while:
     }
 
 condicao:
-        expressao FOR MAIOR expressao {
+    expressao FOR MAIOR expressao {
             $$ = LLVMBuildICmp(builder, LLVMIntSGT, $1, $4, "cmpgt");
         }
     | expressao FOR MAIOR_IGUAL expressao {
@@ -757,13 +775,22 @@ condicao:
         }
     | expressao NAO FOR IGUAL expressao {
             $$ = LLVMBuildICmp(builder, LLVMIntNE, $1, $5, "cmpneq");
-        };
+    }
+    | texto {
+        Symbol* sym = get_symbol($1);
+        if (sym && sym->type == BOOL_VAR) {
+            // Chama a função para gerar a instrução 'load'.
+            // $$ agora contém o valor i1 (true/false) da variável.
+            $$ = gerar_get_booleano(sym->llvm_ref);
+        } else {
+            yyerror("Variável de condição não é um booleano válido.");
+        }
+    }
 
 
 dialogo:
     inicioDialogo MOSTRAR_CENARIO {
         if (DEBUG_BISON) {
-            printf("Cenário atual: %s\n", get_string_value(cenarioAtual));
         }
         gerar_print_string(cenarioAtual);
         atualiza_personagemVoce();

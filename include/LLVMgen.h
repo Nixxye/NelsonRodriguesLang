@@ -44,4 +44,10 @@ LLVMValueRef gerar_pop_pilha(LLVMValueRef pilha_ptr);
 LLVMValueRef gerar_peek_pilha(LLVMValueRef pilha_ptr);
 LLVMValueRef gerar_obter_tamanho_pilha(LLVMValueRef pilha_ptr);
 void gerar_set_topo_pilha(LLVMValueRef pilha_ptr, LLVMValueRef valor_ref);
+LLVMValueRef gerar_criar_string(const char* valor_inicial);
+LLVMValueRef gerar_concatenar_string(LLVMValueRef str_atual_ptr, const char* str_para_adicionar);
+LLVMValueRef gerar_substituir_string(LLVMValueRef str_atual_ptr, const char* alvo, const char* substituto);
+LLVMValueRef gerar_criar_booleano(const char* nome, int valor_inicial);
+void gerar_set_booleano(LLVMValueRef var_ref, LLVMValueRef novo_valor_ref);
+LLVMValueRef gerar_get_booleano(LLVMValueRef var_ref);
 #endif

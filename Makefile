@@ -12,7 +12,7 @@ YACCFILE = $(SRC_DIR)/parser.y
 INPUT = roteiros/program.nr
 CODEGEN = $(SRC_DIR)/LLVMgen.c
 UTILS = $(SRC_DIR)/nrUtils.c
-RUNTIME = $(SRC_DIR)/pilhaRuntime.c
+RUNTIME = $(SRC_DIR)/pilhaRuntime.c $(SRC_DIR)/stringRuntime.c
 
 # Gerados
 PARSER_C = $(SRC_DIR)/parser.tab.c
