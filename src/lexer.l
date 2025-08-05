@@ -271,6 +271,12 @@ ACABA {
     return ENQUANTO_FIM;
 }
 
+"A PEÇA SE ENCERRA" {
+    if (DEBUG_LEX) printf("TOKEN: FINALIZACAO\n");
+    yylval.texto = strdup(yytext);
+    return FINALIZACAO;
+}
+
 "ASSIM SE CALA O DESTINO!"|"E TUDO SE ENCERRA!"|"FIM DAS ILUSÕES!"|"A VERDADE SE RECOLHE!"|"A SENTENÇA FINDA!" {
     if (DEBUG_LEX) printf("TOKEN: ENDIF\n");
     yylval.texto = strdup(yytext);

@@ -64,6 +64,7 @@ int get_bool_value(const char *name);
 char *get_string_value(const char *name);
 VarType get_variable_type(const char *name);
 Symbol* get_symbol(const char *name);
+void gerar_exit();
 void gerar_print_string(const char *nome);
 void gerar_print_topo_pilha(const char *nome);
 void gerar_leitura_inteiro(const char *nome);

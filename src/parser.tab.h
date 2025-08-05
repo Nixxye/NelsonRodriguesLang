@@ -61,63 +61,64 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    FACA = 258,                    /* FACA  */
-    ENDIF = 259,                   /* ENDIF  */
-    ENQUANTO_COMECO = 260,         /* ENQUANTO_COMECO  */
-    ENQUANTO_FIM = 261,            /* ENQUANTO_FIM  */
-    MAIOR = 262,                   /* MAIOR  */
-    MAIOR_IGUAL = 263,             /* MAIOR_IGUAL  */
-    MENOR = 264,                   /* MENOR  */
-    MENOR_IGUAL = 265,             /* MENOR_IGUAL  */
-    IGUAL = 266,                   /* IGUAL  */
-    NAO = 267,                     /* NAO  */
-    FOR = 268,                     /* FOR  */
-    ENTAO = 269,                   /* ENTAO  */
-    EU = 270,                      /* EU  */
-    SE = 271,                      /* SE  */
-    SAEM = 272,                    /* SAEM  */
-    ENTRAM = 273,                  /* ENTRAM  */
-    TODOS = 274,                   /* TODOS  */
-    SOMAR = 275,                   /* SOMAR  */
-    SUBTRAIR = 276,                /* SUBTRAIR  */
-    DIVIDIR = 277,                 /* DIVIDIR  */
-    MULTIPLICAR = 278,             /* MULTIPLICAR  */
-    INICIO = 279,                  /* INICIO  */
-    FIM = 280,                     /* FIM  */
-    SIM = 281,                     /* SIM  */
-    INTERROGACAO = 282,            /* INTERROGACAO  */
-    ABRE_COLCHETES = 283,          /* ABRE_COLCHETES  */
-    FECHA_COLCHETES = 284,         /* FECHA_COLCHETES  */
-    VOLTAR_CENARIO = 285,          /* VOLTAR_CENARIO  */
-    VOCE = 286,                    /* VOCE  */
-    ABRE_PARENTESES = 287,         /* ABRE_PARENTESES  */
-    FECHA_PARENTESES = 288,        /* FECHA_PARENTESES  */
-    VIRGULA = 289,                 /* VIRGULA  */
-    SERA = 290,                    /* SERA  */
-    TOKEN = 291,                   /* TOKEN  */
-    ADJETIVO_POSITIVO = 292,       /* ADJETIVO_POSITIVO  */
-    ADJETIVO_NEGATIVO = 293,       /* ADJETIVO_NEGATIVO  */
-    TU = 294,                      /* TU  */
-    EH = 295,                      /* EH  */
-    E = 296,                       /* E  */
-    ENTRE = 297,                   /* ENTRE  */
-    ARTIGO = 298,                  /* ARTIGO  */
-    MESMO = 299,                   /* MESMO  */
-    NUMERO = 300,                  /* NUMERO  */
-    ADICIONAR_CENARIO = 301,       /* ADICIONAR_CENARIO  */
-    SUBSTITUIR_CENARIO = 302,      /* SUBSTITUIR_CENARIO  */
-    POR = 303,                     /* POR  */
-    NO_CENARIO = 304,              /* NO_CENARIO  */
-    MOSTRAR_CENARIO = 305,         /* MOSTRAR_CENARIO  */
-    MOSTRA_VALOR = 306,            /* MOSTRA_VALOR  */
-    LE_VALOR = 307,                /* LE_VALOR  */
-    GUARDE = 308,                  /* GUARDE  */
-    INTERIOR = 309,                /* INTERIOR  */
-    LEMBRE = 310,                  /* LEMBRE  */
-    IF_MOSTRA_VALOR = 311,         /* IF_MOSTRA_VALOR  */
-    IF_LE_VALOR = 312,             /* IF_LE_VALOR  */
-    ATO = 313,                     /* ATO  */
-    CENA = 314                     /* CENA  */
+    FINALIZACAO = 258,             /* FINALIZACAO  */
+    FACA = 259,                    /* FACA  */
+    ENDIF = 260,                   /* ENDIF  */
+    ENQUANTO_COMECO = 261,         /* ENQUANTO_COMECO  */
+    ENQUANTO_FIM = 262,            /* ENQUANTO_FIM  */
+    MAIOR = 263,                   /* MAIOR  */
+    MAIOR_IGUAL = 264,             /* MAIOR_IGUAL  */
+    MENOR = 265,                   /* MENOR  */
+    MENOR_IGUAL = 266,             /* MENOR_IGUAL  */
+    IGUAL = 267,                   /* IGUAL  */
+    NAO = 268,                     /* NAO  */
+    FOR = 269,                     /* FOR  */
+    ENTAO = 270,                   /* ENTAO  */
+    EU = 271,                      /* EU  */
+    SE = 272,                      /* SE  */
+    SAEM = 273,                    /* SAEM  */
+    ENTRAM = 274,                  /* ENTRAM  */
+    TODOS = 275,                   /* TODOS  */
+    SOMAR = 276,                   /* SOMAR  */
+    SUBTRAIR = 277,                /* SUBTRAIR  */
+    DIVIDIR = 278,                 /* DIVIDIR  */
+    MULTIPLICAR = 279,             /* MULTIPLICAR  */
+    INICIO = 280,                  /* INICIO  */
+    FIM = 281,                     /* FIM  */
+    SIM = 282,                     /* SIM  */
+    INTERROGACAO = 283,            /* INTERROGACAO  */
+    ABRE_COLCHETES = 284,          /* ABRE_COLCHETES  */
+    FECHA_COLCHETES = 285,         /* FECHA_COLCHETES  */
+    VOLTAR_CENARIO = 286,          /* VOLTAR_CENARIO  */
+    VOCE = 287,                    /* VOCE  */
+    ABRE_PARENTESES = 288,         /* ABRE_PARENTESES  */
+    FECHA_PARENTESES = 289,        /* FECHA_PARENTESES  */
+    VIRGULA = 290,                 /* VIRGULA  */
+    SERA = 291,                    /* SERA  */
+    TOKEN = 292,                   /* TOKEN  */
+    ADJETIVO_POSITIVO = 293,       /* ADJETIVO_POSITIVO  */
+    ADJETIVO_NEGATIVO = 294,       /* ADJETIVO_NEGATIVO  */
+    TU = 295,                      /* TU  */
+    EH = 296,                      /* EH  */
+    E = 297,                       /* E  */
+    ENTRE = 298,                   /* ENTRE  */
+    ARTIGO = 299,                  /* ARTIGO  */
+    MESMO = 300,                   /* MESMO  */
+    NUMERO = 301,                  /* NUMERO  */
+    ADICIONAR_CENARIO = 302,       /* ADICIONAR_CENARIO  */
+    SUBSTITUIR_CENARIO = 303,      /* SUBSTITUIR_CENARIO  */
+    POR = 304,                     /* POR  */
+    NO_CENARIO = 305,              /* NO_CENARIO  */
+    MOSTRAR_CENARIO = 306,         /* MOSTRAR_CENARIO  */
+    MOSTRA_VALOR = 307,            /* MOSTRA_VALOR  */
+    LE_VALOR = 308,                /* LE_VALOR  */
+    GUARDE = 309,                  /* GUARDE  */
+    INTERIOR = 310,                /* INTERIOR  */
+    LEMBRE = 311,                  /* LEMBRE  */
+    IF_MOSTRA_VALOR = 312,         /* IF_MOSTRA_VALOR  */
+    IF_LE_VALOR = 313,             /* IF_LE_VALOR  */
+    ATO = 314,                     /* ATO  */
+    CENA = 315                     /* CENA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -132,7 +133,7 @@ union YYSTYPE
     int inteiro;
     LLVMValueRef llmValueRef; // Referência para valores LLM
 
-#line 136 "src/parser.tab.h"
+#line 137 "src/parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
