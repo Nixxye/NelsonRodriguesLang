@@ -121,12 +121,6 @@ EU {
     return EU;
 }
 
-ENTAO {
-    if (DEBUG_LEX) printf("TOKEN: ENTAO\n");
-    yylval.texto = strdup(yytext);
-    return ENTAO;
-}
-
 FOR {
     if (DEBUG_LEX) printf("TOKEN: FOR\n");
     yylval.texto = strdup(yytext);
@@ -269,6 +263,12 @@ ACABA|ENCERRAM {
     if (DEBUG_LEX) printf("TOKEN: ENQUANTO_FIM\n");
     yylval.texto = strdup(yytext);
     return ENQUANTO_FIM;
+}
+
+"A PEÇA SE ENCERRA" {
+    if (DEBUG_LEX) printf("TOKEN: FINALIZACAO\n");
+    yylval.texto = strdup(yytext);
+    return FINALIZACAO;
 }
 
 "ASSIM SE CALA O DESTINO!"|"E TUDO SE ENCERRA!"|"FIM DAS ILUSÕES!"|"A VERDADE SE RECOLHE!"|"A SENTENÇA FINDA!" {

@@ -12,8 +12,8 @@ caluladora, quem comanda a cena.
 
 ATO I: Onde o filho chora e a mae nao ve.
 	CENA I: 
-		[ENTRAM Dia atual, Mes atual, Ano atual, Dia do seu aniversario, Mes do seu aniversario, Ano que voce nasceu, caluladora] # Ajustar no futuro #
-		caluladora: Dia atual, ESCUTA TEU CORACAO MISERAVEL.
+	[ENTRAM Dia atual, Mes atual, Ano atual, Dia do seu aniversario, Mes do seu aniversario, Ano que voce nasceu, caluladora] # Ajustar no futuro #
+	caluladora: Dia atual, ESCUTA TEU CORACAO MISERAVEL.
         caluladora: Mes atual, ESCUTA TEU CORACAO MISERAVEL.
         caluladora: Ano atual, ESCUTA TEU CORACAO MISERAVEL.
         caluladora: Dia do seu aniversario, ESCUTA TEU CORACAO MISERAVEL.

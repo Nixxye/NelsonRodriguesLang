@@ -499,6 +499,47 @@ void gerar_print_topo_pilha(const char *nome) {
     LLVMBuildCall2(builder, printf_type, printf_func, args, 3, "");
 }
 
+void gerar_exit() {
+    // 1. Define o tipo da função 'exit': recebe um i32 e retorna void.
+    LLVMTypeRef exit_func_type = LLVMFunctionType(
+        LLVMVoidTypeInContext(contexto), // Tipo de retorno: void
+        (LLVMTypeRef[]){ LLVMInt32TypeInContext(contexto) }, // Parâmetros: um i32
+        1,    // Número de parâmetros
+        0     // Não é variádica
+    );
+
+    // 2. Procura pela função 'exit' no módulo. Se não existir, declara-a.
+    //    Este padrão "get or add" evita declarações duplicadas.
+    LLVMValueRef exit_func = LLVMGetNamedFunction(modulo, "exit");
+    if (!exit_func) {
+        exit_func = LLVMAddFunction(modulo, "exit", exit_func_type);
+    }
+
+    // 3. Cria o argumento para a chamada: o código de saída 0.
+    LLVMValueRef exit_code = LLVMConstInt(LLVMInt32TypeInContext(contexto), 0, 0);
+    LLVMValueRef args[] = { exit_code };
+
+    // 4. Gera a instrução de chamada para a função 'exit'.
+    LLVMBuildCall2(
+        builder,
+        exit_func_type,
+        exit_func,    // A função a ser chamada
+        args,         // O array de argumentos
+        1,            // Número de argumentos
+        ""            // Nome do resultado (não aplicável para void)
+    );
+
+    // 5. (BOA PRÁTICA) Adiciona uma instrução 'unreachable'.
+    //    Isto informa o otimizador que o código a seguir nunca será executado.
+    LLVMBuildUnreachable(builder);
+
+    // 6. Move o builder para um bloco "fantasma" para evitar gerar código morto
+    //    no bloco atual, o que pode causar problemas no LLVM.
+    LLVMBasicBlockRef dead_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "depois_exit");
+    LLVMPositionBuilderAtEnd(builder, dead_block);
+}
+
+
 void gerar_leitura_inteiro(const char *nome) {
     Symbol *sym = get_symbol(nome);
     if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha

@@ -49,6 +49,8 @@ void iniciar_codegen() {
     funcao_main = LLVMAddFunction(modulo, "main", tipo_main);
     bloco_main = LLVMAppendBasicBlockInContext(contexto, funcao_main, "entrada");
     LLVMPositionBuilderAtEnd(builder, bloco_main);
+
+    
 }
 
 void finalizar_codegen() {
