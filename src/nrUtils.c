@@ -453,7 +453,7 @@ void gerar_print_string(const char *nome) {
         printf_func = LLVMAddFunction(modulo, "printf", printf_type);
 
     // Cria string global "%s\n"
-    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "%s\n", "fmt");
+    LLVMValueRef fmt = LLVMBuildGlobalStringPtr(builder, "Cenario atual: %s\n", "fmt");
 
     // Carrega o valor da variável
     LLVMValueRef valor = LLVMBuildLoad2(builder, LLVMPointerType(LLVMInt8Type(), 0), sym->llvm_ref, "tmpstr");

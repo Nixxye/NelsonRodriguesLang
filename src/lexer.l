@@ -253,7 +253,7 @@ ESCUTARA[ ]TEU[ ]CORACAO[ ]MISERAVEL {
     return IF_LE_VALOR;
 }
 
-IGUAL[ \t]+QUE {
+IGUAL[ \t]+QUE|IGUAL[ \t]+A {
     if (DEBUG_LEX) printf("TOKEN: IGUAL\n");
     yylval.texto = strdup(yytext);
     return IGUAL;

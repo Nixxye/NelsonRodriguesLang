@@ -23,16 +23,28 @@ char* string_criar(const char* valor_inicial) {
  * @param str_para_adicionar A string a ser concatenada.
  * @return O novo ponteiro para a string modificada (pode ser o mesmo ou um novo).
  */
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 char* string_concatenar(char* str_original, const char* str_para_adicionar) {
     if (!str_original || !str_para_adicionar) return str_original;
     
-    size_t novo_tamanho = strlen(str_original) + strlen(str_para_adicionar) + 1;
+    // MUDANÇA 1: Adiciona +1 ao tamanho para o novo caractere de espaço.
+    size_t novo_tamanho = strlen(str_original) + strlen(str_para_adicionar) + 3; // +1 para o espaço, +1 para o '\0'
+    
     char* nova_str = (char*) realloc(str_original, novo_tamanho);
     if (!nova_str) {
         perror("Falha ao realocar string para concatenação");
         exit(EXIT_FAILURE);
     }
+    
+    // MUDANÇA 2: Concatena um espaço primeiro.
+    strcat(nova_str, ", ");
+    
+    // E então concatena a string desejada.
     strcat(nova_str, str_para_adicionar);
+    
     return nova_str;
 }
 
