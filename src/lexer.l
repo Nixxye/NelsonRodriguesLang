@@ -4,7 +4,8 @@
     #include "parser.tab.h"
 
     int DEBUG_LEX = 0;
-    
+    #define YY_USER_INIT BEGIN(IGNORE_LINE);
+
     // Função auxiliar para converter números romanos para inteiros
     int romano_para_inteiro(const char *romano) {
         int valor = 0;
@@ -37,8 +38,15 @@
 %}
 
 %option yylineno
+%x IGNORE_LINE
 
 %%
+
+<IGNORE_LINE>.*\n   {
+    // Esta regra só está ativa no estado IGNORE_LINE
+    BEGIN(INITIAL);
+}
+
 "#"([^\n#]|(\n))*"#"      {
 
 }

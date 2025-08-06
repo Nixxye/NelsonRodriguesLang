@@ -1,4 +1,4 @@
-a memoria em Carne Viva: a desolacao.
+A memoria em Carne Viva: a desolacao.
 
 Alaide, uma alma fraturada pela memoria.
 Loira, o espectro de sua alucinacao.
@@ -10,7 +10,7 @@ Esta chovendo? SIM!
 
 ATO I: o desepero.
 	CENA I:
-		[ENTRAM Joao E Abismo] .
+		[ENTRAM Joao E Abismo]
 		Joao: Abismo, TU ÉS 5.
 		[SAI Joao]
 
