@@ -48,38 +48,51 @@ char* string_substituir(char* original, const char* alvo, const char* substituto
     if (!original || !alvo || !substituto) return original;
 
     char* resultado;
-    char* p;
     int cont = 0;
     size_t len_alvo = strlen(alvo);
     size_t len_substituto = strlen(substituto);
 
-    // Conta as ocorrências
-    for (p = original; (p = strstr(p, alvo)); p += len_alvo) {
+    // 1. Conta as ocorrências para alocar a memória de uma só vez.
+    const char* p_busca = original;
+    while ((p_busca = strstr(p_busca, alvo))) {
         cont++;
+        p_busca += len_alvo;
     }
 
-    // Aloca memória para a nova string
-    resultado = (char*) malloc(strlen(original) + cont * (len_substituto - len_alvo) + 1);
+    // 2. Aloca a memória para a nova string.
+    size_t novo_tamanho = strlen(original) + cont * (len_substituto - len_alvo) + 1;
+    resultado = (char*) malloc(novo_tamanho);
     if (!resultado) {
-         perror("Falha ao alocar string para substituição");
-         exit(EXIT_FAILURE);
+        perror("Falha ao alocar string para substituição");
+        exit(EXIT_FAILURE);
     }
 
-    // Constrói a nova string
+    // 3. Constrói a nova string sem modificar o ponteiro 'original'.
     char* r_ptr = resultado;
-    p = original;
-    while ((p = strstr(p, alvo))) {
-        int len_prefixo = p - original;
-        strncpy(r_ptr, original, len_prefixo);
+    p_busca = original; // Usa um ponteiro temporário para a busca
+    while (cont > 0) {
+        char* ocorrencia = strstr(p_busca, alvo);
+        if (!ocorrencia) break;
+
+        // Copia a parte antes da ocorrência
+        size_t len_prefixo = ocorrencia - p_busca;
+        strncpy(r_ptr, p_busca, len_prefixo);
         r_ptr += len_prefixo;
+
+        // Copia o substituto
         strcpy(r_ptr, substituto);
         r_ptr += len_substituto;
-        p += len_alvo;
-        original = p;
-    }
-    strcpy(r_ptr, original);
 
-    // Libera a memória da string antiga
+        // Avança o ponteiro de busca
+        p_busca = ocorrencia + len_alvo;
+        cont--;
+    }
+    // Copia o resto da string original
+    strcpy(r_ptr, p_busca);
+
+    // 4. Libera a memória da string original (agora de forma segura).
     free(original);
+
+    // 5. Retorna a nova string.
     return resultado;
 }

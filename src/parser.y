@@ -119,14 +119,18 @@ declaracaoCenario:
 concatenarCenario:
     ADICIONAR_CENARIO INICIO texto FIM {
         if (estado != E_DECLARACOES) {
-            char * valorCenario = get_string_value(cenarioAtual);
-
-            if (valorCenario == NULL) {
+            if (cenarioAtual == NULL) {
                 yyerror("Nenhum cenário atual definido");
             } else {
-                char* novoCenario = concatena(valorCenario, $3);
-                set_string_value(cenarioAtual, novoCenario);
-                // free(novoCenario);
+                Symbol* sym = get_symbol(cenarioAtual);
+                // 1. LOAD: Carrega o ponteiro atual da string
+                LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
+                
+                // 2. CALL: Gera a chamada para a função de concatenação
+                LLVMValueRef str_nova_ptr = gerar_concatenar_string(str_atual_ptr, $3);
+
+                // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
+                LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
                 if (DEBUG_BISON) {
                     printf("Cenário atualizado: %s\n", cenarioAtual);
                 }
@@ -139,14 +143,21 @@ concatenarCenario:
 substituiCenario:
     SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM{
         if (estado != E_DECLARACOES) {
-            char * valorCenario = get_string_value(cenarioAtual);
-            if (valorCenario == NULL) {
+            if (cenarioAtual == NULL) {
                 yyerror("Nenhum cenário atual definido");
             } else {
-                char* novoValorCenario = substituir_ocorrencias(valorCenario, $2, $4);
-                set_string_value(cenarioAtual, novoValorCenario);
+                Symbol* sym = get_symbol(cenarioAtual);
+                if (sym) {
+                    // 1. LOAD: Carrega o ponteiro atual da string
+                    LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
+
+                    // 2. CALL: Gera a chamada para a função de substituição
+                    LLVMValueRef str_nova_ptr = gerar_substituir_string(str_atual_ptr, $2, $4);
+
+                    // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
+                    LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
+                }
                 if (DEBUG_BISON) {
-                    printf("Novo cenário: %s\n", get_string_value(cenarioAtual));
                 }
             }
         } else {
@@ -260,7 +271,7 @@ adjetivos:
     | ADJETIVO_NEGATIVO {
         $$ = -1;
     }
-    | TOKEN {
+    | texto {
         $$ = 0;
     }
     | adjetivos ADJETIVO_POSITIVO {
@@ -275,7 +286,7 @@ adjetivos:
         }
         $$ = $1 - 1;
     }
-    | adjetivos TOKEN {
+    | adjetivos texto {
         $$ = $1;
     }
     | adjetivos ENTRE {
@@ -486,6 +497,7 @@ valor:
         // Valida se a variável existe e é uma pilha
         if (!sym || sym->type != INT_VAR) {
             printf("Variável de pilha inválida ou não declarada: %s\n", nome_pilha);
+            printf("Regra valor->tamanho\n");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0); // Retorna 0 em caso de erro
         } else {
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -499,6 +511,7 @@ valor:
         Symbol *sym = get_symbol($1);
         if (!sym || sym->type != INT_VAR) {
             printf("Variável de pilha inválida ou não declarada: %s\n", $1);
+            printf("Regra valor->texto\n");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -816,27 +829,19 @@ dialogo:
         }
         atualiza_personagemVoce();
     }
-    | inicioDialogo texto VIRGULA TU EH expressao FIM {
-        personagemDialogo = strdup($2);
-
-        Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
-            yyerror("Variável de pilha inválida ou não declarada");
-            YYABORT;
-        } else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
-            YYABORT;
-        } else {
-
-            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
-            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
-
-            // Atualiza o valor no topo da pilha
-            gerar_set_topo_pilha(pilha_ptr, $6);
+    | inicioDialogo texto INTERROGACAO {
+        if (DEBUG_BISON) {
+            printf("Diálogo: %s\n", $2);
+            switch (estado) {
+                case E_TITULO:    printf("Título\n"); break;
+                case E_DECLARACOES: printf("Declarações\n"); break;
+                case E_DIALOGO:   printf("Diálogo\n"); break;
+                case E_CENA:      printf("Cena\n"); break;
+                case E_ATO:       printf("Ato\n"); break;
+                default:
+                    yyerror("Estado desconhecido no diálogo\n");
+            }
         }
-
-        free(personagemDialogo);
-        personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
@@ -852,6 +857,7 @@ dialogo:
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR) {
             yyerror("Variável de pilha inválida ou não declarada");
+            printf("Regra dialogos->adjetivos\n");
             YYABORT;
         } else if (!sym->active) {
             printf("Variável %s não está ativa\n", personagemDialogo);
@@ -878,7 +884,29 @@ dialogo:
         personagemDialogo = NULL;
         atualiza_personagemVoce();
     }
+    | inicioDialogo texto VIRGULA TU EH expressao FIM {
+        personagemDialogo = strdup($2);
 
+        Symbol *sym = get_symbol(personagemDialogo);
+        if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
+            yyerror("Variável de pilha inválida ou não declarada");
+            YYABORT;
+        } else if (!sym->active) {
+            printf("Variável %s não está ativa\n", personagemDialogo);
+            YYABORT;
+        } else {
+
+            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
+            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
+
+            // Atualiza o valor no topo da pilha
+            gerar_set_topo_pilha(pilha_ptr, $6);
+        }
+
+        free(personagemDialogo);
+        personagemDialogo = NULL;
+        atualiza_personagemVoce();
+    }
     | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM {
         if (DEBUG_BISON) {
             // int val = get_int_value($2);
