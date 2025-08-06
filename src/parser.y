@@ -11,7 +11,7 @@
     #include <string.h>
 
     int yylex(void);
-    int yyerror(const char *s);
+    void yyerror(const char *s);
 
     enum ESTADOS {
         E_TITULO = 0,
@@ -24,13 +24,15 @@
 
     char *cenarioAtual = NULL;
 
-    int DEBUG_BISON = 1;
+    int DEBUG_BISON = 0;
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
     char* ultimoPersonagemQueFala = NULL; // Guarda o valor do último personagem que falou
     char* personagemVoce = NULL; // guarda o valor do ultimo personagem que falou e diferente do atual
     int result = 0; // guarda o resultado do if
+    int n_erros = 0; // flag global para guardar o número de erros
+    extern int yylineno; // Variável global para o número da linha atual
     // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
     void atualiza_personagemVoce(){
@@ -41,6 +43,12 @@
             personagemVoce = ultimoPersonagemQueFala;
         }
         ultimoPersonagemQueFala = personagemQueFala;
+    }
+
+    void yyerror(const char *str)
+    {
+        fprintf(stderr, "[O PONTO, em sussurros] Roteiro falho na linha %d: %s\n", yylineno, str);
+        n_erros++;
     }
 %}
 
@@ -65,16 +73,16 @@
 %nterm <inteiro> adjetivos if_sentenca while
 %nterm <llmValueRef> condicao valor expressao
 
-%type <texto> nome_variavel_int,nome_cenario,nome_questionamento,nome_personagem,valor_string
+%type <texto> nome_variavel_int nome_cenario nome_questionamento nome_personagem valor_string
 
 %nonassoc MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL IGUAL
 %left FOR
 %left NAO
 
-// Precedência para operadores aritméticos (ajuste se necessário)
+// Precedência para operadores aritméticos
 %left SOMAR SUBTRAIR
 %left MULTIPLICAR DIVIDIR
-
+%locations // Habilita rastreamento de localização de tokens
 
 %%
 
@@ -130,7 +138,10 @@ declaracaoCenario:
             // Armazena o ponteiro na variável
             LLVMBuildStore(builder, nova_str_ptr, sym->llvm_ref);
         } else {
-            yyerror("Declaração de cenário fora de contexto");
+            // Cria a mensagem de erro
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Declaracao do cenario '%s' fora de contexto).", $2);
+            yyerror(msg);
         }
     }
 
@@ -138,7 +149,9 @@ concatenarCenario:
     ADICIONAR_CENARIO INICIO valor_string FIM {
         if (estado != E_DECLARACOES) {
             if (cenarioAtual == NULL) {
-                yyerror("Nenhum cenário atual definido");
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Cenário atual igual a NULL!)");
+                yyerror(msg);
             } else {
                 Symbol* sym = get_symbol(cenarioAtual);
                 // 1. LOAD: Carrega o ponteiro atual da string
@@ -154,7 +167,9 @@ concatenarCenario:
                 }
             }
         } else {
-            yyerror("Adição de cenário fora de contexto");
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO ( Adição de cenário '%s' fora de contexto.", $3);
+            yyerror(msg);
         }
     }
 
@@ -175,27 +190,27 @@ substituiCenario:
                     // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
                     LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
                 }
-                if (DEBUG_BISON) {
-                }
             }
         } else {
-            yyerror("Substituição de cenário fora de contexto");
+            yyerror("ERRO SEMÂNTICO ( Substituição de cenário fora de contexto");
         }
     }
 
 trocarCenario: 
     inicioDialogo VOLTAR_CENARIO ARTIGO nome_cenario FIM {
         if (estado == E_DECLARACOES) {
-            yyerror("Troca de cenário fora de contexto");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Troca de cenário '%s' fora de contexto)", $4);
+            yyerror(msg);
         } else {
             if (DEBUG_BISON) {
                 printf("Trocando cenário para: %s\n", $4);
             }
             char *novoCenario = get_string_value($4);
             if (novoCenario == NULL) {
-                yyerror("Cenário não declarado");
-                YYABORT;
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Cenário '%s' não declarado)", $4);
+                yyerror(msg);
             } else {
                 cenarioAtual = strdup($4);
                 ativar_cenario(cenarioAtual);
@@ -213,11 +228,12 @@ declaracaoQuestionamento:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             add_symbol($1, BOOL_VAR);
-            Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
+            Symbol *sym = get_symbol($1);
             sym->llvm_ref = gerar_criar_booleano($1, 0);
         } else if (sym->type != BOOL_VAR) {
-            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para questionamento '%s' (esperado BOOL_VAR))", $1);
+            yyerror(msg);
         } else {
             LLVMValueRef valor_false = LLVMConstInt(LLVMInt1Type(), 0, 0);
             gerar_set_booleano(sym->llvm_ref, valor_false);
@@ -233,8 +249,9 @@ declaracaoQuestionamento:
             Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
             sym->llvm_ref = gerar_criar_booleano($1, 1);
         } else if (sym->type != BOOL_VAR) {
-            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para questionamento '%s' (esperado BOOL_VAR))", $1);
+            yyerror(msg);
         } else {
             LLVMValueRef valor_true = LLVMConstInt(LLVMInt1Type(), 1, 0);
             gerar_set_booleano(sym->llvm_ref, valor_true);// Inicializa como verdadeiro
@@ -250,8 +267,9 @@ declaracaoQuestionamento:
             Symbol *sym = get_symbol($1); // Colocar isso no add_symbol?
             sym->llvm_ref = gerar_criar_booleano($1, 0);
         } else if (sym->type != BOOL_VAR) {
-            yyerror("Tipo incorreto para questionamento (esperado BOOL_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para questionamento '%s' (esperado BOOL_VAR))", $1);
+            yyerror(msg);
         } else {
             LLVMValueRef valor_false = LLVMConstInt(LLVMInt1Type(), 0, 0);
             gerar_set_booleano(sym->llvm_ref, valor_false);
@@ -264,15 +282,9 @@ texto:
         $$ = strdup($1);
     }
     | texto NUMERO {
-        //  if (DEBUG_BISON) {
-        //      printf("Concatenando: %s + %s\n", $1, $2);
-        // }
         $$ = concatena($1, $2);
     }
     | texto palavra {
-        // if (DEBUG_BISON) {
-        //     printf("Concatenando: %s + %s\n", $1, $2);
-        // }
         $$ = concatena($1, $2);
     }
     ;
@@ -333,11 +345,13 @@ personagensEntrando:
     nome_personagem {
         Symbol *sym = get_symbol($1);
         if (!sym) {
-            printf("Personagem não declarado: %s", $1);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $1);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $1);
+            yyerror(msg);
         }
         sym->active = 1;
         personagemVoce = $1; // Atualiza personagemVoce com o personagem que está entrando
@@ -345,11 +359,13 @@ personagensEntrando:
     | personagensEntrando VIRGULA nome_personagem {
         Symbol *sym = get_symbol($3);
         if (!sym) {
-            printf("Personagem não declarado: %s", $3);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $3);
+            yyerror(msg);
         }
         sym->active = 1;
         personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
@@ -357,11 +373,13 @@ personagensEntrando:
     | personagensEntrando E nome_personagem {
         Symbol *sym = get_symbol($3);
         if (!sym) {
-            printf("Personagem não declarado: %s", $3);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $3);
+            yyerror(msg);
         }
         sym->active = 1;
         personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
@@ -371,33 +389,39 @@ personagensSaindo:
     nome_personagem {
         Symbol *sym = get_symbol($1);
         if (!sym) {
-            printf("Personagem não declarado: %s", $1);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $1);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $1);
+            yyerror(msg);
         }
         sym->active = 0;
     } 
     | personagensSaindo VIRGULA nome_personagem {
         Symbol *sym = get_symbol($3);
         if (!sym) {
-            printf("Personagem não declarado: %s", $3);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $3);
+            yyerror(msg);
         }
         sym->active = 0;
     }
     | personagensSaindo E nome_personagem {
         Symbol *sym = get_symbol($3);
         if (!sym) {
-            printf("Personagem não declarado: %s", $3);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            yyerror(msg);
         } else if (sym->type != INT_VAR) {
-            yyerror("Tipo incorreto para personagem (esperado INT_VAR)");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $3);
+            yyerror(msg);
         }
         sym->active = 0;
     }
@@ -413,7 +437,9 @@ alteracaoElenco:
                 printf("Alteração de elenco: %s\n", $2);
             }
         } else {
-            printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Alteração de elenco fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
         }
     }
     | ABRE_COLCHETES SAEM personagensSaindo FECHA_COLCHETES {
@@ -433,7 +459,6 @@ alteracaoElenco:
         if (DEBUG_BISON) {
             printf("Todos os personagens estão inativos\n");
         }
-        // Ativa todos os personagens
         desativar_todos_personagens();
     }
 
@@ -457,15 +482,17 @@ valor:
     }
     | TU MESMO {
         if (personagemDialogo == NULL) {
-            yyerror("Variável 'tu mesmo' não definida");
+            yyerror("ERRO SEMÂNTICO (Variável 'tu mesmo' não definida)");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             Symbol *sym = get_symbol(personagemDialogo);
             if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
-                yyerror("Variável 'tu mesmo' inválida ou não declarada");
+                yyerror("ERRO SEMÂNTICO (Variável 'tu mesmo' inválida ou não declarada)");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
-                printf("Valor de 'tu mesmo': %s\n", sym->name);
+                if (DEBUG_BISON) {
+                    printf("Valor de 'tu mesmo': %s\n", sym->name);
+                }
                 // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
                 LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr_tu");
                 // 2. Gera a chamada ao runtime para obter o valor do topo
@@ -475,12 +502,12 @@ valor:
     }
     | EU {
         if (personagemQueFala == NULL) {
-            yyerror("Variável 'eu' não definida");
+            yyerror("ERRO SEMÂNTICO (Variável 'eu' não definida)");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             Symbol *sym = get_symbol(personagemQueFala);
             if (!sym || sym->type != INT_VAR) {
-                yyerror("Variável 'eu' inválida ou não declarada");
+                yyerror("ERRO SEMÂNTICO (Variável 'eu' inválida ou não declarada)");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
                 // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -492,12 +519,12 @@ valor:
     }
     | VOCE {
         if (personagemVoce == NULL) {
-            yyerror("Variável 'voce' não definida");
+            yyerror("ERRO SEMÂNTICO (Variável 'voce' não definida)");
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             Symbol *sym = get_symbol(personagemVoce);
             if (!sym || sym->type != INT_VAR) {
-                yyerror("Variável 'voce' inválida ou não declarada");
+                yyerror("ERRO SEMÂNTICO (Variável 'voce' inválida ou não declarada)");
                 $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
             } else {
                 // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -514,8 +541,9 @@ valor:
 
         // Valida se a variável existe e é uma pilha
         if (!sym || sym->type != INT_VAR) {
-            printf("Variável de pilha inválida ou não declarada: %s\n", nome_pilha);
-            printf("Regra valor->tamanho\n");
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s", nome_pilha);
+            yyerror(msg);
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0); // Retorna 0 em caso de erro
         } else {
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -528,8 +556,9 @@ valor:
     | nome_variavel_int {
         Symbol *sym = get_symbol($1);
         if (!sym || sym->type != INT_VAR) {
-            printf("Variável de pilha inválida ou não declarada: %s\n", $1);
-            printf("Regra valor->texto\n");
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s", $1);
+            yyerror(msg);
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -593,7 +622,7 @@ if_sentenca:
                 // Gera a chamada ao runtime para atualizar o topo
                 gerar_set_topo_pilha(pilha_ptr, novo_valor);
             } else {
-                yyerror("Variável de destino no 'SE' não é uma pilha válida.");
+                yyerror("ERRO SEMÂNTICO (Variável de destino no 'SE' não é uma pilha válida)");
             }
             
             // Ao final do bloco 'then', pula incondicionalmente para o bloco de continuação.
@@ -615,18 +644,18 @@ if_sentenca:
         // 3. Posiciona o builder para preencher o bloco 'then'.
         LLVMPositionBuilderAtEnd(builder, then_block);
         {
-            // --- Lógica do MOSTRA_VALOR ---
             const char *nome = $4;
             Symbol *sym = get_symbol(nome);
             if (!sym || sym->type != INT_VAR) {
-                yyerror("Variável inválida ou não declarada no SE.");
+                yyerror("ERRO SEMÂNTICO (Variável inválida ou não declarada no SE)");
             } else if (!sym->active) {
-                printf("Variável %s não está ativa no SE.\n", sym->name);
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa no SE)", sym->name);
+                yyerror(msg);
             } else {
                 gerar_print_topo_pilha(nome);
                 // atualiza_personagemVoce();
             }
-            // --- Fim da lógica ---
 
             // 4. No final do bloco 'then', pula para o bloco 'merge'.
             LLVMBuildBr(builder, merge_block);
@@ -635,25 +664,26 @@ if_sentenca:
         LLVMPositionBuilderAtEnd(builder, merge_block);
     }
     | SE condicao VIRGULA personagem IF_LE_VALOR {
-        // --- Padrão de 'if' em LLVM ---
         LLVMBasicBlockRef then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
         LLVMBasicBlockRef merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
         LLVMBuildCondBr(builder, $2, then_block, merge_block);
 
         LLVMPositionBuilderAtEnd(builder, then_block);
         {
-            // --- Lógica do LE_VALOR ---
             const char *nome = $4;
             Symbol *sym = get_symbol(nome);
             if (!sym || sym->type != INT_VAR) {
-                yyerror("Variável inválida ou não declarada no SE.");
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada no SE)", nome);
+                yyerror(msg);
             } else if (!sym->active) {
-                printf("Variável %s não está ativa no SE.\n", sym->name);
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa no SE)", sym->name);
+                yyerror(msg);
             } else {
                 gerar_leitura_inteiro(nome);
                 // atualiza_personagemVoce();
             }
-            // --- Fim da lógica ---
             LLVMBuildBr(builder, merge_block);
         }
         LLVMPositionBuilderAtEnd(builder, merge_block);
@@ -662,7 +692,6 @@ if_sentenca:
 if_bloco:
     SE condicao VIRGULA texto INICIO
     {
-        // --- AÇÃO INTERMEDIÁRIA (Mid-rule Action) ---
         ControleFluxo controle;
         controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_then");
         controle.merge_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "if_merge");
@@ -678,7 +707,6 @@ if_bloco:
     }
     bloco ENDIF
     {
-        // --- AÇÃO FINAL ---
         // Pega a estrutura de controlo do topo da pilha e remove-a.
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
@@ -702,7 +730,6 @@ while:
     ENQUANTO_COMECO
     {
         // WHILE
-        // --- Ação 1: Prepara os blocos ---
         ControleFluxo controle;
         controle.else_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_cond");
         controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "while_body");
@@ -720,7 +747,6 @@ while:
     }
     condicao VIRGULA texto INICIO
     {
-        // --- Ação 2: Gera o desvio condicional ---
         // 1. Pega a estrutura de controle (sem remover da pilha).
         ControleFluxo controle = pilha_peek(&pilhaControleFluxo);
 
@@ -733,7 +759,6 @@ while:
     }
     bloco texto ENQUANTO_FIM FIM
     {
-        // --- Ação de Saída do While ---
         // 1. Pega a estrutura de controle e remove da pilha.
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
@@ -745,7 +770,6 @@ while:
     }
     | FACA VIRGULA texto INICIO
     {
-        printf("Iniciando do-while\n");
         // DO WHILE
         ControleFluxo controle;
         controle.then_block = LLVMAppendBasicBlockInContext(contexto, funcao_main, "do_body");
@@ -760,7 +784,6 @@ while:
     }
     bloco ENQUANTO_COMECO condicao VIRGULA texto FIM
     {
-        // --- Ação de Saída Corrigida ---
         ControleFluxo controle = pilha_pop(&pilhaControleFluxo);
 
         LLVMBasicBlockRef current_block = LLVMGetInsertBlock(builder);
@@ -779,7 +802,6 @@ while:
         // Move o builder para o bloco de continuação.
         LLVMPositionBuilderAtEnd(builder, controle.merge_block);
 
-        // TODO: Entender pq aqui é o 8 que é o correto
     }
 
 condicao:
@@ -814,7 +836,7 @@ condicao:
             // $$ agora contém o valor i1 (true/false) da variável.
             $$ = gerar_get_booleano(sym->llvm_ref);
         } else {
-            yyerror("Variável de condição não é um booleano válido.");
+            yyerror("ERRO SEMÂNTICO (Variável de condição não é um booleano válido).");
         }
     }
 
@@ -852,11 +874,13 @@ dialogo:
 
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
-            yyerror("Variável de pilha inválida ou não declarada");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s inválida ou não declarada", personagemDialogo);
+            yyerror(msg);
         } else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s não está ativa", personagemDialogo);
+            yyerror(msg);
         } else {
 
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -889,20 +913,18 @@ dialogo:
         personagemDialogo = strdup($2);
 
 
-        if (DEBUG_BISON) {
-            // printf("Valor do personagem antes do diálogo: %d\n", get_int_value(personagemDialogo));
-        }
 
         // LLVM: gerar incremento personagem = personagem + $6
 
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR) {
-            yyerror("Variável de pilha inválida ou não declarada");
-            printf("Regra dialogos->adjetivos\n");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s inválida ou não declarada", personagemDialogo);
+            yyerror(msg);
         } else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s não está ativa", personagemDialogo);
+            yyerror(msg);
         } else {
 
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -930,11 +952,13 @@ dialogo:
 
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
-            yyerror("Variável de pilha inválida ou não declarada");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada).", personagemDialogo);
+            yyerror(msg);
         } else if (!sym->active) {
-            printf("Variável %s não está ativa\n", personagemDialogo);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa).", personagemDialogo);
+            yyerror(msg);
         } else {
 
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
@@ -949,21 +973,15 @@ dialogo:
         atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA MOSTRA_VALOR FIM {
-        if (DEBUG_BISON) {
-            // int val = get_int_value($2);
-            // if (val == -1) {
-            //     yyerror("Variável não definida");
-            // } else {
-            //     printf("Valor de %s: %d\n", $2, val);
-            // }
-        }
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada).", $2);
+            yyerror(msg);
         }  else if (!sym->active) {
-            printf("Variável %s não está ativa\n", sym->name);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa).", sym->name);
+            yyerror(msg);
         }
         gerar_print_topo_pilha($2);
         atualiza_personagemVoce();
@@ -975,11 +993,13 @@ dialogo:
         }
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR || !sym->llvm_ref) {
-            yyerror("Variável inteira inválida ou não declarada");
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada).", $2);
+            yyerror(msg);
         }  else if (!sym->active) {
-            printf("Variável %s não está ativa\n", sym->name);
-            YYABORT;
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa).", sym->name);
+            yyerror(msg);
         }
         gerar_leitura_inteiro($2);
         atualiza_personagemVoce();
@@ -987,7 +1007,9 @@ dialogo:
     | inicioDialogo nome_personagem VIRGULA GUARDE texto INTERIOR FIM {
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR) {
-            yyerror("Variável não é uma pilha de inteiros ou não foi declarada.");
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não é uma pilha de inteiros ou não foi declarada).", $2);
+            yyerror(msg);
         } else {
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
             LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
@@ -1002,9 +1024,10 @@ dialogo:
     | inicioDialogo nome_personagem VIRGULA LEMBRE texto FIM {
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR) {
-            yyerror("Variável não é uma pilha de inteiros ou não foi declarada.");
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não é uma pilha de inteiros ou não foi declarada).", $2);
+            yyerror(msg);
         } else {
-            printf("Lembrete: %s\n", $4);
             // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
             LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
             
@@ -1028,11 +1051,13 @@ inicioDialogo:
             }   
             Symbol *sym = get_symbol($1);
             if (!sym) {
-                yyerror("Personagem não declarado");
-                YYABORT;
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Personagem %s não declarado).", $1);
+                yyerror(msg);
             } else if (!sym->active) {
-                yyerror("Personagem não está ativo");
-                YYABORT;
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Personagem %s não está ativo).", $1);
+                yyerror(msg);
             } 
         } else if (estado == E_CENA) {
             if (DEBUG_BISON) {
@@ -1041,7 +1066,9 @@ inicioDialogo:
             estado = E_DIALOGO;
         } else {     
             if (DEBUG_BISON) {
-                yyerror("Diálogo fora de contexto\n");
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Início do diálogo fora de contexto, estado atual: %d).", estado);
+                yyerror(msg);
             }        
         }
     }
@@ -1055,7 +1082,9 @@ ato:
             estado = E_ATO;
         } else if (estado != E_ATO) {
             if (DEBUG_BISON) {
-                yyerror("Ato fora de contexto");
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Ato fora de contexto, estado atual: %d).", estado);
+                yyerror(msg);
             }
         }
     }
@@ -1070,7 +1099,9 @@ cena:
         } else if (estado == E_CENA) {
             // faz algo
         } else {
-            printf("Cena fora de contexto, estado atual: %d", estado);
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Cena fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
         }
     }
 
@@ -1098,13 +1129,19 @@ valor_string:
 %%
 
 int main() {
+    printf("\n\n--- Iniciando a peça: Compilador de Nelson Rodrigues Lang ---\n\n");
+    printf("Entram o LLVM e o Bison...\n\n");
     iniciar_codegen();
-    yyparse();
-    finalizar_codegen();
-    return 0;
-}
 
-int yyerror(const char *s) {
-    fprintf(stderr, "Erro: %s\n", s);
+    yyparse();
+
+    printf("\n");
+
+    if (n_erros) {
+        printf("ERRO: Compilação falhou devido a erros.\n");
+        return 1;
+    }
+
+    finalizar_codegen();
     return 0;
 }

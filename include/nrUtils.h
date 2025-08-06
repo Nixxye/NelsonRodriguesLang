@@ -58,7 +58,6 @@ void set_bool_value(const char *name, int value);
 void set_string_value(const char *name, const char *value);
 void print_symbols(void);
 void print_values(void);
-int get_int_value(const char *name);
 float get_float_value(const char *name);
 int get_bool_value(const char *name);
 char *get_string_value(const char *name);

@@ -3,7 +3,7 @@
     #include <string.h> 
     #include "parser.tab.h"
 
-    int DEBUG_LEX = 1;
+    int DEBUG_LEX = 0;
     
     // Função auxiliar para converter números romanos para inteiros
     int romano_para_inteiro(const char *romano) {
@@ -35,9 +35,13 @@
         return valor;
     }
 %}
-%%
-"#"([^\n#]|(\n))*"#"      { /* comentário multilinha */ }
 
+%option yylineno
+
+%%
+"#"([^\n#]|(\n))*"#"      {
+
+}
 ^ATO[ ]+(XL|L|X{0,3})(IX|IV|V?I{0,3})?[:].+\. {
     char romano[16];
     sscanf(yytext, "ATO %15[^:]", romano);
@@ -386,8 +390,10 @@ O[ ]TAMANHO[ ]DE {
     return TOKEN;
 }
 
+\n                {  }
 
-.|\n                                { /* ignora tudo o resto */ }
+.                                { /* ignora tudo o resto */ }
+
 
 %%
 

@@ -205,42 +205,6 @@ void set_string_value(const char *name, const char *value) {
 
 
 
-// Recupera valor inteiro
-int get_int_value(const char *name) {
-    // Symbol *sym = get_symbol(name);
-    // if (!sym || sym->type != INT_VAR) {
-    //     fprintf(stderr, "Erro: variável inteira '%s' não encontrada ou tipo incorreto!\n", name);
-    //     exit(EXIT_FAILURE);
-    // }
-
-    // // Se tiver llvm_ref e contexto de compilação (builder), tenta ler de LLVM
-    // if (sym->llvm_ref) {
-    //     // Gera instrução de load
-    //     LLVMValueRef loaded = LLVMBuildLoad2(builder, LLVMInt32Type(), sym->llvm_ref, "tmp_load");
-
-    //     // Se for constante (LLVMConstInt), conseguimos extrair valor em tempo de compilação
-    //     if (LLVMIsAConstantInt(loaded)) {
-    //         return (int) LLVMConstIntGetSExtValue((LLVMConstantIntRef) loaded);
-    //     } else {
-    //         fprintf(stderr, "Erro: valor de '%s' não é constante em tempo de compilação\n", name);
-    //         exit(EXIT_FAILURE);
-    //     }
-    // }
-
-    // // Se não tem llvm_ref, busca na tabela de valores
-    // unsigned int index = hash(name);
-    // IntValue *val = intTable[index];
-    // while (val) {
-    //     if (strcmp(val->name, name) == 0) {
-    //         return val->value;
-    //     }
-    //     val = val->next;
-    // }
-
-    // fprintf(stderr, "Erro: valor de '%s' não encontrado na tabela de inteiros!\n", name);
-    // exit(EXIT_FAILURE);
-}
-
 
 // Recupera valor booleano
 int get_bool_value(const char *name) {
