@@ -121,12 +121,6 @@ EU {
     return EU;
 }
 
-ENTAO {
-    if (DEBUG_LEX) printf("TOKEN: ENTAO\n");
-    yylval.texto = strdup(yytext);
-    return ENTAO;
-}
-
 FOR {
     if (DEBUG_LEX) printf("TOKEN: FOR\n");
     yylval.texto = strdup(yytext);
