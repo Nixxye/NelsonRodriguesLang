@@ -10,7 +10,7 @@ Esta chovendo? SIM!
 
 ATO I: o desepero.
 	CENA I:
-		[ENTRAM Joao, Um doido E Abismo]
+		[ENTRAM Joao E Abismo] .
 		Joao: Abismo, TU ÉS 5.
 		[SAI Joao]
 

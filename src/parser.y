@@ -47,8 +47,9 @@
 
     void yyerror(const char *str)
     {
-        fprintf(stderr, "[O PONTO, em sussurros] Roteiro falho na linha %d: %s\n", yylineno, str);
+        fprintf(stderr, "[O PONTO, em sussurros]: Roteiro falho na linha %d: %s\n", yylineno, str);
         n_erros++;
+        exit(1);
     }
 %}
 
@@ -83,7 +84,7 @@
 %left SOMAR SUBTRAIR
 %left MULTIPLICAR DIVIDIR
 %locations // Habilita rastreamento de localização de tokens
-
+%error-verbose
 %%
 
 /* Regras da gramática */
@@ -346,11 +347,11 @@ personagensEntrando:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $1);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($1));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", $1);
+            sprintf(msg, "ERRO SEMÂNTICO (Tipo incorreto para personagem '%s' (esperado INT_VAR))", strdup($1));
             yyerror(msg);
         }
         sym->active = 1;
@@ -360,7 +361,7 @@ personagensEntrando:
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($3));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
@@ -374,7 +375,7 @@ personagensEntrando:
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($3));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
@@ -390,7 +391,7 @@ personagensSaindo:
         Symbol *sym = get_symbol($1);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $1);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($1));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
@@ -403,7 +404,7 @@ personagensSaindo:
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($3));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
@@ -416,7 +417,7 @@ personagensSaindo:
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", $3);
+            sprintf(msg, "ERRO SEMÂNTICO (Personagem não declarado '%s')", strdup($3));
             yyerror(msg);
         } else if (sym->type != INT_VAR) {
             char msg[256];
