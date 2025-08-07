@@ -149,11 +149,11 @@ instrucao:
         }
     }
     | declaracaoQuestionamento {
-        if (estado == E_DECLARACOES) {
+        if (estado == E_DECLARACOES || estado == E_CENA) {
 
         } else {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Declaração de questionamentofora de contexto, estado atual: %d).", estado);
+            sprintf(msg, "ERRO SEMÂNTICO (Declaração de questionamento fora de contexto, estado atual: %d).", estado);
             yyerror(msg);
         }
     }
@@ -182,7 +182,7 @@ instrucao:
         }
     }
     | alteracaoElenco {
-        if(estado == E_ATO){
+        if(estado == E_ATO || estado == E_CENA){
             
         } else {
             char msg[256];
@@ -383,6 +383,9 @@ adjetivos:
     | ADJETIVO_NEGATIVO {
         $$ = -1;
     }
+    | texto {
+        $$ = 0;
+    }
     | adjetivos ADJETIVO_POSITIVO {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", $2);
@@ -398,12 +401,8 @@ adjetivos:
     | adjetivos texto {
         $$ = $1;
     }
-    | adjetivos ENTRE {
-        $$ = $1;
-    }
-    | texto adjetivos {
-        $$ = $2;
-    }
+;
+
 
 declaracao:
     declaracaoInicio nome_variavel_int FIM {
@@ -411,7 +410,7 @@ declaracao:
             printf("Declaração: %s\n", $2);
         }
     }
-
+;
 declaracaoInicio:
     nome_variavel_int VIRGULA {
         if (estado == E_DECLARACOES) {
@@ -422,7 +421,7 @@ declaracaoInicio:
         }
         $$ = $1;
     }
-
+;
 personagensEntrando:
     nome_personagem {
         Symbol *sym = get_symbol($1);
@@ -466,7 +465,7 @@ personagensEntrando:
         sym->active = 1;
         personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
     }
-
+;
 personagensSaindo:
     nome_personagem {
         Symbol *sym = get_symbol($1);
@@ -507,7 +506,7 @@ personagensSaindo:
         }
         sym->active = 0;
     }
-
+;
 alteracaoElenco:
     ABRE_COLCHETES ENTRAM personagensEntrando FECHA_COLCHETES {
         if (DEBUG_BISON) {
@@ -525,7 +524,7 @@ alteracaoElenco:
         }
         desativar_todos_personagens();
     }
-
+;
 personagem:
     EU {
         $$ = personagemQueFala;
@@ -536,6 +535,7 @@ personagem:
     | nome_personagem {
         $$ = $1;
     }
+;
 
 valor:
     NUMERO {
@@ -606,7 +606,7 @@ valor:
         // Valida se a variável existe e é uma pilha
         if (!sym || sym->type != INT_VAR) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s", nome_pilha);
+            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s).", nome_pilha);
             yyerror(msg);
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0); // Retorna 0 em caso de erro
         } else {
@@ -621,7 +621,7 @@ valor:
         Symbol *sym = get_symbol($1);
         if (!sym || sym->type != INT_VAR) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s", $1);
+            sprintf(msg, "ERRO SEMÂNTICO (Variável de pilha inválida ou não declarada: %s).", $1);
             yyerror(msg);
             $$ = LLVMConstInt(LLVMInt32Type(), 0, 0);
         } else {
@@ -957,7 +957,7 @@ dialogo:
         }
         atualiza_personagemVoce();
     }
-    | inicioDialogo nome_personagem VIRGULA TU EH adjetivos FIM {
+    | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
         personagemDialogo = strdup($2);
 
 

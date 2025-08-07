@@ -34,7 +34,7 @@ ATO II: um teste.
 
 			# SUBSTITUIÇÃO 1: A atmosfera da cena se corrompe. #
 			SE Loira FOR IGUAL A 3, a verdade apodrece:
-				SUBSTITUIR CENARIO luz fraca POR escuridao que sufoca NO CENARIO.
+				SUBSTITUIR luz fraca POR escuridao que sufoca NO CENARIO.
 				Alaide: Nao era luz era breu.
 				Alaide: ONDE ESTOU?
 			A SENTENÇA FINDA!
@@ -48,7 +48,7 @@ ATO II: um teste.
 
 			# SUBSTITUIÇÃO 2: O vulto ganha uma forma mais nítida. #
 			SE Loira FOR IGUAL A 4, a ferida se abre:
-				SUBSTITUIR CENARIO vulto POR homem de terno branco NO CENARIO.
+				SUBSTITUIR vulto POR homem de terno branco NO CENARIO.
 				Alaide: Um homem elegante por que.
 				Alaide: ONDE ESTOU?
 			A SENTENÇA FINDA!
@@ -60,4 +60,5 @@ ATO II: um teste.
 		os questionamentos de Alaide se ENCERRAM.
 
 		Alaide: Agora agora eu me lembro de tudo.
+		A PEÇA SE ENCERRA
 		[TODOS SAEM]

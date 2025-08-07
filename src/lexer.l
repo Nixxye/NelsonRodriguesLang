@@ -91,7 +91,7 @@ ADICIONE[ ]AO[ ]CENARIO {
     return ADICIONAR_CENARIO;
 }
 
-SUBSTITUIR[ ]CENARIO {
+SUBSTITUIR {
     if (DEBUG_LEX) printf("TOKEN: SUBSTITUIR_CENARIO\n");
     yylval.texto = strdup(yytext);
     return SUBSTITUIR_CENARIO;
@@ -160,7 +160,7 @@ FOR {
     return VOCE;
 }
 (É|ÉS) {
-    if (DEBUG_LEX) printf("TOKEN: É\n");
+    if (DEBUG_LEX) printf("TOKEN: EH\n");
     yylval.texto = strdup(yytext);
     return EH;
 }
