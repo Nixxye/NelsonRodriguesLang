@@ -3,7 +3,7 @@
     #include <string.h> 
     #include "parser.tab.h"
 
-    int DEBUG_LEX = 0;
+    int DEBUG_LEX = 1;
     #define YY_USER_INIT BEGIN(IGNORE_LINE);
 
     // Função auxiliar para converter números romanos para inteiros

@@ -14,17 +14,15 @@
     void yyerror(const char *s);
 
     enum ESTADOS {
-        E_TITULO = 0,
-        E_DECLARACOES = 1,
-        E_ATO = 2,
-        E_CENA = 3,
-        E_DIALOGO = 4,
+        E_DECLARACOES = 0,
+        E_ATO = 1,
+        E_CENA = 2,
     };
     int estado = 0;
 
     char *cenarioAtual = NULL;
 
-    int DEBUG_BISON = 0;
+    int DEBUG_BISON = 1;
     // Funções auxiliares
     char* personagemDialogo = NULL; // Guarda o valor do personagem em uma fala
     char* personagemQueFala = NULL; // Guarda o valor do personagem que tá falando
@@ -36,6 +34,9 @@
     // TODO: FAZER OS YYABORTS ENCERRAREM O PROGRAMA E NÃO APENAS O PARSER
 
     void atualiza_personagemVoce(){
+        if (!ultimoPersonagemQueFala) {
+            return;
+        }
         if (!personagemVoce || strcmp(ultimoPersonagemQueFala, personagemQueFala) != 0) {
             if (DEBUG_BISON) {
                 printf("Atualizando personagemVoce: %s\n", ultimoPersonagemQueFala);
@@ -84,7 +85,7 @@
 %left SOMAR SUBTRAIR
 %left MULTIPLICAR DIVIDIR
 %locations // Habilita rastreamento de localização de tokens
-%error-verbose
+%define parse.error custom
 %%
 
 /* Regras da gramática */
@@ -99,20 +100,123 @@ bloco:
   ;
 
 instrucao:
-        ato
-    | cena
-    | dialogo
-    | declaracao
-    | declaracaoCenario
-    | declaracaoQuestionamento
-    | concatenarCenario
-    | substituiCenario
-    | trocarCenario
-    | alteracaoElenco
-    | if_sentenca 
-    | if_bloco
-    | while
-    | personagensEntrando
+    ato {
+        if (estado == E_DECLARACOES || estado == E_CENA) {
+            estado = E_ATO;
+        } else {
+            if (DEBUG_BISON) {
+                char msg[256];
+                sprintf(msg, "ERRO SEMÂNTICO (Ato fora de contexto, estado atual: %d).", estado);
+                yyerror(msg);
+            }
+        }
+    }
+    | cena {
+        if (estado == E_ATO || estado == E_CENA) {
+            estado = E_CENA;
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Cena fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | dialogo { 
+        if (estado == E_CENA) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Diálogo fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | declaracao { 
+        if (estado == E_DECLARACOES) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Declaração fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | declaracaoCenario {
+        if (estado == E_DECLARACOES) {
+            
+        } else {
+            // Cria a mensagem de erro
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Declaracao de cenario fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | declaracaoQuestionamento {
+        if (estado == E_DECLARACOES) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Declaração de questionamentofora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | concatenarCenario {
+        if (estado == E_CENA) {
+            
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Adição de cenário fora de contexto, estado atual: %d).", estado);
+            yyerror(msg);
+        }
+    }
+    | substituiCenario {
+        if (estado == E_CENA) {
+        } else {
+            yyerror("ERRO SEMÂNTICO (Substituição de cenário fora de contexto, estado atual: %d).");
+        }
+    }
+    | trocarCenario {
+        if (estado == E_CENA) {
+            
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Troca de cenário fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
+        }
+    }
+    | alteracaoElenco {
+        if(estado == E_ATO){
+            
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Alteração de elenco fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
+        }
+    }
+    | if_sentenca {
+        if (estado == E_CENA) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Sentença 'if' fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
+        }
+    }
+    | if_bloco {
+        if (estado == E_CENA) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Bloco 'if' fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
+        }
+    }
+    | while {
+        if (estado == E_CENA) {
+
+        } else {
+            char msg[256];
+            sprintf(msg, "ERRO SEMÂNTICO (Laço 'while' fora de contexto, estado atual: %d)", estado);
+            yyerror(msg);
+        }
+    }
     | saida
     ;
 
@@ -126,96 +230,73 @@ saida:
 
 declaracaoCenario:
     ABRE_PARENTESES nome_cenario VIRGULA valor_string FECHA_PARENTESES {
-        if (estado == E_DECLARACOES) {
-            if (DEBUG_BISON) {
-                printf("Declaração de cenário: %s com valor inicial: %s\n", $2, $4);
-            }
-            add_symbol($2, STRING_VAR);
-            cenarioAtual = strdup($2);
-            ativar_cenario(cenarioAtual);
-
-            Symbol* sym = get_symbol(cenarioAtual);
-            LLVMValueRef nova_str_ptr = gerar_criar_string($4);
-            // Armazena o ponteiro na variável
-            LLVMBuildStore(builder, nova_str_ptr, sym->llvm_ref);
-        } else {
-            // Cria a mensagem de erro
-            char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Declaracao do cenario '%s' fora de contexto).", $2);
-            yyerror(msg);
+        if (DEBUG_BISON) {
+            printf("Declaração de cenário: %s com valor inicial: %s\n", $2, $4);
         }
+        add_symbol($2, STRING_VAR);
+        cenarioAtual = strdup($2);
+        ativar_cenario(cenarioAtual);
+
+        Symbol* sym = get_symbol(cenarioAtual);
+        LLVMValueRef nova_str_ptr = gerar_criar_string($4);
+        // Armazena o ponteiro na variável
+        LLVMBuildStore(builder, nova_str_ptr, sym->llvm_ref);
     }
 
 concatenarCenario:
     ADICIONAR_CENARIO INICIO valor_string FIM {
-        if (estado != E_DECLARACOES) {
-            if (cenarioAtual == NULL) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Cenário atual igual a NULL!)");
-                yyerror(msg);
-            } else {
-                Symbol* sym = get_symbol(cenarioAtual);
-                // 1. LOAD: Carrega o ponteiro atual da string
-                LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
-                
-                // 2. CALL: Gera a chamada para a função de concatenação
-                LLVMValueRef str_nova_ptr = gerar_concatenar_string(str_atual_ptr, $3);
-
-                // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
-                LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
-                if (DEBUG_BISON) {
-                    printf("Cenário atualizado: %s\n", cenarioAtual);
-                }
-            }
-        } else {
+        if (cenarioAtual == NULL) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO ( Adição de cenário '%s' fora de contexto.", $3);
+            sprintf(msg, "ERRO SEMÂNTICO (Cenário atual igual a NULL!)");
             yyerror(msg);
+        } else {
+            Symbol* sym = get_symbol(cenarioAtual);
+            // 1. LOAD: Carrega o ponteiro atual da string
+            LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
+            
+            // 2. CALL: Gera a chamada para a função de concatenação
+            LLVMValueRef str_nova_ptr = gerar_concatenar_string(str_atual_ptr, $3);
+
+            // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
+            LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
+            if (DEBUG_BISON) {
+                printf("Cenário atualizado: %s\n", cenarioAtual);
+            }
         }
     }
 
 substituiCenario:
     SUBSTITUIR_CENARIO valor_string POR valor_string NO_CENARIO FIM{
-        if (estado != E_DECLARACOES) {
-            if (cenarioAtual == NULL) {
-                yyerror("Nenhum cenário atual definido");
-            } else {
-                Symbol* sym = get_symbol(cenarioAtual);
-                if (sym) {
-                    // 1. LOAD: Carrega o ponteiro atual da string
-                    LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
-
-                    // 2. CALL: Gera a chamada para a função de substituição
-                    LLVMValueRef str_nova_ptr = gerar_substituir_string(str_atual_ptr, $2, $4);
-
-                    // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
-                    LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
-                }
-            }
+        if (cenarioAtual == NULL) {
+            yyerror("Nenhum cenário atual definido");
         } else {
-            yyerror("ERRO SEMÂNTICO ( Substituição de cenário fora de contexto");
+            Symbol* sym = get_symbol(cenarioAtual);
+            if (sym) {
+                // 1. LOAD: Carrega o ponteiro atual da string
+                LLVMValueRef str_atual_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "load_str");
+
+                // 2. CALL: Gera a chamada para a função de substituição
+                LLVMValueRef str_nova_ptr = gerar_substituir_string(str_atual_ptr, $2, $4);
+
+                // 3. STORE: Armazena o novo ponteiro de volta na variável (MUITO IMPORTANTE!)
+                LLVMBuildStore(builder, str_nova_ptr, sym->llvm_ref);
+            }
         }
     }
 
 trocarCenario: 
     inicioDialogo VOLTAR_CENARIO ARTIGO nome_cenario FIM {
-        if (estado == E_DECLARACOES) {
+        if (DEBUG_BISON) {
+            printf("Trocando cenário para: %s\n", $4);
+        }
+        char *novoCenario = get_string_value($4);
+        if (novoCenario == NULL) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Troca de cenário '%s' fora de contexto)", $4);
+            sprintf(msg, "ERRO SEMÂNTICO (Cenário '%s' não declarado)", $4);
             yyerror(msg);
         } else {
-            if (DEBUG_BISON) {
-                printf("Trocando cenário para: %s\n", $4);
-            }
-            char *novoCenario = get_string_value($4);
-            if (novoCenario == NULL) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Cenário '%s' não declarado)", $4);
-                yyerror(msg);
-            } else {
-                cenarioAtual = strdup($4);
-                ativar_cenario(cenarioAtual);
-            }
+            cenarioAtual = strdup($4);
+            ativar_cenario(cenarioAtual);
         }
     }
 
@@ -302,9 +383,6 @@ adjetivos:
     | ADJETIVO_NEGATIVO {
         $$ = -1;
     }
-    | texto {
-        $$ = 0;
-    }
     | adjetivos ADJETIVO_POSITIVO {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", $2);
@@ -322,6 +400,9 @@ adjetivos:
     }
     | adjetivos ENTRE {
         $$ = $1;
+    }
+    | texto adjetivos {
+        $$ = $2;
     }
 
 declaracao:
@@ -429,31 +510,13 @@ personagensSaindo:
 
 alteracaoElenco:
     ABRE_COLCHETES ENTRAM personagensEntrando FECHA_COLCHETES {
-        if (estado == E_CENA) {
-            if (DEBUG_BISON) {
-                printf("Alteração de elenco: %s\n", $2);
-            }
-        } else if (estado == E_DIALOGO) {
-            if (DEBUG_BISON) {
-                printf("Alteração de elenco: %s\n", $2);
-            }
-        } else {
-            char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Alteração de elenco fora de contexto, estado atual: %d)", estado);
-            yyerror(msg);
+        if (DEBUG_BISON) {
+            printf("Alteração de elenco: %s\n", $2);
         }
     }
     | ABRE_COLCHETES SAEM personagensSaindo FECHA_COLCHETES {
-        if (estado == E_CENA) {
-            if (DEBUG_BISON) {
-                printf("Alteração de elenco: %s\n", $2);
-            }
-        } else if (estado == E_DIALOGO) {
-            if (DEBUG_BISON) {
-                printf("Alteração de elenco: %s\n", $2);
-            }
-        } else {
-            printf("Alteração de elenco fora de contexto, estado atual: %d\n", estado);
+        if (DEBUG_BISON) {
+            printf("Alteração de elenco: %s\n", $2);
         }
     }
     | ABRE_COLCHETES TODOS SAEM FECHA_COLCHETES {
@@ -858,29 +921,22 @@ dialogo:
     | inicioDialogo nome_personagem FIM {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", $2);
-            switch (estado) {
-                case E_TITULO:    printf("Título\n"); break;
-                case E_DECLARACOES: printf("Declarações\n"); break;
-                case E_DIALOGO:   printf("Diálogo\n"); break;
-                case E_CENA:      printf("Cena\n"); break;
-                case E_ATO:       printf("Ato\n"); break;
-                default:
-                    yyerror("Estado desconhecido no diálogo\n");
-            }
         }
         atualiza_personagemVoce();
     }
-    | inicioDialogo nome_personagem VIRGULA TU EH expressao FIM {
+    | inicioDialogo texto VIRGULA TU EH expressao FIM {
+        if (DEBUG_BISON) {
+            printf("Diálogo com expressão: %s\n", $2);
+        }
         personagemDialogo = strdup($2);
-
         Symbol *sym = get_symbol(personagemDialogo);
         if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s inválida ou não declarada", personagemDialogo);
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada", personagemDialogo);
             yyerror(msg);
         } else if (!sym->active) {
             char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO ( Variável %s não está ativa", personagemDialogo);
+            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa", personagemDialogo);
             yyerror(msg);
         } else {
 
@@ -890,7 +946,6 @@ dialogo:
             // Atualiza o valor no topo da pilha
             gerar_set_topo_pilha(pilha_ptr, $6);
         }
-
         free(personagemDialogo);
         personagemDialogo = NULL;
         atualiza_personagemVoce();
@@ -898,15 +953,7 @@ dialogo:
     | inicioDialogo texto INTERROGACAO {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", $2);
-            switch (estado) {
-                case E_TITULO:    printf("Título\n"); break;
-                case E_DECLARACOES: printf("Declarações\n"); break;
-                case E_DIALOGO:   printf("Diálogo\n"); break;
-                case E_CENA:      printf("Cena\n"); break;
-                case E_ATO:       printf("Ato\n"); break;
-                default:
-                    yyerror("Estado desconhecido no diálogo\n");
-            }
+
         }
         atualiza_personagemVoce();
     }
@@ -942,31 +989,6 @@ dialogo:
 
             // 5. Atualiza o valor no topo da pilha
             gerar_set_topo_pilha(pilha_ptr, soma);
-        }
-
-        free(personagemDialogo);
-        personagemDialogo = NULL;
-        atualiza_personagemVoce();
-    }
-    | inicioDialogo texto VIRGULA TU EH expressao FIM {
-        personagemDialogo = strdup($2);
-
-        Symbol *sym = get_symbol(personagemDialogo);
-        if (!sym || sym->type != INT_VAR) { // INT_VAR é uma pilha
-            char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Variável %s inválida ou não declarada).", personagemDialogo);
-            yyerror(msg);
-        } else if (!sym->active) {
-            char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Variável %s não está ativa).", personagemDialogo);
-            yyerror(msg);
-        } else {
-
-            // 1. Carrega o ponteiro para a estrutura da pilha (PilhaInt*)
-            LLVMValueRef pilha_ptr = LLVMBuildLoad2(builder, sym->llvm_type, sym->llvm_ref, "pilha_ptr");
-
-            // Atualiza o valor no topo da pilha
-            gerar_set_topo_pilha(pilha_ptr, $6);
         }
 
         free(personagemDialogo);
@@ -1040,69 +1062,22 @@ dialogo:
 inicioDialogo:   
     texto INICIO {
         personagemQueFala = $1;
-        if (estado == E_TITULO) {
-            if (DEBUG_BISON) {
-                printf("Título: %s\n", $1);
-            }
-            estado = E_DECLARACOES;
-        } 
-        else if (estado == E_DIALOGO) {
-            if (DEBUG_BISON) {
-                printf("Início do diálogo\n");
-            }   
-            Symbol *sym = get_symbol($1);
-            if (!sym) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Personagem %s não declarado).", $1);
-                yyerror(msg);
-            } else if (!sym->active) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Personagem %s não está ativo).", $1);
-                yyerror(msg);
-            } 
-        } else if (estado == E_CENA) {
-            if (DEBUG_BISON) {
-                printf("Início do diálogo: %s\n", $1);
-            }
-            estado = E_DIALOGO;
-        } else {     
-            if (DEBUG_BISON) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Início do diálogo fora de contexto, estado atual: %d).", estado);
-                yyerror(msg);
-            }        
+        if (DEBUG_BISON) {
+            printf("Início do diálogo: %s\n", $1);
         }
     }
 
 ato: 
     ATO {
-        if (estado == E_DECLARACOES) {
-            if (DEBUG_BISON) {
-                printf("Ato: %d\n", $1);
-            }
-            estado = E_ATO;
-        } else if (estado != E_ATO) {
-            if (DEBUG_BISON) {
-                char msg[256];
-                sprintf(msg, "ERRO SEMÂNTICO (Ato fora de contexto, estado atual: %d).", estado);
-                yyerror(msg);
-            }
+        if (DEBUG_BISON) {
+            printf("Ato: %d\n", $1);
         }
     }
 
 cena: 
     CENA {
-        if (estado == E_ATO) {
-            if (DEBUG_BISON) {
-                printf("Cena: %d\n", $1);
-            }
-            estado = E_CENA;
-        } else if (estado == E_CENA) {
-            // faz algo
-        } else {
-            char msg[256];
-            sprintf(msg, "ERRO SEMÂNTICO (Cena fora de contexto, estado atual: %d).", estado);
-            yyerror(msg);
+        if (DEBUG_BISON) {
+            printf("Cena: %d\n", $1);
         }
     }
 
@@ -1119,7 +1094,7 @@ nome_questionamento:
     ;
 
 nome_personagem:
-    texto           { $$ = $1; }
+    texto           { $$ = $1; printf("Nome personagem: %s\n", $1); }
     ;
 
 valor_string:
@@ -1145,4 +1120,12 @@ int main() {
 
     finalizar_codegen();
     return 0;
+}
+// https://www.gnu.org/software/bison/manual/html_node/Syntax-Error-Reporting-Function.html
+static int
+yyreport_syntax_error (const yypcontext_t *ctx) {
+    int token = yypcontext_token (ctx);
+    fprintf(stderr, "[DIRETOR]: (ERRO SINTÁTICO na linha %d).\n", yylineno);
+    n_erros++;
+    return 0; // Retorna 0 para tentar recuperação, ou 1 para parar.
 }

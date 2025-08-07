@@ -9,13 +9,13 @@ Esta chovendo? SIM!
 (Lembranca, uma rua deserta banhada por uma luz fraca)
 
 ATO I: o desepero.
+	[ENTRAM Joao E Abismo]
 	CENA I:
-		[ENTRAM Joao E Abismo]
 		Joao: Abismo, TU ÉS 5.
+ATO II: um teste.
 		[SAI Joao]
-
 		[ENTRAM Alaide E Loira]
-
+	CENA II:
 		# O laço representa a ruminação obsessiva de Alaíde. #
 		ENQUANTO Esta chovendo, Alaide se tortura:
 
