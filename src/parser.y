@@ -71,11 +71,9 @@
 %token <text> IF_MOSTRA_VALOR IF_LE_VALOR O_TAMANHO_DE
 %token <inteiro> ATO CENA 
 
-%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco texto palavra personagem
+%nterm <texto> declaracao declaracaoInicio dialogo inicioDialogo ato cena bloco palavra personagem texto
 %nterm <inteiro> adjetivos if_sentenca while
 %nterm <llmValueRef> condicao valor expressao
-
-%type <texto> nome_variavel_int nome_cenario nome_questionamento nome_personagem valor_string
 
 %nonassoc MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL IGUAL
 %left FOR
@@ -229,7 +227,7 @@ saida:
 /* Cenários - manipulação de Strings */
 
 declaracaoCenario:
-    ABRE_PARENTESES nome_cenario VIRGULA valor_string FECHA_PARENTESES {
+    ABRE_PARENTESES texto VIRGULA texto FECHA_PARENTESES {
         if (DEBUG_BISON) {
             printf("Declaração de cenário: %s com valor inicial: %s\n", $2, $4);
         }
@@ -244,7 +242,7 @@ declaracaoCenario:
     }
 
 concatenarCenario:
-    ADICIONAR_CENARIO INICIO valor_string FIM {
+    ADICIONAR_CENARIO INICIO texto FIM {
         if (cenarioAtual == NULL) {
             char msg[256];
             sprintf(msg, "ERRO SEMÂNTICO (Cenário atual igual a NULL!)");
@@ -266,7 +264,7 @@ concatenarCenario:
     }
 
 substituiCenario:
-    SUBSTITUIR_CENARIO valor_string POR valor_string NO_CENARIO FIM{
+    SUBSTITUIR_CENARIO texto POR texto NO_CENARIO FIM{
         if (cenarioAtual == NULL) {
             yyerror("Nenhum cenário atual definido");
         } else {
@@ -285,7 +283,7 @@ substituiCenario:
     }
 
 trocarCenario: 
-    inicioDialogo VOLTAR_CENARIO ARTIGO nome_cenario FIM {
+    inicioDialogo VOLTAR_CENARIO ARTIGO texto FIM {
         if (DEBUG_BISON) {
             printf("Trocando cenário para: %s\n", $4);
         }
@@ -303,7 +301,7 @@ trocarCenario:
 /* Booleanos - operações lógicas */
 
 declaracaoQuestionamento:
-    nome_questionamento INTERROGACAO NAO FIM {
+    texto INTERROGACAO NAO FIM {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento negativo: %s\n", $1);
         }
@@ -321,7 +319,7 @@ declaracaoQuestionamento:
             gerar_set_booleano(sym->llvm_ref, valor_false);
         }
     }
-    | nome_questionamento INTERROGACAO SIM FIM {
+    | texto INTERROGACAO SIM FIM {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento afirmativo: %s\n", $1);
         }
@@ -339,7 +337,7 @@ declaracaoQuestionamento:
             gerar_set_booleano(sym->llvm_ref, valor_true);// Inicializa como verdadeiro
         }
     }
-    | nome_questionamento INTERROGACAO {
+    | texto INTERROGACAO {
         if (DEBUG_BISON) {
             printf("Declaração de questionamento: %s\n", $1);
         }
@@ -383,9 +381,6 @@ adjetivos:
     | ADJETIVO_NEGATIVO {
         $$ = -1;
     }
-    | texto {
-        $$ = 0;
-    }
     | adjetivos ADJETIVO_POSITIVO {
         if (DEBUG_BISON) {
             printf("Adjetivo positivo concatenado: %s\n", $2);
@@ -405,14 +400,14 @@ adjetivos:
 
 
 declaracao:
-    declaracaoInicio nome_variavel_int FIM {
+    declaracaoInicio texto FIM {
         if (DEBUG_BISON) {
             printf("Declaração: %s\n", $2);
         }
     }
 ;
 declaracaoInicio:
-    nome_variavel_int VIRGULA {
+    texto VIRGULA {
         if (estado == E_DECLARACOES) {
             if (DEBUG_BISON) {
                 printf("Criando variável: %s\n", $1);
@@ -423,7 +418,7 @@ declaracaoInicio:
     }
 ;
 personagensEntrando:
-    nome_personagem {
+    texto {
         Symbol *sym = get_symbol($1);
         if (!sym) {
             char msg[256];
@@ -437,7 +432,7 @@ personagensEntrando:
         sym->active = 1;
         personagemVoce = $1; // Atualiza personagemVoce com o personagem que está entrando
     } 
-    | personagensEntrando VIRGULA nome_personagem {
+    | personagensEntrando VIRGULA texto {
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
@@ -451,7 +446,7 @@ personagensEntrando:
         sym->active = 1;
         personagemVoce = $3; // Atualiza personagemVoce com o personagem que está entrando
     }
-    | personagensEntrando E nome_personagem {
+    | personagensEntrando E texto {
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
@@ -467,7 +462,7 @@ personagensEntrando:
     }
 ;
 personagensSaindo:
-    nome_personagem {
+    texto {
         Symbol *sym = get_symbol($1);
         if (!sym) {
             char msg[256];
@@ -480,7 +475,7 @@ personagensSaindo:
         }
         sym->active = 0;
     } 
-    | personagensSaindo VIRGULA nome_personagem {
+    | personagensSaindo VIRGULA texto {
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
@@ -493,7 +488,7 @@ personagensSaindo:
         }
         sym->active = 0;
     }
-    | personagensSaindo E nome_personagem {
+    | personagensSaindo E texto {
         Symbol *sym = get_symbol($3);
         if (!sym) {
             char msg[256];
@@ -532,7 +527,7 @@ personagem:
     | VOCE {
         $$ = personagemVoce;
     }
-    | nome_personagem {
+    | texto {
         $$ = $1;
     }
 ;
@@ -598,7 +593,7 @@ valor:
             }
         }
     }
-    | O_TAMANHO_DE nome_variavel_int {
+    | O_TAMANHO_DE texto {
         // $2 é o nome da pilha (const char*)
         const char* nome_pilha = $2;
         Symbol* sym = get_symbol(nome_pilha);
@@ -617,7 +612,7 @@ valor:
             $$ = gerar_obter_tamanho_pilha(pilha_ptr);
         }
     }
-    | nome_variavel_int {
+    | texto {
         Symbol *sym = get_symbol($1);
         if (!sym || sym->type != INT_VAR) {
             char msg[256];
@@ -918,7 +913,7 @@ dialogo:
         }
         atualiza_personagemVoce();
     }
-    | inicioDialogo nome_personagem FIM {
+    | inicioDialogo texto FIM {
         if (DEBUG_BISON) {
             printf("Diálogo: %s\n", $2);
         }
@@ -958,6 +953,7 @@ dialogo:
         atualiza_personagemVoce();
     }
     | inicioDialogo texto VIRGULA TU EH adjetivos FIM {
+        printf("Diálogo com adjetivos: %s\n", $2);
         personagemDialogo = strdup($2);
 
 
@@ -1009,7 +1005,7 @@ dialogo:
         gerar_print_topo_pilha($2);
         atualiza_personagemVoce();
     }
-    | inicioDialogo nome_personagem VIRGULA LE_VALOR FIM {
+    | inicioDialogo texto VIRGULA LE_VALOR FIM {
         // Scanf
         if (DEBUG_BISON) {
             printf("Lendo valor de %s\n", $2);
@@ -1027,7 +1023,7 @@ dialogo:
         gerar_leitura_inteiro($2);
         atualiza_personagemVoce();
     }
-    | inicioDialogo nome_personagem VIRGULA GUARDE texto INTERIOR FIM {
+    | inicioDialogo texto VIRGULA GUARDE texto INTERIOR FIM {
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR) {
             char msg[256];
@@ -1044,7 +1040,7 @@ dialogo:
             gerar_push_pilha(pilha_ptr, zero_const);
         }
     }
-    | inicioDialogo nome_personagem VIRGULA LEMBRE texto FIM {
+    | inicioDialogo texto VIRGULA LEMBRE texto FIM {
         Symbol *sym = get_symbol($2);
         if (!sym || sym->type != INT_VAR) {
             char msg[256];
@@ -1081,25 +1077,8 @@ cena:
         }
     }
 
-nome_variavel_int:
-    texto           { $$ = $1; }
-    ;
 
-nome_cenario:
-    texto           { $$ = $1; }
-    ;
 
-nome_questionamento:
-    texto           { $$ = $1; }
-    ;
-
-nome_personagem:
-    texto           { $$ = $1; printf("Nome personagem: %s\n", $1); }
-    ;
-
-valor_string:
-    texto           { $$ = $1; }
-    ;
 
 
 %%

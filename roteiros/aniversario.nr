@@ -31,6 +31,3 @@ E TUDO SE ENCERRA!
         caluladora: caluladora, ABRE TEU CORACAO MISERAVEL.
 
 		[TODOS SAEM]
-
-
-# Um comentário qualquer #

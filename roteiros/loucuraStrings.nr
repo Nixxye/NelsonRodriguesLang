@@ -23,7 +23,7 @@ ATO II: um teste.
 			Alaide: ONDE ESTOU?
 
 			# A alucinação (Loira) ganha força a cada ciclo. #
-			Alaide: Loira, TU ÉS a mais BELA das mentiras.
+			Alaide: Loira, TU ÉS BELA como a maior das mentiras.
 
 			# CONCATENAÇÃO: Um detalhe vago emerge na lembrança. #
 			SE Loira FOR IGUAL A 1, a verdade apodrece:

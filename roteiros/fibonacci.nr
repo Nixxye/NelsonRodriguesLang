@@ -7,10 +7,10 @@ Robertinha, a proxima.
 
 (o mundo dos números, luxuria e confusao) 
 ATO I: A calculadora.
+	[ENTRAM Jose Dirceu, Robertinha, Joaozinho E Maria Roberta]
 	CENA I: 
-		[ENTRAM Jose Dirceu, Robertinha, Joaozinho E Maria Roberta]
-
 		Robertinha: Joaozinho, TU ÉS DOCE como um paozinho. # Joaozinho += 1 #
+		Robertinha: Joaozinho, ABRE TEU CORACAO MISERAVEL.
 		Maria Roberta: Jose Dirceu, ESCUTA TEU CORACAO MISERAVEL! # Jose Dirceu <- input usuário #
 	# Refazer com DO WHILE #
 	ENQUANTO Maria Roberta NAO FOR MAIOR QUE Jose Dirceu, o sofrimento do cálculo continuará: # while Maria Roberta < Jose Dirceu #
